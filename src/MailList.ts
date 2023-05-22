@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { Button } from './Button';
 import { MailItem } from './MailItem';
 
 type MailType = {
@@ -9,7 +10,7 @@ type MailType = {
 }
 
 export class MailList extends PIXI.Container {
-    private mails: MailType[]
+    private _mails: MailType[]
     private activeEmail: number
     contentContainer: any;
 
@@ -17,7 +18,7 @@ export class MailList extends PIXI.Container {
         super();
         this.x = 0;
         this.y = 0;
-        this.mails = [];
+        this._mails = [];
         this.activeEmail = -1;
         this.contentContainer = new PIXI.Container();
         this.contentContainer.position.set(125, 0);
@@ -25,23 +26,23 @@ export class MailList extends PIXI.Container {
 
     }
 
-    private add(title: string, description: string, forceOpen: boolean = false) {
+    public add(title: string, description: string, forceOpen: boolean = false) {
         const mail = {
             title: title,
             description: description,
             forceOpen: forceOpen
         };
-        this.mails.push(mail);
+        this._mails.push(mail);
 
         this._renderMails();
     }
 
     public get mailCount(): number {
-        return this.mails.length;
+        return this._mails.length;
     }
 
-    public get mailList(): MailType[] {
-        return this.mails;
+    public get mails(): MailType[] {
+        return this._mails;
     }
 
     private setActiveMail(index) {
@@ -50,7 +51,6 @@ export class MailList extends PIXI.Container {
             this.activeEmail = index;
 
             this._renderMails();
-            console.log(this.mails);
         }
     }
 
@@ -63,7 +63,7 @@ export class MailList extends PIXI.Container {
                 mail.read = true;
                 mail.forceOpen = false;
             }
-            const mailItem = new MailItem(mail.title, mail.description, mail.read, (index === this.activeEmail), () => { this.setActiveMail(index) }, index);
+            const mailItem = new MailItem(mail.title, mail.description, mail.read, (index === this.activeEmail), () => { this.setActiveMail(index) });
 
 
             mailItem.position.set(0, index * 70);
@@ -93,6 +93,16 @@ export class MailList extends PIXI.Container {
             contentText.position.set(this.contentContainer.x + 10, this.contentContainer.y + 40);
             this.contentContainer.addChild(contentTitle);
             this.contentContainer.addChild(contentText);
+
+
+            const button = new Button(125, 50, 'Accepteer missie', undefined, undefined, undefined, () => {
+                console.log('Button clicked!');
+                alert(`Button clicked: ${activeMail.title}`)
+            });
+
+
+            button.position.set(this.width * 0.2, this.height * 0.8)
+            this.contentContainer.addChild(button);
         }
     }
 }

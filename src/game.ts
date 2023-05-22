@@ -10,12 +10,12 @@ export class Game {
     private loader: AssetLoader
     public player: Player
     private gameTexture: PIXI.Texture
-    public mail: Mail
+    public mail: MailList
     private officeAssets: PIXI.Texture
 
     constructor() {
         // full screen application
-        this.pixi = new PIXI.Application({ width: 1200, height: 600 })
+        this.pixi = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight - 50 })
 
         document.body.appendChild(this.pixi.view)
         // Load images
