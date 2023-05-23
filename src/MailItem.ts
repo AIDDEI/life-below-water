@@ -27,7 +27,6 @@ export class MailItem extends PIXI.Container {
             this.setActiveMail()
         }
 
-
         const background = new PIXI.Graphics();
         background.beginFill(0xffffff);
         background.drawRect(0, 0, 225, 60);

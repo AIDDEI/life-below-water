@@ -1,26 +1,28 @@
 import * as PIXI from 'pixi.js';
 
 export class Button extends PIXI.Container {
-    private button: PIXI.Graphics;
-    private label: PIXI.Text;
+    private button: PIXI.Graphics
+    private label: PIXI.Text
+    public w: number
+    public h: number
+    public text: string
+    public textStyle: PIXI.TextStyle
+    private lineColor: number
+    private buttonColor: number
+    private clickHandler?: () => void
 
-
-    constructor(
-        public w: number,
-        public h: number,
-        public text: string,
-        private lineColor: number = 0xFFBD01,
-        private textStyle: PIXI.TextStyle = new PIXI.TextStyle({
+    constructor(h: number, text: string, lineColor: number = 0xFFBD01, buttonColor: number = 0x336699, clickHandler?: () => void) {
+        super();
+        this.textStyle = new PIXI.TextStyle({
             fontSize: 20,
             fill: 'white',
-        }),
-        private buttonColor: number = 0x336699,
-        private clickHandler?: () => void,
-    ) {
-        super();
+        })
         this.button = new PIXI.Graphics();
-        this.label = new PIXI.Text(text, textStyle);
+        this.label = new PIXI.Text(text, this.textStyle);
         this.lineColor = lineColor;
+        this.buttonColor = buttonColor;
+        this.h = h;
+        this.clickHandler = clickHandler;
         this.initButton();
         this.initLabel();
         this.setupEvents();
@@ -32,7 +34,7 @@ export class Button extends PIXI.Container {
         this.button.beginFill(this.buttonColor);
         this.button.drawRoundedRect(0, 0, this.label.width + 30, this.h, 3);
         this.button.endFill();
-
+        // add button to container
         this.addChild(this.button);
     }
 
@@ -40,6 +42,7 @@ export class Button extends PIXI.Container {
         this.label.anchor.set(0.5);
         this.label.position.set((this.label.width + 30) / 2, this.h / 2);
         this.label.resolution = 2;
+        // add label to button
         this.addChild(this.label);
     }
 

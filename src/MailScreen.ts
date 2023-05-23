@@ -6,18 +6,19 @@ type MailType = {
     forceOpen: any;
     title: string,
     description: string,
-    read?: boolean
+    type: number
+    read?: boolean,
 }
 
-export class MailList extends PIXI.Container {
+export class MailScreen extends PIXI.Container {
     private _mails: MailType[]
     private activeEmail: number
-    contentContainer: any;
+    private contentContainer: PIXI.Container;
 
     constructor() {
         super();
-        this.x = 0;
-        this.y = 0;
+        this.x = 300;
+        this.y = 100;
         this._mails = [];
         this.activeEmail = -1;
         this.contentContainer = new PIXI.Container();
@@ -26,13 +27,9 @@ export class MailList extends PIXI.Container {
 
     }
 
-    public add(title: string, description: string, forceOpen: boolean = false) {
-        const mail = {
-            title: title,
-            description: description,
-            forceOpen: forceOpen
-        };
-        this._mails.push(mail);
+    public add(title: string, description: string, type: number, forceOpen: boolean = false) {
+        const mail = { title, description, type, forceOpen }
+        this.mails.push(mail);
 
         this._renderMails();
     }
@@ -84,25 +81,29 @@ export class MailList extends PIXI.Container {
             background.endFill();
             this.contentContainer.addChild(background);
 
-            const contentTitle = new PIXI.Text(activeMail.title, { fill: 'blue', fontSize: 20 });
-            const contentText = new PIXI.Text(activeMail.description, { fill: 'blue', fontSize: 16 });
+            const contentTitle = new PIXI.Text(activeMail.title, { fill: 'blue', fontSize: 40 });
+            const emailText = new PIXI.Text("Van: neeldert@waterschappen.nl \nNaar: Jou!", { fill: 'blue', fontSize: 15 });
+            const contentText = new PIXI.Text(activeMail.description, { fill: 'blue', fontSize: 24 });
             contentText.style.wordWrap = true;
             contentText.style.wordWrapWidth = background.width - 15;
 
-            contentTitle.position.set(this.contentContainer.x + 10, this.contentContainer.y + 10);
-            contentText.position.set(this.contentContainer.x + 10, this.contentContainer.y + 40);
+            contentTitle.position.set(this.contentContainer.x + 20, this.contentContainer.y + 20);
+            emailText.position.set(this.contentContainer.x + 20, contentTitle.y + contentTitle.height + 5);
+            contentText.position.set(this.contentContainer.x + 20, emailText.y + emailText.height + 20);
             this.contentContainer.addChild(contentTitle);
             this.contentContainer.addChild(contentText);
+            this.contentContainer.addChild(emailText);
 
-
-            const button = new Button(125, 50, 'Accepteer missie', undefined, undefined, undefined, () => {
+            // Make a switch depending on mail type, in the future maybe move this
+            const button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
                 console.log('Button clicked!');
                 alert(`Button clicked: ${activeMail.title}`)
             });
-
-
+ 
             button.position.set(this.width * 0.2, this.height * 0.8)
+          
             this.contentContainer.addChild(button);
+           
         }
     }
 }
