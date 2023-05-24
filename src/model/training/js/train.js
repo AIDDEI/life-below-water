@@ -10,8 +10,6 @@ function loadData() {
 }
 
 function cleanData(data) {
-  console.table(data);
-
   // haal de data uit de CSV die je nodig hebt, inclusief het label waarop je wil trainen
   // met de filter functie checken we dat de traindata uit nummers bestaat
   const cleanData = data
@@ -19,7 +17,7 @@ function cleanData(data) {
       ph: water.ph,
       solids: water.Solids,
       sulfate: water.Sulfate,
-      potability: water.Potability,
+      potability: water.Potability === 1 ? "potable" : "non-potable",
     }))
     .filter(
       (water) =>
@@ -29,11 +27,10 @@ function cleanData(data) {
         water.potability !== null &&
         typeof water.ph === "number" &&
         typeof water.solids === "number" &&
-        typeof water.sulfate === "number" &&
-        typeof water.potability === "number"
+        typeof water.sulfate === "number"
     );
-
   cleanData.sort(() => Math.random() - 0.5);
+  console.table(cleanData);
   trainData = cleanData.slice(0, Math.floor(data.length * 0.8));
   testData = cleanData.slice(Math.floor(data.length * 0.8) + 1);
 
@@ -41,7 +38,26 @@ function cleanData(data) {
 }
 
 function createNeuralNetwork(data) {
-  nn = ml5.neuralNetwork({ task: "classification", debug: true });
+  nn = ml5.neuralNetwork({
+    task: "classification",
+    debug: true,
+    layers: [
+      {
+        type: "dense",
+        units: 32,
+        activation: "relu",
+      },
+      {
+        type: "dense",
+        units: 32,
+        activation: "relu",
+      },
+      {
+        type: "dense",
+        activation: "softmax",
+      },
+    ],
+  });
 
   for (let water of data) {
     const inputs = {
@@ -56,7 +72,7 @@ function createNeuralNetwork(data) {
   }
 
   nn.normalizeData();
-  nn.train({ epochs: 32 }, () => classify());
+  nn.train({ epochs: 100 }, () => classify());
 }
 
 // make a classification
