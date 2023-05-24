@@ -17,11 +17,8 @@ export class WaterParam {
 
   constructor(name: string, key: string, value: number, increment: number) {
     this.name = name;
-
     this.key = key;
-
     this.value = value;
-
     this.increment = increment;
 
     // sanity check DEBUG ONLY
@@ -40,6 +37,13 @@ export class WaterParam {
     return { key: this.key, value: this.value };
   }
 
+  /**
+   * function to update the parameter's value.
+   * step is multiplied with parameter's increment value then applied to value.
+   *
+   * @param step number in range -5 to 5 inclusive.
+   *
+   */
   update(step: number) {
     if (step != null && step >= -5 && step <= 5) {
       this.value += this.increment * step;
