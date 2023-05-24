@@ -1,5 +1,17 @@
 import * as PIXI from 'pixi.js';
-
+/**
+ * Class for dynamic buttons
+ *
+ * @param h - height of the button (width is calculated automatically)
+ * @param text - text to be displayed on the button
+ * @param lineColor - color of the border of the button
+ * @param buttonColor - color of the button
+ * @param clickHandler - function to be called when the button is clicked
+ * @example
+ * const button = new Button(50, 'Click me!', 0xFFBD01, 0x336699, () => { console.log('clicked!') }); 
+ * const button = new Button(undefined, 'Click me!', undefined, undefined, () => { console.log('clicked!') }); 
+ *
+ */
 export class Button extends PIXI.Container {
     private button: PIXI.Graphics
     private label: PIXI.Text
@@ -10,6 +22,8 @@ export class Button extends PIXI.Container {
     private lineColor: number
     private buttonColor: number
     private clickHandler?: () => void
+    private cursor: string;
+    private eventMode: string;
 
     constructor(h: number, text: string, lineColor: number = 0xFFBD01, buttonColor: number = 0x336699, clickHandler?: () => void) {
         super();
@@ -23,6 +37,8 @@ export class Button extends PIXI.Container {
         this.buttonColor = buttonColor;
         this.h = h;
         this.clickHandler = clickHandler;
+        this.eventMode = 'static';
+        this.cursor = 'pointer';
         this.initButton();
         this.initLabel();
         this.setupEvents();
@@ -48,9 +64,6 @@ export class Button extends PIXI.Container {
 
 
     private setupEvents(): void {
-        this.eventMode = 'static';
-        this.cursor = 'pointer';
-
         this.onmouseover = () => {
             this.button.tint = 0xC9C9C9;
         }

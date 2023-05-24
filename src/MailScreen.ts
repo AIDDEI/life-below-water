@@ -1,5 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { Button } from './Button';
+import { Game } from './Game';
+import { LobGame } from './LobGame';
 import { MailItem } from './MailItem';
 
 type MailType = {
@@ -26,11 +28,14 @@ export class MailScreen extends PIXI.Container {
     private contentContainer: PIXI.Container;
     private mailContainer: PIXI.Container;
     public mailHeaderIcon: PIXI.Sprite;
+    private game: Game
 
-    constructor(assets: mailAssets) {
+    constructor(assets: mailAssets, game: Game) {
         super();
-        this.x = window.innerWidth / 4;
+        this.game = game;
         this.bg = new PIXI.Sprite(assets.mailbg);
+        // You have toFix() this otherwise you can get blurry text on some resolutions
+        this.x = (window.innerWidth / 2 - this.bg.width / 2).toFixed(0);
         this.mailHeaderIcon = new PIXI.Sprite(assets.mailHeaderIcon);
         this.mailIcon = assets.mailIcon
         this.mailIconUnread = assets.mailIconUnread
@@ -46,6 +51,16 @@ export class MailScreen extends PIXI.Container {
         this.addChild(this.contentContainer);
     }
 
+    /**
+* function to add an e-mail
+* @param title - title of the mail
+* @param description - description of the mail
+* @param type - type of the mail (0 = quest, 1 = after game, can expand)
+* @param forceOpen - if true, the mail will be opened immediately, otherwise it will be marked as unread
+* 
+* Renders the mail screen after adding a new mail
+*
+*/
     public add(title: string, description: string, type: number, forceOpen: boolean = false) {
         const mail = { title, description, type, forceOpen }
         this.mails.push(mail);
@@ -118,15 +133,15 @@ export class MailScreen extends PIXI.Container {
             contentText.position.set(this.contentContainer.x + 20, emailText.y + emailText.height + 30);
 
             // Add the content to the content container
-            this.contentContainer.addChild(contentIcon);
-            this.contentContainer.addChild(contentTitle);
-            this.contentContainer.addChild(contentText);
-            this.contentContainer.addChild(emailText);
+            this.contentContainer.addChild(contentIcon, contentTitle, emailText, contentText);
 
             // Make a switch depending on mail type, in the future maybe move this
             const button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
                 console.log('Button clicked!');
                 alert(`Button clicked: ${activeMail.title}`);
+                this.visible = false;
+
+                this.game.startGame();
             });
 
             button.position.set(this.contentContainer.x + 20, this.contentContainer.height);

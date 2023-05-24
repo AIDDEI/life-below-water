@@ -55,7 +55,7 @@ export class MailItem extends PIXI.Container {
         this.addChild(descText);
 
         const indicatorText = this.mailIcon
-        indicatorText.pivot.set(0.5);
+
         indicatorText.scale.set(0.6);
         indicatorText.position.set(this.width - 10, 6);
         this.addChild(indicatorText);
@@ -66,6 +66,8 @@ export class MailItem extends PIXI.Container {
         line.drawRect(0, 59, this.width, 1);
         line.endFill();
         this.addChild(line);
+
+
 
     }
 }
