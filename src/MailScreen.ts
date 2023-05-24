@@ -46,18 +46,23 @@ export class MailScreen extends PIXI.Container {
         this.addChild(this.contentContainer);
     }
 
+    /**
+ * function to add an e-mail
+  * @param title - title of the mail
+  * @param description - description of the mail
+  * @param type - type of the mail (0 = quest, 1 = after game, can expand)
+  * @param forceOpen - if true, the mail will be opened immediately, otherwise it will be marked as unread
+  * 
+  * Renders the mail screen after adding a new mail
+ *
+ */
     public add(title: string, description: string, type: number, forceOpen: boolean = false) {
         const mail = { title, description, type, forceOpen }
         this.mails.push(mail);
         this._renderMails();
     }
 
-
-    public get mailCount(): number {
-        return this._mails.length;
-    }
-
-    public get mails(): MailType[] {
+    private get mails(): MailType[] {
         return this._mails;
     }
 

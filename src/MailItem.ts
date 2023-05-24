@@ -18,18 +18,13 @@ export class MailItem extends PIXI.Container {
         this.read = read;
         this.mailIcon = this.read ? new PIXI.Sprite(mailIcon) : new PIXI.Sprite(mailIconUnread);
         this.active = active;
-        this.setActiveMail = setActiveMail;
-        this.initButton()
-
+        this.cursor = this.read ? 'regular' : 'pointer'
+        this.eventMode = 'static'
+        this.onclick = () => { setActiveMail() }
+        this.initButton();
     }
 
     private initButton(): void {
-        this.cursor = this.read ? 'regular' : 'pointer'
-        this.eventMode = 'static'
-        this.onclick = () => {
-            this.setActiveMail()
-        }
-
         const background = new PIXI.Graphics();
         background.beginFill(0xffffff);
         background.drawRect(0, 0, 225, 60);
@@ -51,7 +46,6 @@ export class MailItem extends PIXI.Container {
         if (descText.width > 27) {
             descText.text = descText.text.substring(0, 27) + '...';
         }
-
         this.addChild(descText);
 
         const indicatorText = this.mailIcon
