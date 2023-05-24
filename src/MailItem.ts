@@ -8,12 +8,15 @@ export class MailItem extends PIXI.Container {
     read?: boolean
     active?: boolean
     setActiveMail: () => void
+    mailIcon: PIXI.Sprite;
+    mailIconUnread: PIXI.Sprite;
 
-    constructor(title: string, description: string, read = false, active = false, setActiveMail: () => void) {
+    constructor(title: string, description: string, read = false, active = false, setActiveMail: () => void, mailIcon: PIXI.Texture, mailIconUnread: PIXI.Texture) {
         super();
         this.title = title;
         this.description = description;
         this.read = read;
+        this.mailIcon = this.read ? new PIXI.Sprite(mailIcon) : new PIXI.Sprite(mailIconUnread);
         this.active = active;
         this.setActiveMail = setActiveMail;
         this.initButton()
@@ -34,7 +37,7 @@ export class MailItem extends PIXI.Container {
         this.addChild(background);
 
         const titleStyle = new PIXI.TextStyle({
-            fill: 'blue',
+            fill: 'black',
             fontSize: 16,
             fontWeight: this.active ? 'bold' : 'normal',
         });
@@ -43,17 +46,26 @@ export class MailItem extends PIXI.Container {
         titleText.position.set(10, 10);
         this.addChild(titleText);
 
-        const descText = new PIXI.Text(this.description, { fill: 'blue', fontSize: 14 });
-        descText.position.set(10, 30);
-        if (descText.width > 30) {
-            descText.text = descText.text.substring(0, 30) + '...';
+        const descText = new PIXI.Text(this.description, { fill: 'black', fontSize: 14 });
+        descText.position.set(10, titleText.height + 15);
+        if (descText.width > 27) {
+            descText.text = descText.text.substring(0, 27) + '...';
         }
+
         this.addChild(descText);
 
-        if (!this.read) {
-            const indicatorText = new PIXI.Text('Nieuw!', { fill: 'red', fontSize: 14 });
-            indicatorText.position.set(175, 10);
-            this.addChild(indicatorText);
-        }
+        const indicatorText = this.mailIcon
+        indicatorText.pivot.set(0.5);
+        indicatorText.scale.set(0.6);
+        indicatorText.position.set(this.width - 10, 6);
+        this.addChild(indicatorText);
+
+        // put a gray line between each mail item
+        const line = new PIXI.Graphics();
+        line.beginFill(0xaaaaaa);
+        line.drawRect(0, 59, this.width, 1);
+        line.endFill();
+        this.addChild(line);
+
     }
 }
