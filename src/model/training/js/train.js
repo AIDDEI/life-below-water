@@ -14,19 +14,19 @@ function cleanData(data) {
   // met de filter functie checken we dat de traindata uit nummers bestaat
   const cleanData = data
     .map((water) => ({
-      ph: water.ph,
-      solids: water.Solids,
+      organicCarbons: water.Organic_carbon,
+      trihalomethanes: water.Trihalomethanes,
       sulfate: water.Sulfate,
       potability: water.Potability === 1 ? "potable" : "non-potable",
     }))
     .filter(
       (water) =>
-        water.ph !== null &&
-        water.solids !== null &&
+        water.organicCarbons !== null &&
+        water.trihalomethanes !== null &&
         water.sulfate !== null &&
         water.potability !== null &&
-        typeof water.ph === "number" &&
-        typeof water.solids === "number" &&
+        typeof water.organicCarbons === "number" &&
+        typeof water.trihalomethanes === "number" &&
         typeof water.sulfate === "number"
     );
   cleanData.sort(() => Math.random() - 0.5);
@@ -61,8 +61,8 @@ function createNeuralNetwork(data) {
 
   for (let water of data) {
     const inputs = {
-      ph: water.ph,
-      solids: water.solids,
+      organicCarbons: water.organicCarbons,
+      trihalomethanes: water.trihalomethanes,
       sulfate: water.sulfate,
     };
     const output = {
@@ -77,7 +77,7 @@ function createNeuralNetwork(data) {
 
 // make a classification
 function classify() {
-  const input = { ph: 4, Solids: 2000, Sulfate: 300 };
+  const input = { organicCarbons: 15, trihalomethanes: 105, Sulfate: 300 };
 
   nn.classify(input, (error, result) => {
     console.log(result);
@@ -92,7 +92,7 @@ function classify() {
 async function classify() {
   console.log("done training!");
 
-  const inputs = { ph: 4, Solids: 2000, Sulfate: 300 };
+  const inputs = { organicCarbons: 4, trihalomethanes: 2000, Sulfate: 300 };
   const result = await nn.classify(inputs);
   console.log(
     `Potable: ${result[0].label} - Confidence ${(
@@ -108,8 +108,8 @@ async function getAccuracy() {
 
   for (let water of testData) {
     const inputs = {
-      ph: water.ph,
-      solids: water.solids,
+      organicCarbons: water.organicCarbons,
+      trihalomethanes: water.trihalomethanes,
       sulfate: water.sulfate,
     };
     const result = await nn.classify(inputs);
@@ -126,6 +126,10 @@ async function getAccuracy() {
       testData.length
     }, dit is ${((correctPredictions / testData.length) * 100).toFixed(2)} %`
   );
+}
+
+function save() {
+  nn.save();
 }
 
 loadData();
