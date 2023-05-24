@@ -18,7 +18,7 @@ export class WaterParam {
   constructor(name: string, key: string, value: number, increment: number) {
     this.name = name;
     this.key = key;
-    this.value = value;
+    this.value = value >= 0 ? value : 0;
     this.increment = increment;
 
     // sanity check DEBUG ONLY

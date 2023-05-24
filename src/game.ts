@@ -32,8 +32,8 @@ export class Game {
     this.pixi.stage.addChild(this.player);
 
     // PARAM TESTING DEBUG ONLY
-    this.waterParamA = new WaterParam("Parameter A", "parameter_a", 10, 1);
-    this.waterParamA.update(-1);
+    this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
+    this.waterParamA.update(-6);
     console.log(this.waterParamA.getKeyValue());
   }
 }
