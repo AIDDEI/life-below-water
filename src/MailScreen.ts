@@ -118,10 +118,7 @@ export class MailScreen extends PIXI.Container {
             contentText.position.set(this.contentContainer.x + 20, emailText.y + emailText.height + 30);
 
             // Add the content to the content container
-            this.contentContainer.addChild(contentIcon);
-            this.contentContainer.addChild(contentTitle);
-            this.contentContainer.addChild(contentText);
-            this.contentContainer.addChild(emailText);
+            this.contentContainer.addChild(contentIcon, contentTitle, contentText, emailText);
 
             // Make a switch depending on mail type, in the future maybe move this
             const button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
