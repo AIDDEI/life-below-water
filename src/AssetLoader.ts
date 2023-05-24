@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js"
-import { Game } from "./Game"
+import { Game } from "./game"
 
 import sharkImage from "./images/dino.png"
 import { Player } from "./Player"

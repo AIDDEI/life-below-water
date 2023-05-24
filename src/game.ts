@@ -2,6 +2,7 @@
 import * as PIXI from 'pixi.js';
 import { AssetLoader } from './AssetLoader';
 import { Player } from './Player';
+import { NewGame } from './NewGame';
 
 export class Game {
     public pixi: PIXI.Application
@@ -9,6 +10,7 @@ export class Game {
     public player: Player
     private gameTexture: PIXI.Texture
     private officeAssets: PIXI.Texture
+    public newgame : NewGame
 
     constructor() {
         this.pixi = new PIXI.Application()
@@ -27,6 +29,10 @@ export class Game {
 
         this.player = new Player(this.gameTexture)
         this.pixi.stage.addChild(this.player)
+
+        this.newgame = new NewGame();
+        this.pixi.stage.addChild(this.newgame);
+
     }
 }
 
