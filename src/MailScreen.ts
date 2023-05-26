@@ -29,26 +29,40 @@ export class MailScreen extends PIXI.Container {
     private mailContainer: PIXI.Container;
     public mailHeaderIcon: PIXI.Sprite;
     private game: Game
+    bgContainer: any;
 
     constructor(assets: mailAssets, game: Game) {
         super();
         this.game = game;
         this.bg = new PIXI.Sprite(assets.mailbg);
         // You have toFix() this otherwise you can get blurry text on some resolutions
-        this.x = (window.innerWidth / 2 - this.bg.width / 2).toFixed(0);
         this.mailHeaderIcon = new PIXI.Sprite(assets.mailHeaderIcon);
         this.mailIcon = assets.mailIcon
         this.mailIconUnread = assets.mailIconUnread
         this.visible = true;
         this._mails = [];
+        console.log(this.scale.x, this.scale.y)
+        console.log(this.game.pixi.renderer.width * (1 - this.scale.x))
+
+        this.width = window.innerWidth
+        this.height = window.innerHeight
         this.activeEmail = -1;
+        this.bgContainer = new PIXI.Container();
+        this.bgContainer.addChild(this.bg);
         this.mailContainer = new PIXI.Container();
         this.mailContainer.position.set(50, 150);
+        this.bgContainer.scale.set(Math.min(window.innerWidth / this.game.pixi.view.width, window.innerHeight / this.game.pixi.view.height))
+        this.x = window.innerWidth / 2
+
         this.contentContainer = new PIXI.Container();
         this.contentContainer.position.set(175, 75);
-        this.addChild(this.bg);
-        this.addChild(this.mailContainer);
-        this.addChild(this.contentContainer);
+        this.bgContainer.addChild(this.bgContainer);
+        this.bgContainer.addChild(this.mailContainer);
+        this.bgContainer.addChild(this.contentContainer);
+        this.addChild(this.bgContainer);
+
+        this.bgContainer.x = -this.bgContainer.width / 2
+
     }
 
     /**
@@ -147,6 +161,7 @@ export class MailScreen extends PIXI.Container {
             button.position.set(this.contentContainer.x + 20, this.contentContainer.height);
 
             this.contentContainer.addChild(button);
+            console.log(this.getBounds())
         }
     }
 }

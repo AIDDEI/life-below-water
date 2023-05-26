@@ -17,10 +17,17 @@ export class Game {
     private lobAssets: PIXI.Texture[];
 
     constructor() {
-        PIXI.settings.RESOLUTION = window.devicePixelRatio;
+        PIXI.settings.ROUND_PIXELS = true
+        PIXI.settings.RESOLUTION = window.devicePixelRatio
+
         // full screen application
-        this.pixi = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight - 50, antialias: false })
-        window.addEventListener('resize', () => { this.pixi.renderer.resize(window.innerWidth, window.innerHeight - 50) })
+        this.pixi = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight - 50, autoDensity: true, resolution: window.devicePixelRatio })
+
+        window.addEventListener('resize', () => {
+            this.pixi.renderer.resize(window.innerWidth, window.innerHeight - 50)
+
+        })
+
         document.body.appendChild(this.pixi.view as HTMLCanvasElement)
         // Load images
         this.loader = new AssetLoader(this)

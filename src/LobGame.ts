@@ -17,16 +17,18 @@ export class LobGame extends PIXI.Container {
         super()
         this.x = 0
         this.y = 0
+        this.game = game
         this.bg = new PIXI.Sprite(assets.lobbg)
-        this.bg.scale.set(0.5)
+        this.bg.width = 750
+
         this.bg.height = window.innerHeight
         this.bg.position.set(window.innerWidth / 2 - this.bg.width / 2, 0)
         this.hitArea = new PIXI.Rectangle(this.bg.x, this.bg.height - 250, this.bg.width, 250);
         this.catcher = new PIXI.Sprite(assets.catcher)
         this.catcher.anchor.set(0.5)
-        this.catcher.scale.set(0.25)
+        this.catcher.width = this.catcher.width * 0.25
+        this.catcher.height = this.catcher.height * 0.25
         this.catcher.rotation = 1.5
-        this.game = game
         this.eventMode = 'static';
         this.cursor = 'pointer';
 
