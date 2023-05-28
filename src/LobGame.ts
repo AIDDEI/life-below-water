@@ -22,42 +22,56 @@ export class LobGame extends PIXI.Container {
     private scoreContainer: any;
     private SCORELIMIT: number = 3;
     private livesContainer: PIXI.Container;
+    private bg: PIXI.Sprite;
+    instructions: PIXI.Sprite;
 
 
     constructor(assets: AssetType, game: Game) {
         super();
         this.assets = assets;
-        PIXI.settings.RESOLUTION = window.devicePixelRatio;
         this.game = game;
+        this.y = 0;
+        this.bg = new PIXI.Sprite(assets.lobbg);
+        this.bg.width = this.game.pixi.screen.width;
+        this.bg.height = this.game.pixi.screen.height;
+        this.addChild(this.bg);
         this.water = new PIXI.Sprite(assets.water);
         this.water.width = 500;
         this.water.height = this.game.pixi.screen.height;
         this.water.x = this.game.pixi.screen.width / 2 - this.water.width / 2;
         this.waterContainer = new PIXI.Container();
-        this.addChild(this.waterContainer);
-        this.waterContainer.addChild(this.water);
         this.waterContainer.eventMode = "static";
         this.waterContainer.cursor = "pointer";
         this.waterContainer.hitArea = new PIXI.Rectangle(this.water.position.x, this.water.height - 140, this.water.width, 140);
-        this.y = 0;
         this.hitArea = new PIXI.Rectangle(0, 0, window.innerWidth, window.innerHeight);
         this.catcher = new PIXI.Sprite(assets.catcher);
         this.catcher.anchor.x = 0.6;
         this.toggle = new PIXI.Graphics();
         this.livesContainer = new PIXI.Container()
-        this.addChild(this.livesContainer)
         this.eventMode = "auto";
         this.cursor = "pointer";
         this.scoreContainer = new PIXI.Container();
-        this.addChild(this.scoreContainer);
+        this.addChild(this.waterContainer, this.livesContainer, this.scoreContainer);
+        this.waterContainer.addChild(this.water);
         this._setupItems();
         this._setupEvents();
         this._setupFilter();
         this._setupLobsters();
         this._setupScore();
-        this.addChild(this.toggle);
+        this._setupInstructions();
         this._setupToggle();
         this._renderLives()
+        this.addChild(this.toggle);
+
+    }
+
+    private _setupInstructions(): void {
+        this.instructions = new PIXI.Sprite(this.assets.instructions);
+        this.instructions.x = 10
+        this.instructions.rotation = -0.1
+        this.instructions.y = 100
+        this.instructions.scale.set(0.95);
+        this.addChild(this.instructions);
     }
 
     private _setupScore(): void {

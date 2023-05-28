@@ -6,11 +6,12 @@ import mailIcon from "./images/mail.png"
 import mailIconUnread from "./images/mailUnread.png"
 import mailHeaderIcon from "./images/mailheaderIcon.png"
 import rod from "./images/rod.png"
-import lobBg from "./images/water.png"
+import lobBg from "./images/grass.png"
 import water from "./images/water.jpg"
 import displacement from "./images/displacement.jpg"
 import lobster from "./images/lobster.png"
 import heart from "./images/heart.png"
+import instructions from "./images/instructions.png"
 
 export class AssetLoader {
 
@@ -52,7 +53,8 @@ export class AssetLoader {
             'water': water,
             'displacement': displacement,
             'lobster': lobster,
-            'heart': heart
+            'heart': heart,
+            'instructions': instructions
         });
     }
 
