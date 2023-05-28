@@ -13,6 +13,7 @@ export class MailItem extends PIXI.Container {
 
     constructor(title: string, description: string, read = false, active = false, setActiveMail: () => void, mailIcon: PIXI.Texture, mailIconUnread: PIXI.Texture) {
         super();
+        PIXI.settings.RESOLUTION = window.devicePixelRatio;
         this.title = title;
         this.description = description;
         this.read = read;

@@ -1,8 +1,7 @@
 import * as PIXI from 'pixi.js';
-import { Button } from './Button';
-import { Game } from './Game';
-import { LobGame } from './LobGame';
+import { AssetType, Game } from './game';
 import { MailItem } from './MailItem';
+import { ActiveMail } from './ActiveMail';
 
 type MailType = {
     forceOpen: any;
@@ -10,13 +9,6 @@ type MailType = {
     description: string,
     type: number
     read?: boolean,
-}
-
-type mailAssets = {
-    mailbg: PIXI.Texture,
-    mailIcon: PIXI.Texture,
-    mailIconUnread: PIXI.Texture,
-    mailHeaderIcon: PIXI.Texture,
 }
 
 export class MailScreen extends PIXI.Container {
@@ -31,37 +23,30 @@ export class MailScreen extends PIXI.Container {
     private game: Game
     bgContainer: any;
 
-    constructor(assets: mailAssets, game: Game) {
+    constructor(assets: AssetType, game: Game) {
         super();
         this.game = game;
         this.bg = new PIXI.Sprite(assets.mailbg);
-        // You have toFix() this otherwise you can get blurry text on some resolutions
+        // scale background to fit the pixi app and resolution
+        this.bg.width = this.game.pixi.screen.width;
+        this.bg.height = this.game.pixi.screen.height;
         this.mailHeaderIcon = new PIXI.Sprite(assets.mailHeaderIcon);
         this.mailIcon = assets.mailIcon
         this.mailIconUnread = assets.mailIconUnread
         this.visible = true;
         this._mails = [];
-        console.log(this.scale.x, this.scale.y)
-        console.log(this.game.pixi.renderer.width * (1 - this.scale.x))
-
-        this.width = window.innerWidth
-        this.height = window.innerHeight
         this.activeEmail = -1;
         this.bgContainer = new PIXI.Container();
         this.bgContainer.addChild(this.bg);
         this.mailContainer = new PIXI.Container();
-        this.mailContainer.position.set(50, 150);
-        this.bgContainer.scale.set(Math.min(window.innerWidth / this.game.pixi.view.width, window.innerHeight / this.game.pixi.view.height))
-        this.x = window.innerWidth / 2
-
+        this.mailContainer.position.set(35, 125);
         this.contentContainer = new PIXI.Container();
-        this.contentContainer.position.set(175, 75);
+        this.contentContainer.position.set(165, 65);
         this.bgContainer.addChild(this.bgContainer);
         this.bgContainer.addChild(this.mailContainer);
         this.bgContainer.addChild(this.contentContainer);
         this.addChild(this.bgContainer);
 
-        this.bgContainer.x = -this.bgContainer.width / 2
 
     }
 
@@ -90,7 +75,7 @@ export class MailScreen extends PIXI.Container {
         return this._mails;
     }
 
-    private setActiveMail(index) {
+    private setActiveMail(index: number) {
         if (index >= 0 && index < this.mails.length && index !== this.activeEmail && !this.mails[index].read) {
             this.mails[index].read = true;
             this.activeEmail = index;
@@ -107,14 +92,16 @@ export class MailScreen extends PIXI.Container {
         // Render all mails
         this.mails.forEach((mail, index) => {
             if (mail.forceOpen) {
-                this.activeEmail = index;
+                this.setActiveMail(index);
                 mail.read = true;
                 mail.forceOpen = false;
             }
             const mailItem = new MailItem(mail.title, mail.description, mail.read, (index === this.activeEmail), () => { this.setActiveMail(index) }, this.mailIcon, this.mailIconUnread);
 
-            mailItem.position.set(0, index * 70);
-            this.mailContainer.addChild(mailItem);
+            // add the mail item to the mail container in reverse order and set the position
+            mailItem.position.set(0, (this.mails.length - 1 - index) * 70);
+            this.mailContainer.addChildAt(mailItem, 0);
+
         });
 
         // Render active mail
@@ -124,44 +111,9 @@ export class MailScreen extends PIXI.Container {
         const activeMail = this.mails[this.activeEmail];
 
         if (activeMail) {
-            // The gray box
-            const background = new PIXI.Graphics();
-            background.beginFill(0xf0f0f0);
-            background.drawRect(this.contentContainer.x, this.contentContainer.y, 600, 500);
-            background.endFill();
-            this.contentContainer.addChild(background);
+            const activeMailContainer = new ActiveMail(activeMail, this.mailHeaderIcon, this.game, this);
 
-            // The content of the e-mail
-            const contentIcon = this.mailHeaderIcon;
-            contentIcon.scale.set(0.65);
-            const contentTitle = new PIXI.Text(activeMail.title, { fill: 'black', fontSize: 40 });
-            const emailText = new PIXI.Text("Van: neeldert@waterschappen.nl \nNaar: jou", { fill: 'black', fontSize: 15 });
-            const contentText = new PIXI.Text(activeMail.description, { fill: 'blue', fontSize: 18 });
-            contentText.style.wordWrap = true;
-            contentText.style.wordWrapWidth = background.width - 25;
-
-            // Set the position of the content relative to the content container and items inside of it
-            contentIcon.position.set(this.contentContainer.x + 15, this.contentContainer.y + 10);
-            contentTitle.position.set(this.contentContainer.x + 15 + contentIcon.width + 5, contentIcon.y + 20);
-            emailText.position.set(this.contentContainer.x + 20, contentTitle.y + contentTitle.height + 20);
-            contentText.position.set(this.contentContainer.x + 20, emailText.y + emailText.height + 30);
-
-            // Add the content to the content container
-            this.contentContainer.addChild(contentIcon, contentTitle, emailText, contentText);
-
-            // Make a switch depending on mail type, in the future maybe move this
-            const button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
-                console.log('Button clicked!');
-                alert(`Button clicked: ${activeMail.title}`);
-                this.visible = false;
-
-                this.game.startGame();
-            });
-
-            button.position.set(this.contentContainer.x + 20, this.contentContainer.height);
-
-            this.contentContainer.addChild(button);
-            console.log(this.getBounds())
+            this.contentContainer.addChild(activeMailContainer);
         }
     }
 }

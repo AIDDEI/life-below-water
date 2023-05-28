@@ -22,8 +22,7 @@ export class Button extends PIXI.Container {
     private lineColor: number
     private buttonColor: number
     private clickHandler?: () => void
-    private cursor: string;
-    private eventMode: string;
+
 
     constructor(h: number, text: string, lineColor: number = 0xFFBD01, buttonColor: number = 0x336699, clickHandler?: () => void) {
         super();
@@ -62,7 +61,6 @@ export class Button extends PIXI.Container {
         this.addChild(this.label);
     }
 
-
     private setupEvents(): void {
         this.onmouseover = () => {
             this.button.tint = 0xC9C9C9;
@@ -73,7 +71,8 @@ export class Button extends PIXI.Container {
         }
 
         if (this.clickHandler) {
-            this.onclick = function () {
+            this.onclick = () => {
+                // @ts-expect-error Check if clickHandler is defined
                 this.clickHandler();
             }
         }

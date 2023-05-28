@@ -1,89 +1,294 @@
-import * as PIXI from 'pixi.js'
-import { Filter, Graphics } from 'pixi.js'
-import { Game } from './Game'
+import * as PIXI from "pixi.js";
+import { AssetType, Game } from "./game";
+import { Lobster } from "./Lobster";
+import { collision } from "./Utils";
+
 
 export class LobGame extends PIXI.Container {
-    private container: PIXI.Container
-    public catcher: PIXI.Sprite
-    private eventMode: string
-    public hitArea: PIXI.Rectangle
-    private cursor: string
-    private direction: number = 0
-    private game: Game
-    private bg: PIXI.Sprite
-    private netbox: PIXI.Graphics
+    public catcher: PIXI.Sprite;
+    public hitArea: PIXI.Rectangle;
+    private accelleration: number = 0;
+    private game: Game;
+    private score: number = 0;
+    public lobsters: Lobster[] = [];
+    private netbox: PIXI.Graphics;
+    private displacement: PIXI.Sprite;
+    private displacementFilter: PIXI.DisplacementFilter;
+    private water: PIXI.Sprite;
+    private toggle: any;
+    private waterContainer: any;
+    private lives: number = 3;
+    private assets: AssetType;
+    private scoreContainer: any;
+    private SCORELIMIT: number = 3;
+    private livesContainer: PIXI.Container;
 
-    constructor(assets: { [key: string]: PIXI.Texture }, game: Game) {
-        super()
-        this.x = 0
-        this.y = 0
-        this.game = game
-        this.bg = new PIXI.Sprite(assets.lobbg)
-        this.bg.width = 750
 
-        this.bg.height = window.innerHeight
-        this.bg.position.set(window.innerWidth / 2 - this.bg.width / 2, 0)
-        this.hitArea = new PIXI.Rectangle(this.bg.x, this.bg.height - 250, this.bg.width, 250);
-        this.catcher = new PIXI.Sprite(assets.catcher)
-        this.catcher.anchor.set(0.5)
-        this.catcher.width = this.catcher.width * 0.25
-        this.catcher.height = this.catcher.height * 0.25
-        this.catcher.rotation = 1.5
-        this.eventMode = 'static';
-        this.cursor = 'pointer';
+    constructor(assets: AssetType, game: Game) {
+        super();
+        this.assets = assets;
+        PIXI.settings.RESOLUTION = window.devicePixelRatio;
+        this.game = game;
+        this.water = new PIXI.Sprite(assets.water);
+        this.water.width = 500;
+        this.water.height = this.game.pixi.screen.height;
+        this.water.x = this.game.pixi.screen.width / 2 - this.water.width / 2;
+        this.waterContainer = new PIXI.Container();
+        this.addChild(this.waterContainer);
+        this.waterContainer.addChild(this.water);
+        this.waterContainer.eventMode = "static";
+        this.waterContainer.cursor = "pointer";
+        this.waterContainer.hitArea = new PIXI.Rectangle(this.water.position.x, this.water.height - 140, this.water.width, 140);
+        this.y = 0;
+        this.hitArea = new PIXI.Rectangle(0, 0, window.innerWidth, window.innerHeight);
+        this.catcher = new PIXI.Sprite(assets.catcher);
+        this.catcher.anchor.x = 0.6;
+        this.toggle = new PIXI.Graphics();
+        this.livesContainer = new PIXI.Container()
+        this.addChild(this.livesContainer)
+        this.eventMode = "auto";
+        this.cursor = "pointer";
+        this.scoreContainer = new PIXI.Container();
+        this.addChild(this.scoreContainer);
+        this._setupItems();
+        this._setupEvents();
+        this._setupFilter();
+        this._setupLobsters();
+        this._setupScore();
+        this.addChild(this.toggle);
+        this._setupToggle();
+        this._renderLives()
+    }
 
-        window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e))
-        window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e))
-        this.setupItems()
-        this.setupEvents()
+    private _setupScore(): void {
+        const score = new PIXI.Text(`Score: 0 / ${this.SCORELIMIT}`, {
+            fontFamily: "Arial",
+            fontSize: 24,
+            fill: "white",
+            align: "center",
+        });
+        score.anchor.set(0.5);
+        score.x = this.game.pixi.screen.width / 2;
+        score.y = 20;
+        this.scoreContainer.addChild(score);
+    }
+
+    private _renderLives() {
+        this.livesContainer.removeChildren()
+        for (let i = 0; i < this.lives; i++) {
+            const heart = new PIXI.Sprite(this.assets.heart)
+            heart.scale.set(0.25)
+            heart.x = this.water.x + heart.width * i
+            heart.y = 0
+            heart.position.set(heart.width * i, this.scoreContainer.height)
+            this.livesContainer.addChild(heart)
+        }
+
+        this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreContainer.height - 20)
+    }
+
+    private updateScore(): void {
+        const score = this.scoreContainer.children[0] as PIXI.Text;
+        score.text = `Score: ${this.score} / ${this.SCORELIMIT}`;
+    }
+
+    private _setupToggle(): void {
+        this.toggle.eventMode = "static";
+        this.toggle.cursor = "pointer";
+        this.toggle.beginFill(0xffffff);
+        this.toggle.drawRect(0, 0, 25, 25);
+        this.toggle.endFill();
+
+        // text with "Stop filters"
+        const text = new PIXI.Text("Zet filters uit", {
+            fontFamily: "Arial",
+            fontSize: 12,
+            fill: "white",
+            align: "center",
+        });
+        text.anchor.set(0.5);
+
+        text.x = this.toggle.x - this.toggle.width - 15;
+        text.y = 10;
+        this.toggle.addChild(text);
+
+        this.toggle.hitArea = this.toggle.getBounds();
+
+        const cross = new PIXI.Graphics();
+        cross.lineStyle(2, 0xff0000);
+        cross.moveTo(0, 0);
+        cross.lineTo(25, 25);
+        cross.moveTo(25, 0);
+        cross.lineTo(0, 25);
+        this.toggle.addChild(cross);
+
+        this.toggle.x = this.game.pixi.screen.width - 30;
+        this.toggle.y = 10;
     }
 
     private onKeyDown(e: KeyboardEvent): void {
         if (e.key === "ArrowLeft") {
-            this.direction = -5
+            this.accelleration = -5;
         }
         if (e.key === "ArrowRight") {
-            this.direction = 5
+            this.accelleration = 5;
         }
     }
 
     private onKeyUp(e: KeyboardEvent): void {
-        this.direction = 0
+        this.accelleration = 0;
+    }
+
+    public takeLive(): void {
+        this.lives--;
+        this._renderLives()
     }
 
     public update(delta: number) {
-        if (this.catcher.x + this.direction < this.hitArea.x + this.hitArea.width && this.netbox.getBounds().left + this.direction > this.hitArea.x) {
-            this.catcher.x = this.catcher.x + this.direction;
-            this.netbox.x = this.catcher.x + this.direction;
+        this.displacement.y++;
+
+        if (this.lives < 1 || this.score >= this.SCORELIMIT) {
+            const reason = this.lives < 1 ? 0 : 1
+            this.game.endLobGame(this.score, reason);
+        }
+
+        for (let lobster of this.lobsters) {
+            lobster.update(delta);
+
+            if (collision(this.netbox, lobster)) {
+                if (lobster.isLob) {
+                    this.score++;
+                } else {
+                    this.takeLive();
+                }
+
+                lobster.onHit()
+
+                this.updateScore();
+            }
+        }
+
+        if (this.displacement.x > this.displacement.width) this.displacement.x = 0;
+
+        // left side boundery of the field
+        if (this.catcher.x + this.accelleration > this.waterContainer.getBounds().left) {
+            this.catcher.x = this.catcher.x + this.accelleration * delta;
+            this.netbox.x = this.catcher.x
+        }
+
+        // if catcher is at the right side of the field (right side of hitbox hits the edge of the field)
+        if (this.catcher.x + this.accelleration > this.waterContainer.getBounds().right - this.netbox.width) {
+            this.catcher.x = this.waterContainer.getBounds().right - this.netbox.width
+            this.netbox.x = this.waterContainer.getBounds().right - this.netbox.width
+        }
+
+
+    }
+
+    private _setupFilter(): void {
+        this.displacement = new PIXI.Sprite(this.assets.displacement);
+        this.displacementFilter = new PIXI.DisplacementFilter(this.displacement);
+        this.displacement.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+        this.waterContainer.filters = [this.displacementFilter];
+        this.displacement.scale.set(0.5);
+        this.addChild(this.displacement);
+    }
+
+    private toggleFilter(): void {
+        const text = this.toggle.getChildAt(0) as PIXI.Text;
+
+        if (this.waterContainer.filters.length > 0) {
+            this.waterContainer.filters = [];
+        } else {
+            this.waterContainer.filters = [this.displacementFilter];
+        }
+
+        if (this.waterContainer.filters.length > 0) {
+            const cross = new PIXI.Graphics();
+            // red cross
+            cross.lineStyle(2, 0xff0000);
+            cross.moveTo(0, 0);
+            cross.lineTo(25, 25);
+            cross.moveTo(25, 0);
+            cross.lineTo(0, 25);
+            this.toggle.addChild(cross);
+            text.text = "Zet filters uit";
+        } else {
+            this.toggle.removeChildAt(1);
+            text.text = "Zet filters aan";
         }
     }
 
-    private setupItems(): void {
+    private _setupItems(): void {
         //color the netbox
         this.netbox = new PIXI.Graphics()
             .beginFill(0x000000)
-            .drawRect(this.catcher.x + 12, this.catcher.y - 55, this.catcher.width * 0.5, 30)
-            .endFill()
-        this.netbox.alpha = 0.5
+            .drawRect(
+                0,
+                this.waterContainer.hitArea.y - this.catcher.height / 2 + 50 + 38,
+                this.catcher.width / 2 - 30,
+                30
+            )
+            .endFill();
+        this.netbox.alpha = 0.5;
 
-        // draw hitarea 
+        // draw hitarea
         const hitArea = new PIXI.Graphics()
-            .beginFill(0xFFFFFF)
-            .drawRect(this.hitArea.x, this.hitArea.y, this.hitArea.width, this.hitArea.height)
-            .endFill()
-        hitArea.alpha = 0.5
+            .beginFill(0xffffff)
+            .drawRect(
+                this.waterContainer.hitArea.x,
+                this.waterContainer.hitArea.y,
+                this.waterContainer.hitArea.width,
+                this.waterContainer.hitArea.height
+            )
+            .endFill();
+        hitArea.alpha = 0.5;
 
-        this.catcher.position.set(window.innerWidth / 2, this.hitArea.y + this.hitArea.height / 2)
-        this.netbox.position.set(1500, this.catcher.y)
+        this.catcher.y = this.waterContainer.hitArea.y - this.catcher.height / 2 + 50;
 
-        this.addChild(this.bg, hitArea, this.catcher, this.netbox)
+        this.addChild(hitArea, this.catcher, this.netbox);
     }
 
-    private setupEvents(): void {
+    private _setupEvents(): void {
         // Follow the pointer
-        this.on('pointermove', (event) => {
-            this.catcher.x = event.data.global.x
-            this.netbox.x = event.data.global.x
-        })
+        this.waterContainer.on("pointermove", (event: PIXI.FederatedPointerEvent) => {
+            if (event.global.x > this.waterContainer.getBounds().right - this.netbox.width) {
+                this.catcher.x = this.waterContainer.getBounds().right - this.netbox.width
+                this.netbox.x = this.waterContainer.getBounds().right - this.netbox.width
+            } else {
+                this.catcher.x = event.global.x;
+                this.netbox.x = event.global.x;
+            }
+        });
+
+        this.toggle.onclick = () => {
+            console.log("toggle");
+            this.toggleFilter();
+        };
+
+        window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e));
+        window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e));
+    }
+
+    private _setupLobsters(): void {
+        for (let i = 0; i < 10; i++) {
+            // 2 seconds between each lobster, 7 to 3 catchable ones
+            setTimeout(() => {
+                this.spawnLobster(i % 3 === 0);
+            }, i * 1500 + 1);
+        }
+    }
+
+    private spawnLobster(isLob: boolean): void {
+        const lobster = new Lobster(
+            this.water.position.x + 25,
+            this.water.position.x + this.water.width - 25,
+            this.assets.lobster,
+            isLob,
+            this.takeLive.bind(this),
+            this.game.pixi.screen.height
+        );
+        this.lobsters.push(lobster);
+        this.waterContainer.addChild(lobster);
     }
 }

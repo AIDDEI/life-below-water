@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js"
-import { Game } from "./Game"
-
+import { AssetType, Game } from "./game"
 import sharkImage from "./images/dino.png"
 import mailbg from "./images/screenbg.png"
 import mailIcon from "./images/mail.png"
@@ -8,14 +7,16 @@ import mailIconUnread from "./images/mailUnread.png"
 import mailHeaderIcon from "./images/mailheaderIcon.png"
 import rod from "./images/rod.png"
 import lobBg from "./images/water.png"
-import { Player } from "./Player"
-
+import water from "./images/water.jpg"
+import displacement from "./images/displacement.jpg"
+import lobster from "./images/lobster.png"
+import heart from "./images/heart.png"
 
 export class AssetLoader {
 
     graphics: PIXI.Graphics
     game: Game
-    textures: PIXI.Texture[]
+    textures: AssetType
 
     constructor(game: Game) {
         this.loadAssets()
@@ -48,6 +49,10 @@ export class AssetLoader {
         PIXI.Assets.addBundle('Lobgame', {
             'catcher': rod,
             'lobbg': lobBg,
+            'water': water,
+            'displacement': displacement,
+            'lobster': lobster,
+            'heart': heart
         });
     }
 

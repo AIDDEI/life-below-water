@@ -5,28 +5,23 @@ import { Player } from './Player';
 import { MailScreen } from './MailScreen';
 import { LobGame } from './LobGame';
 
+export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> }
+
+
 export class Game {
     public pixi: PIXI.Application
     private loader: AssetLoader
     public player: Player
-    private gameTexture: PIXI.Texture
     public mail: MailScreen
-    private officeAssets: PIXI.Texture
-    private mailAssets: PIXI.Texture[];
-    public lobGame: LobGame;
-    private lobAssets: PIXI.Texture[];
+    private mailAssets: PIXI.Texture<PIXI.Resource>
+    public lobGame: LobGame | undefined;
+    private lobAssets: PIXI.Texture<PIXI.Resource>
 
     constructor() {
         PIXI.settings.ROUND_PIXELS = true
-        PIXI.settings.RESOLUTION = window.devicePixelRatio
 
         // full screen application
-        this.pixi = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight - 50, autoDensity: true, resolution: window.devicePixelRatio })
-
-        window.addEventListener('resize', () => {
-            this.pixi.renderer.resize(window.innerWidth, window.innerHeight - 50)
-
-        })
+        this.pixi = new PIXI.Application({ autoDensity: true, resolution: window.devicePixelRatio })
 
         document.body.appendChild(this.pixi.view as HTMLCanvasElement)
         // Load images
@@ -34,11 +29,6 @@ export class Game {
     }
 
     async loadCompleted() {
-        console.log("Load completed")
-        console.log(this.loader.textures)
-
-        this.gameTexture = this.loader.textures.Player['flowerTop']
-        this.officeAssets = this.loader.textures.Office
         this.mailAssets = this.loader.textures.MailScreen
         this.lobAssets = this.loader.textures.Lobgame
 
@@ -60,13 +50,21 @@ export class Game {
     update(delta: number) {
         // this.player.update(delta)
         // this.mail.update(delta)
+
         if (this.lobGame) this.lobGame.update(delta)
     }
 
-    public startGame() {
+    public startLobGame() {
         this.lobGame = new LobGame(this.lobAssets, this);
         this.pixi.stage.addChild(this.lobGame);
     }
+
+    public endLobGame(score: number, reason: number): void {
+        if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
+        this.lobGame = undefined;
+        this.mail.visible = true;
+        this.mail.add('Lob lob lob', `End of lob. ${score}`, 0, true);
+    }
 }
 
-new Game();
+new Game();   
