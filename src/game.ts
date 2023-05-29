@@ -16,7 +16,7 @@ export class Game {
 
     constructor() {
         PIXI.settings.ROUND_PIXELS = true
-        
+
         // init game
         this.pixi = new PIXI.Application({ autoDensity: true, resolution: window.devicePixelRatio })
 
@@ -36,7 +36,7 @@ export class Game {
         // this.player = new Player(this.gameTexture)
         // this.pixi.stage.addChild(this.player)
 
-        this.mail = new MailScreen(this.mailAssets)
+        this.mail = new MailScreen(this.mailAssets, this)
         this.pixi.stage.addChild(this.mail)
 
         this.mail.add('Lob lob lob', 'De zomer is aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.', 0, true, 'lob');
