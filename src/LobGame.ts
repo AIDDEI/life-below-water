@@ -1,14 +1,20 @@
 import * as PIXI from "pixi.js";
+import { Button } from "./Button";
 import { AssetType, Game } from "./game";
 import { Lobster } from "./Lobster";
+import { Minigame } from "./Minigame";
 import { collision } from "./Utils";
 
-
-export class LobGame extends PIXI.Container {
+/**
+ * Class for Lob game. Expects a game object and assets object. After game is finished, it will call the callback function in the game class.
+ *
+ * @param game - height of the button (width is calculated automatically)
+ * @param assets - text to be displayed on the button
+ */
+export class LobGame extends Minigame {
     public catcher: PIXI.Sprite;
     public hitArea: PIXI.Rectangle;
     private accelleration: number = 0;
-    private game: Game;
     private score: number = 0;
     public lobsters: Lobster[] = [];
     private netbox: PIXI.Graphics;
@@ -19,26 +25,44 @@ export class LobGame extends PIXI.Container {
     private waterContainer: any;
     private lives: number = 3;
     private assets: AssetType;
-    private scoreContainer: any;
+    private scoreText: PIXI.Text;
     private SCORELIMIT: number = 3;
     private livesContainer: PIXI.Container;
     private bg: PIXI.Sprite;
-    instructions: PIXI.Sprite;
+    private instructions: PIXI.Sprite;
+    private rules: Button;
 
 
     constructor(assets: AssetType, game: Game) {
-        super();
+        super(game);
         this.assets = assets;
         this.game = game;
         this.y = 0;
+        this.active = false;
         this.hitArea = new PIXI.Rectangle(0, 0, window.innerWidth, window.innerHeight);
         this.eventMode = "auto";
-        this.cursor = "pointer";
-        this.bg = new PIXI.Sprite(assets.lobbg);
-        this.bg.width = this.game.pixi.screen.width;
-        this.bg.height = this.game.pixi.screen.height;
-        this.addChild(this.bg);
-        this.water = new PIXI.Sprite(assets.water);
+
+        // Set up UI 
+        this._setupBackground();
+        this._setupWater();
+        this._setupItems();
+        this._setupSideButtons();
+        this._setupEvents();
+        this._setupFilter();
+        this._setupScore();
+        this._setupInstructions();
+        this._setupLiveContainer();
+        // init instructions
+        this.initInstructions(() => { this.startGame() }, "Vang de GROTE kreeften door de muis te bewegen of door de \n<- pijltjestoetsen -> te gebruiken. \n\nJe hebt 3 levens. Je verliest een leven als je een verkeerde kreeft raakt of er een mist. \n\nSucces!");
+    }
+
+    private startGame(): void {
+        this._setupLobsters();
+    }
+
+
+    private _setupWater(): void {
+        this.water = new PIXI.Sprite(this.assets.water);
         this.water.width = 500;
         this.water.height = this.game.pixi.screen.height;
         this.water.x = this.game.pixi.screen.width / 2 - this.water.width / 2;
@@ -46,21 +70,16 @@ export class LobGame extends PIXI.Container {
         this.waterContainer.eventMode = "static";
         this.waterContainer.cursor = "pointer";
         this.waterContainer.hitArea = new PIXI.Rectangle(this.water.position.x, this.water.height - 140, this.water.width, 140);
-        this.catcher = new PIXI.Sprite(assets.catcher);
-        this.catcher.anchor.x = 0.6;
-        this.toggle = new PIXI.Graphics();
-        this.livesContainer = new PIXI.Container()
-        this.scoreContainer = new PIXI.Container();
-        this.addChild(this.waterContainer, this.livesContainer, this.scoreContainer, this.toggle);
+        this.addChild(this.waterContainer);
         this.waterContainer.addChild(this.water);
-        this._setupItems();
-        this._setupEvents();
-        this._setupFilter();
-        this._setupLobsters();
-        this._setupScore();
-        this._setupInstructions();
-        this._setupToggle();
-        this._setupLiveContainer()
+
+    }
+
+    private _setupBackground(): void {
+        this.bg = new PIXI.Sprite(this.assets.lobbg);
+        this.bg.width = this.game.pixi.screen.width;
+        this.bg.height = this.game.pixi.screen.height;
+        this.addChild(this.bg);
     }
 
     private _setupInstructions(): void {
@@ -73,33 +92,37 @@ export class LobGame extends PIXI.Container {
     }
 
     private _setupScore(): void {
-        const score = new PIXI.Text(`Score: 0 / ${this.SCORELIMIT}`, {
+        this.scoreText = new PIXI.Text(`Score: 0 / ${this.SCORELIMIT}`, {
             fontFamily: "Arial",
             fontSize: 24,
             fill: "white",
             align: "center",
         });
-        score.anchor.set(0.5);
-        score.x = this.game.pixi.screen.width / 2;
-        score.y = 20;
-        this.scoreContainer.addChild(score);
+        this.scoreText.anchor.set(0.5);
+        this.scoreText.x = this.game.pixi.screen.width / 2;
+        this.scoreText.y = 20;
+        this.addChild(this.scoreText);
     }
 
     private _setupLiveContainer() {
-        this.livesContainer.removeChildren()
+        this.livesContainer = new PIXI.Container()
+        this.addChild(this.livesContainer);
+
         for (let i = 0; i < this.lives; i++) {
             const heart = new PIXI.Sprite(this.assets.heart)
             heart.scale.set(0.25)
             heart.x = this.water.x + heart.width * i
             heart.y = 0
-            heart.position.set(heart.width * i, this.scoreContainer.height)
+            heart.position.set(heart.width * i, this.scoreText.height)
             this.livesContainer.addChild(heart)
         }
 
-        this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreContainer.height - 20)
+        this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20)
     }
 
-    private _setupToggle(): void {
+    private _setupSideButtons(): void {
+        this.toggle = new PIXI.Graphics();
+        this.addChild(this.toggle);
         this.toggle.eventMode = "static";
         this.toggle.cursor = "pointer";
         this.toggle.beginFill(0xffffff);
@@ -131,6 +154,11 @@ export class LobGame extends PIXI.Container {
         this.toggle.addChild(cross);
         this.toggle.x = this.game.pixi.screen.width - 30;
         this.toggle.y = 10;
+
+        this.rules = new Button(30, "Uitleg", undefined, undefined, () => { this.showRules() });
+        this.rules.x = this.toggle.x - this.rules.width + 25;
+        this.rules.y = this.toggle.y + this.toggle.height + 10;
+        this.addChild(this.rules);
     }
 
     private onKeyDown(e: KeyboardEvent): void {
@@ -152,6 +180,8 @@ export class LobGame extends PIXI.Container {
     }
 
     public update(delta: number) {
+        if (!this.active) return;
+
         this.displacement.y -= 1 * delta;
 
         if (this.lives < 1 || this.score >= this.SCORELIMIT) {
@@ -199,7 +229,10 @@ export class LobGame extends PIXI.Container {
 
 
     private _setupItems(): void {
-        //color the netbox
+        this.catcher = new PIXI.Sprite(this.assets.catcher);
+        this.catcher.anchor.x = 0.6;
+
+        //draw the netbox, it'll be invis
         this.netbox = new PIXI.Graphics()
             .beginFill(0x000000)
             .drawRect(
@@ -209,7 +242,7 @@ export class LobGame extends PIXI.Container {
                 30
             )
             .endFill();
-        this.netbox.alpha = 0.5;
+        this.netbox.alpha = 0;
 
         // draw hitarea
         const hitArea = new PIXI.Graphics()
@@ -224,6 +257,7 @@ export class LobGame extends PIXI.Container {
         hitArea.alpha = 0.5;
 
         this.catcher.y = this.waterContainer.hitArea.y - this.catcher.height / 2 + 50;
+        this.catcher.x = this.waterContainer.hitArea.x + this.waterContainer.hitArea.width / 2 - this.catcher.width / 2;
 
         this.addChild(hitArea, this.catcher, this.netbox);
     }
@@ -241,8 +275,11 @@ export class LobGame extends PIXI.Container {
         });
 
         this.toggle.onclick = () => {
-            console.log("toggle");
             this.toggleFilter();
+        };
+
+        this.rules.onclick = () => {
+            this.showRules();
         };
 
         window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e));
@@ -250,16 +287,17 @@ export class LobGame extends PIXI.Container {
     }
 
     private _setupLobsters(): void {
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 11; i++) {
             // 2 seconds between each lobster, 7 to 3 catchable ones
             setTimeout(() => {
-                this.spawnLobster(i % 3 === 0);
+                console.log("spawn lobster");
+                this.spawnLobster(i % 3 === 0, i);
             }, i * 1500 + 1);
         }
     }
 
     private updateScore(): void {
-        const score = this.scoreContainer.children[0] as PIXI.Text;
+        const score = this.scoreText
         score.text = `Score: ${this.score} / ${this.SCORELIMIT}`;
     }
 
@@ -270,7 +308,7 @@ export class LobGame extends PIXI.Container {
 
         if (this.waterContainer.filters.length > 0) {
             const cross = new PIXI.Graphics();
-            // red cross
+            // draw red cross of the checkbox
             cross.lineStyle(2, 0xff0000);
             cross.moveTo(0, 0);
             cross.lineTo(25, 25);
@@ -279,19 +317,21 @@ export class LobGame extends PIXI.Container {
             this.toggle.addChild(cross);
             text.text = "Zet filters uit";
         } else {
+            // remove cross 
             this.toggle.removeChildAt(1);
             text.text = "Zet filters aan";
         }
     }
 
-    private spawnLobster(isLob: boolean): void {
+    private spawnLobster(isLob: boolean, i: number): void {
         const lobster = new Lobster(
             this.water.position.x + 25,
             this.water.position.x + this.water.width - 25,
             this.assets.lobster,
             isLob,
             this.takeLive.bind(this),
-            this.game.pixi.screen.height
+            this.game.pixi.screen.height,
+            i
         );
         this.lobsters.push(lobster);
         this.waterContainer.addChild(lobster);
@@ -299,6 +339,6 @@ export class LobGame extends PIXI.Container {
 
     private updateLivesContainer() {
         this.livesContainer.removeChildAt(this.livesContainer.children.length - 1)
-        this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreContainer.height - 20)
+        this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20)
     }
 }

@@ -46,8 +46,6 @@ export class MailScreen extends PIXI.Container {
         this.bgContainer.addChild(this.mailContainer);
         this.bgContainer.addChild(this.contentContainer);
         this.addChild(this.bgContainer);
-
-
     }
 
     /**

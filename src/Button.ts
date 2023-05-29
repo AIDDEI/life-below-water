@@ -14,15 +14,14 @@ import * as PIXI from 'pixi.js';
  */
 export class Button extends PIXI.Container {
     private button: PIXI.Graphics
-    private label: PIXI.Text
+    private _label: PIXI.Text
     public w: number
     public h: number
     public text: string
     public textStyle: PIXI.TextStyle
     private lineColor: number
     private buttonColor: number
-    private clickHandler?: () => void
-
+    private _clickHandler: (() => void) | undefined;
 
     constructor(h: number, text: string, lineColor: number = 0xFFBD01, buttonColor: number = 0x336699, clickHandler?: () => void) {
         super();
@@ -31,11 +30,11 @@ export class Button extends PIXI.Container {
             fill: 'white',
         })
         this.button = new PIXI.Graphics();
-        this.label = new PIXI.Text(text, this.textStyle);
+        this._label = new PIXI.Text(text, this.textStyle);
         this.lineColor = lineColor;
         this.buttonColor = buttonColor;
         this.h = h;
-        this.clickHandler = clickHandler;
+        this._clickHandler = clickHandler;
         this.eventMode = 'static';
         this.cursor = 'pointer';
         this.initButton();
@@ -43,22 +42,30 @@ export class Button extends PIXI.Container {
         this.setupEvents();
     }
 
+    public set label(text: string) {
+        this._label.text = text;
+    }
+
+    public set clickHandler(clickHandler: () => void) {
+        this._clickHandler = clickHandler;
+    }
+
     private initButton(): void {
         this.button = new PIXI.Graphics();
         this.button.lineStyle(4, this.lineColor);
         this.button.beginFill(this.buttonColor);
-        this.button.drawRoundedRect(0, 0, this.label.width + 30, this.h, 3);
+        this.button.drawRoundedRect(0, 0, this._label.width + 30, this.h, 3);
         this.button.endFill();
         // add button to container
         this.addChild(this.button);
     }
 
     private initLabel(): void {
-        this.label.anchor.set(0.5);
-        this.label.position.set((this.label.width + 30) / 2, this.h / 2);
-        this.label.resolution = 2;
+        this._label.anchor.set(0.5);
+        this._label.position.set((this._label.width + 30) / 2, this.h / 2);
+        this._label.resolution = 2;
         // add label to button
-        this.addChild(this.label);
+        this.addChild(this._label);
     }
 
     private setupEvents(): void {
@@ -70,10 +77,10 @@ export class Button extends PIXI.Container {
             this.button.tint = 0xFFFFFF;
         }
 
-        if (this.clickHandler) {
+        if (this._clickHandler) {
             this.onclick = () => {
-                // @ts-expect-error Check if clickHandler is defined
-                this.clickHandler();
+                // @ts-expect-error Check if clickHandler is defined is above
+                this._clickHandler();
             }
         }
     }

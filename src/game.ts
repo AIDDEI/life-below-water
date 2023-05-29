@@ -20,7 +20,7 @@ export class Game {
     constructor() {
         PIXI.settings.ROUND_PIXELS = true
 
-        // full screen application
+        // init game
         this.pixi = new PIXI.Application({ autoDensity: true, resolution: window.devicePixelRatio })
 
         document.body.appendChild(this.pixi.view as HTMLCanvasElement)
@@ -51,12 +51,14 @@ export class Game {
         // this.player.update(delta)
         // this.mail.update(delta)
 
-        if (this.lobGame) this.lobGame.update(delta)
+        if (this.lobGame?.active) this.lobGame.update(delta)
     }
 
     public startLobGame() {
+        this.mail.visible = false;
         this.lobGame = new LobGame(this.lobAssets, this);
         this.pixi.stage.addChild(this.lobGame);
+
     }
 
     public endLobGame(score: number, reason: number): void {

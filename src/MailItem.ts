@@ -1,7 +1,21 @@
 import * as PIXI from 'pixi.js';
 
 
-
+/**
+ * Class for the small mail icon on the left side of the mail screen
+ *
+ * @param title (string) - title of the mail
+ * @param description (string) - description of the mail
+ * @param read (boolean) - whether the mail has been read or not
+ * @param active (boolean) - whether the mail is currently active or not
+ * @param setActiveMail (function) - function to call when the mail is clicked
+ * @param mailIcon (PIXI.Texture) - texture of the mail icon
+ * @param mailIconUnread (PIXI.Texture) - texture of the unread mail icon
+ * 
+ * @example
+ * const mailItem = new MailItem('title', 'description', false, false, () => { console.log('clicked!') }, mailIcon, mailIconUnread)
+ *
+ */
 export class MailItem extends PIXI.Container {
     title: string
     description: string
@@ -20,11 +34,11 @@ export class MailItem extends PIXI.Container {
         this.mailIcon = this.read ? new PIXI.Sprite(mailIcon) : new PIXI.Sprite(mailIconUnread);
         this.active = active;
         this.setActiveMail = setActiveMail;
-        this.initButton()
+        this._initButton()
 
     }
 
-    private initButton(): void {
+    private _initButton(): void {
         this.cursor = this.read ? 'regular' : 'pointer'
         this.eventMode = 'static'
         this.onclick = () => {
@@ -67,8 +81,5 @@ export class MailItem extends PIXI.Container {
         line.drawRect(0, 59, this.width, 1);
         line.endFill();
         this.addChild(line);
-
-
-
     }
 }

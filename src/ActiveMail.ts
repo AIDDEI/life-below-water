@@ -56,7 +56,6 @@ export class ActiveMail extends PIXI.Container {
         const button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
             console.log('Button clicked!');
             alert(`Button clicked: ${this.activeMail.title}`);
-            this.mailScreen.visible = false;
 
             this.game.startLobGame();
         });
