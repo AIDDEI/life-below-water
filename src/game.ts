@@ -15,10 +15,12 @@ export class Game {
     private mailAssets: PIXI.Texture[];
 
     constructor() {
-        // full screen application
-        this.pixi = new PIXI.Application({ width: window.innerWidth, height: window.innerHeight - 50 })
-        this.pixi.renderer.resolution = 1
-        document.body.appendChild(this.pixi.view)
+        PIXI.settings.ROUND_PIXELS = true
+        
+        // init game
+        this.pixi = new PIXI.Application({ autoDensity: true, resolution: window.devicePixelRatio })
+
+        document.body.appendChild(this.pixi.view as HTMLCanvasElement)
         // Load images
         this.loader = new AssetLoader(this)
     }
