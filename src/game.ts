@@ -16,10 +16,11 @@ export class Game {
   private gameTexture: PIXI.Texture;
   private officeAssets: PIXI.Texture;
 
+  public waterParameters: WaterParam[];
   private waterParamA: WaterParam;
   public waterModel: WaterModel;
-  waterParamB: WaterParam;
-  waterParamC: WaterParam;
+  private waterParamB: WaterParam;
+  private waterParamC: WaterParam;
 
   constructor() {
     this.pixi = new PIXI.Application();
@@ -39,25 +40,34 @@ export class Game {
     this.player = new Player(this.gameTexture);
     this.pixi.stage.addChild(this.player);
 
-    // PARAM TESTING DEBUG ONLY
+    // PARAM TESTING
+    this.waterParameters = [];
+
     this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
-    this.waterParamA.update(-6);
-    console.log(this.waterParamA.getKeyValue());
+    this.waterParamA.updateValue(-6);
+    console.log(`${this.waterParamA.keyName}: ${this.waterParamA.value}`);
+    this.waterParameters.push(this.waterParamA);
 
     this.waterParamB = new WaterParam("Parameter B", "parameter_b", 100, 11);
-    this.waterParamA.update(1);
-    console.log(this.waterParamB.getKeyValue());
+    this.waterParamA.updateValue(1);
+    console.log(`${this.waterParamB.keyName}: ${this.waterParamB.value}`);
+    this.waterParameters.push(this.waterParamB);
 
     this.waterParamC = new WaterParam("Parameter C", "parameter_c", 234, 6);
-    this.waterParamA.update(3);
-    console.log(this.waterParamC.getKeyValue());
+    this.waterParamA.updateValue(3);
+    console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
+    this.waterParameters.push(this.waterParamC);
 
+    // MODEL TESTING
     this.waterModel = new WaterModel(modelJSON, metadata, weights);
-    this.waterModel.predict(
-      this.waterParamA.getKeyValue,
-      this.waterParamB.getKeyValue,
-      this.waterParamC.getKeyValue
-    );
+    let data: number[] = [];
+    for (let param of this.waterParameters) {
+      data.push(param.value);
+    }
+    console.log(...data);
+
+    this.waterModel.predict(...data);
+    // - DONE - //
   }
 }
 
