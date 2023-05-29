@@ -9,6 +9,7 @@ import * as PIXI from 'pixi.js'
  * @param isLob (boolean) - whether the lobster is catchable or not
  * @param  addPassedLob (function) - function to call when a lobster passes the screen without being caught
  * @param screenH (number) - height of the screen
+ * @param i (number) - index of the lobster
  * 
  * @example
  * const lobster =  new Lobster(0, 100, texture, true, () => { console.log('passed!') }, this.game.pixi.screen.height)
@@ -20,26 +21,26 @@ export class Lobster extends PIXI.Sprite {
     minX: number
     addPassedLob: () => void
     screenH: number
+    i: number
 
     constructor(minX: number, maxX: number, texture: PIXI.Texture, isLob: boolean, addPassedLob: () => void, screenH: number, i: number) {
         super(texture)
         this.minX = minX
+        this.i = i
         this.maxX = maxX
         this.anchor.set(0.5)
         this.rotation = Math.PI
         this.scale.set(isLob ? 0.15 : 0.10)
         this.isLob = isLob
         this.addPassedLob = addPassedLob
-        this.setPos()
+        this.x = this._getX()
         this.screenH = screenH
-        this.y = -50 - (i * 25)
-
+        this.y = -100 - (i * 100)
     }
 
     private _getX() {
         return Math.random() * (this.maxX - this.minX) + this.minX;
     }
-
 
     /**
      * Updates the position of the lobster
@@ -58,7 +59,7 @@ export class Lobster extends PIXI.Sprite {
     }
 
     private setPos(): void {
-        this.y = -50
+        this.y = -100 - (this.i * 10)
         this.x = this._getX()
     }
 

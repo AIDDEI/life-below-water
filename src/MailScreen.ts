@@ -46,6 +46,7 @@ export class MailScreen extends PIXI.Container {
         this.bgContainer.addChild(this.mailContainer);
         this.bgContainer.addChild(this.contentContainer);
         this.addChild(this.bgContainer);
+
     }
 
     /**
@@ -87,12 +88,10 @@ export class MailScreen extends PIXI.Container {
         // clear the mail container
         this.mailContainer.removeChildren();
 
-        // Render all mails
+        // Render all mails, re-render when active mail changes otherwise you will have the active mail still there
         this.mails.forEach((mail, index) => {
             if (mail.forceOpen) {
                 this.setActiveMail(index);
-                mail.read = true;
-                mail.forceOpen = false;
             }
             const mailItem = new MailItem(mail.title, mail.description, mail.read, (index === this.activeEmail), () => { this.setActiveMail(index) }, this.mailIcon, this.mailIconUnread);
 

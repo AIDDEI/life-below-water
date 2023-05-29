@@ -26,7 +26,7 @@ export class LobGame extends Minigame {
     private lives: number = 3;
     private assets: AssetType;
     private scoreText: PIXI.Text;
-    private SCORELIMIT: number = 3;
+    private SCOREGOAL: number = 30;
     private livesContainer: PIXI.Container;
     private bg: PIXI.Sprite;
     private instructions: PIXI.Sprite;
@@ -92,7 +92,7 @@ export class LobGame extends Minigame {
     }
 
     private _setupScore(): void {
-        this.scoreText = new PIXI.Text(`Score: 0 / ${this.SCORELIMIT}`, {
+        this.scoreText = new PIXI.Text(`Score: 0 / ${this.SCOREGOAL}`, {
             fontFamily: "Arial",
             fontSize: 24,
             fill: "white",
@@ -184,7 +184,7 @@ export class LobGame extends Minigame {
 
         this.displacement.y -= 1 * delta;
 
-        if (this.lives < 1 || this.score >= this.SCORELIMIT) {
+        if (this.lives < 1 || this.score >= this.SCOREGOAL) {
             const reason = this.lives < 1 ? 0 : 1
             this.game.endLobGame(this.score, reason);
         }
@@ -289,16 +289,16 @@ export class LobGame extends Minigame {
     private _setupLobsters(): void {
         for (let i = 0; i < 11; i++) {
             // 2 seconds between each lobster, 7 to 3 catchable ones
-            setTimeout(() => {
-                console.log("spawn lobster");
-                this.spawnLobster(i % 3 === 0, i);
-            }, i * 1500 + 1);
+
+            console.log("spawn lobster");
+            this.spawnLobster(i % 3 === 0, i);
+
         }
     }
 
     private updateScore(): void {
         const score = this.scoreText
-        score.text = `Score: ${this.score} / ${this.SCORELIMIT}`;
+        score.text = `Score: ${this.score} / ${this.SCOREGOAL}`;
     }
 
     private toggleFilter(): void {
