@@ -86,7 +86,7 @@ export class WaterParam {
 
   /**
    * function to update the parameter's value.
-   * step is multiplied with parameter's increment value then applied to value.
+   * step is multiplied with parameter's increment value and then added to value.
    *
    * @param step number in range -5 to 5 inclusive.
    *
