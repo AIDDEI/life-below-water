@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js';
 import { AssetType, Game } from './game';
 import { MailItem } from './MailItem';
-import { ActiveMail } from './ActiveMail';
+
+import { ChallengeMail } from './ChallengeMail';
 
 type MailType = {
     forceOpen: any;
@@ -9,11 +10,12 @@ type MailType = {
     description: string,
     type: number
     read?: boolean,
+    identifier: string
 }
 
 export class MailScreen extends PIXI.Container {
     private _mails: MailType[]
-    private activeEmail: number
+    private activeMailIndex: number
     private mailIconUnread: PIXI.Texture;
     public bg: PIXI.Sprite;
     public mailIcon: PIXI.Texture;
@@ -35,7 +37,7 @@ export class MailScreen extends PIXI.Container {
         this.mailIconUnread = assets.mailIconUnread
         this.visible = true;
         this._mails = [];
-        this.activeEmail = -1;
+        this.activeMailIndex = -1;
         this.bgContainer = new PIXI.Container();
         this.bgContainer.addChild(this.bg);
         this.mailContainer = new PIXI.Container();
@@ -53,14 +55,15 @@ export class MailScreen extends PIXI.Container {
 * function to add an e-mail
 * @param title - title of the mail
 * @param description - description of the mail
-* @param type - type of the mail (0 = quest, 1 = after game, can expand)
+* @param type - type of the mail (0 = challenge, 1 = after game, 2 = choice picking, can expand)
 * @param forceOpen - if true, the mail will be opened immediately, otherwise it will be marked as unread
+* @param identifier - identifier of the mail, used for checks for button and content 
 * 
 * Renders the mail screen after adding a new mail
 *
 */
-    public add(title: string, description: string, type: number, forceOpen: boolean = false) {
-        const mail = { title, description, type, forceOpen }
+    public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "") {
+        const mail = { title, description, type, forceOpen, identifier }
         this.mails.push(mail);
         this._renderMails();
     }
@@ -75,9 +78,9 @@ export class MailScreen extends PIXI.Container {
     }
 
     private setActiveMail(index: number) {
-        if (index >= 0 && index < this.mails.length && index !== this.activeEmail && !this.mails[index].read) {
+        if (index >= 0 && index < this.mails.length && index !== this.activeMailIndex && !this.mails[index].read) {
             this.mails[index].read = true;
-            this.activeEmail = index;
+            this.activeMailIndex = index;
 
             this._renderMails();
         }
@@ -93,23 +96,29 @@ export class MailScreen extends PIXI.Container {
             if (mail.forceOpen) {
                 this.setActiveMail(index);
             }
-            const mailItem = new MailItem(mail.title, mail.description, mail.read, (index === this.activeEmail), () => { this.setActiveMail(index) }, this.mailIcon, this.mailIconUnread);
+            const mailItem = new MailItem(mail.title, mail.description, mail.read, (index === this.activeMailIndex), () => { this.setActiveMail(index) }, this.mailIcon, this.mailIconUnread);
 
             // add the mail item to the mail container in reverse order and set the position
             mailItem.position.set(0, (this.mails.length - 1 - index) * 70);
             this.mailContainer.addChildAt(mailItem, 0);
-
         });
 
         // Render active mail
         // clear the text inside of the content container 
         this.contentContainer.removeChildren();
 
-        const activeMail = this.mails[this.activeEmail];
+        const activeMail = this.mails[this.activeMailIndex];
 
         if (activeMail) {
-            const activeMailContainer = new ActiveMail(activeMail, this.mailHeaderIcon, this.game, this);
+            let activeMailContainer: any;
 
+            switch (activeMail.type) {
+                case 0:
+                    activeMailContainer = new ChallengeMail(activeMail, this.mailHeaderIcon, this.game, activeMail.identifier);
+                    break;
+            }
+
+            activeMailContainer.position.set(80, 35);
             this.contentContainer.addChild(activeMailContainer);
         }
     }
