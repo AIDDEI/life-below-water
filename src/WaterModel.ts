@@ -17,17 +17,9 @@ export class WaterModel {
     this.nn.load(modelDetails, this.modelLoaded);
   }
 
-  predict(param_a: Object, param_b: Object, param_c: Object) {
-    const params = [param_a, param_b, param_c];
-    let input = {};
-    for (const param in params) {
-      const key: string = param.key;
-      const value: number = param.value;
-      input[key] = value;
-    }
-    console.log(input);
-
-    this.nn.classify(input, (error: Error, result: any[]) => {
+  predict(parameters: number[]) {
+    console.log(parameters);
+    this.nn.classify(parameters, (error: Error, result: any[]) => {
       console.log(result);
       console.log(
         `Potable: ${result[0].label} - Confidence ${(
@@ -36,6 +28,7 @@ export class WaterModel {
       );
     });
   }
+
   modelLoaded() {
     console.log("model Loaded");
   }

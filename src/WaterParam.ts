@@ -58,26 +58,26 @@ export class WaterParam {
     );
   }
 
-  get keyName() {
+  public get keyName() {
     return this._keyName;
   }
 
-  get value() {
+  public get value() {
     return this._value;
   }
 
-  get increment() {
+  public get increment() {
     return this._increment;
   }
 
-  get range() {
+  public get range() {
     return {
       min: this._minValue,
       max: this._maxValue,
     };
   }
 
-  get optimalRange() {
+  public get optimalRange() {
     return {
       min: this._optimalMinValue,
       max: this._optimalMaxValue,
@@ -91,7 +91,7 @@ export class WaterParam {
    * @param step number in range -5 to 5 inclusive.
    *
    */
-  updateValue(step: number) {
+  public updateValue(step: number) {
     if (step != null && step >= -5 && step <= 5) {
       let tempValue = this._value + this.increment * step;
       if (tempValue < this._minValue) {
@@ -104,7 +104,7 @@ export class WaterParam {
       console.log(this._value);
     } else {
       console.log(
-        `Could not update WaterParam.value. Invalid step value. (range: -5 - 5, given: ${step})`
+        `Could not update value of ${this.name}. Invalid step value. (range: -5 - 5, given: ${step})`
       );
     }
   }
