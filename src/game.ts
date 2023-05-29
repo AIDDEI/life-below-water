@@ -64,9 +64,9 @@ export class Game {
     for (let param of this.waterParameters) {
       data.push(param.value);
     }
-    console.log(...data);
+    console.log(data);
 
-    this.waterModel.predict(...data);
+    this.waterModel.predict(data);
     // - DONE - //
   }
 }
