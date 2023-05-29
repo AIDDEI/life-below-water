@@ -80,6 +80,7 @@ export class MailScreen extends PIXI.Container {
     private setActiveMail(index: number) {
         if (index >= 0 && index < this.mails.length && index !== this.activeMailIndex && !this.mails[index].read) {
             this.mails[index].read = true;
+            this.mails[index].forceOpen = false;
             this.activeMailIndex = index;
 
             this._renderMails();
