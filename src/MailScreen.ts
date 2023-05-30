@@ -3,7 +3,7 @@ import { AssetType, Game } from './game';
 import { MailItem } from './MailItem';
 
 import { ChallengeMail } from './ChallengeMail';
-import { Result } from './Result';
+import { ResultMail } from './ResultMail';
 
 type MailType = {
     forceOpen: any;
@@ -120,7 +120,7 @@ export class MailScreen extends PIXI.Container {
                     break;
 
                 case 1:
-                    activeMailContainer = new Result(activeMail, this.mailHeaderIcon, this.game);
+                    activeMailContainer = new ResultMail(activeMail, this.mailHeaderIcon, this.game);
             }
 
             activeMailContainer.position.set(80, 35);

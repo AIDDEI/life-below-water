@@ -2,7 +2,7 @@ import * as PIXI from 'pixi.js';
 import { ActiveMail } from './ActiveMail';
 import { Button } from './Button';
 
-export class Result extends ActiveMail {
+export class ResultMail extends ActiveMail {
   private score: number;
   private reason: number;
 
