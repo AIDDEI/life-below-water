@@ -47,9 +47,8 @@ export class WaterParam {
     this._increment = increment;
     this.value = value;
 
-    // sanity check DEBUG ONLY
     console.log(
-      `WaterParam created: ${this.name} (${this.keyName}), value: ${this.value}, increment:${this.increment}`
+      `WaterParam created: ${this.name} (${this.keyName}), value: ${this.value}, increment: ${this.increment}`
     );
   }
 

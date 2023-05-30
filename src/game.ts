@@ -34,6 +34,17 @@ export class Game {
     document.body.appendChild(this.pixi.view as HTMLCanvasElement);
     // Load images
     this.loader = new AssetLoader(this);
+
+    this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
+    this.waterParamB = new WaterParam("Parameter B", "parameter_b", 100, 11);
+    this.waterParamC = new WaterParam(
+      "Parameter C",
+      "parameter_c",
+      624,
+      20,
+      500,
+      700
+    );
   }
 
   loadCompleted() {
@@ -67,30 +78,15 @@ export class Game {
     this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
     this.mail.add("Mail 4", "This is the third mail.", 0);
 
-    // Parameter initialization
-    this.waterParameters = [];
-
-    this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1); // should be set to 0
+    // Parameter testing
     this.waterParamA.updateValue(-6); // should display error outside of step range
     console.log(`${this.waterParamA.keyName}: ${this.waterParamA.value}`); // => parameter_a : 0
-    this.waterParameters.push(this.waterParamA);
 
-    this.waterParamB = new WaterParam("Parameter B", "parameter_b", 100, 11);
     this.waterParamB.updateValue(1);
     console.log(`${this.waterParamB.keyName}: ${this.waterParamB.value}`);
-    this.waterParameters.push(this.waterParamB);
 
-    this.waterParamC = new WaterParam(
-      "Parameter C",
-      "parameter_c",
-      624,
-      20,
-      500,
-      700
-    );
     this.waterParamC.updateValue(-1);
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
-    this.waterParameters.push(this.waterParamC);
   }
 }
 
