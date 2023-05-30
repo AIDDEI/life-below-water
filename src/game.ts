@@ -41,6 +41,7 @@ export class Game {
         this.mail.add('Mail 1', 'This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.', 0, false, 'lob');
         this.mail.add('Mail 3', 'This is the third mail.', 0, false, 'lob');
         this.mail.add('Mail 4', 'This is the third mail.', 0);
+        this.mail.add('Lob lob lob', `Salaris minigame`, 1, true);
 
         this.pixi.ticker.add((delta) => this.update(delta))
     }
@@ -64,7 +65,7 @@ export class Game {
         if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
         this.lobGame = undefined;
         this.mail.visible = true;
-        this.mail.add('Lob lob lob', `End of lob.${score}`, 1, true);
+        
     }
 }
 
