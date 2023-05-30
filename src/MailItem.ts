@@ -39,8 +39,9 @@ export class MailItem extends PIXI.Container {
     }
 
     private _initButton(): void {
-        this.cursor = this.read ? 'regular' : 'pointer'
+        this.cursor = 'pointer'
         this.eventMode = 'static'
+
         this.onclick = () => {
             this.setActiveMail()
         }
@@ -67,7 +68,7 @@ export class MailItem extends PIXI.Container {
             descText.text = descText.text.substring(0, 27) + '...';
         }
 
-        this.addChild(descText);
+        this.addChild(descText);    
 
         const indicatorText = this.mailIcon
 

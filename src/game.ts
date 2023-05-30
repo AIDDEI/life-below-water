@@ -7,7 +7,6 @@ import { LobGame } from './LobGame';
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> }
 
-
 export class Game {
     public pixi: PIXI.Application
     private loader: AssetLoader

@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js';
 import { Game } from './game';
 
 type MailType = {
+    played: any;
+    index: number,
     forceOpen: any;
     title: string,
     description: string,

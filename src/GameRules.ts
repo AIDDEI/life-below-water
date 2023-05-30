@@ -1,4 +1,4 @@
-import { Game } from "./Game";
+import { Game } from "./game";
 import * as PIXI from "pixi.js";
 import { Button } from "./Button";
 /**

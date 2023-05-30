@@ -26,7 +26,7 @@ export class LobGame extends Minigame {
     private lives: number = 3;
     private assets: AssetType;
     private scoreText: PIXI.Text;
-    private SCOREGOAL: number = 30;
+    private SCOREGOAL: number = 15;
     private livesContainer: PIXI.Container;
     private bg: PIXI.Sprite;
     private instructions: PIXI.Sprite;
@@ -53,7 +53,7 @@ export class LobGame extends Minigame {
         this._setupInstructions();
         this._setupLiveContainer();
         // init instructions
-        this.initInstructions(() => { this.startGame() }, "Vang de GROTE kreeften door de muis te bewegen of door de \n<- pijltjestoetsen -> te gebruiken. \n\nJe hebt 3 levens. Je verliest een leven als je een verkeerde kreeft raakt of er een mist. \n\nSucces!");
+        this.initInstructions(() => { this.startGame() }, "Vang de KLEINE kreeftjes door de muis te bewegen of door de \n<- pijltjestoetsen -> te gebruiken. \n\nJe hebt 3 levens. Je verliest een leven als je een verkeerde kreeft raakt of er een mist. \n\nSucces!");
     }
 
     private startGame(): void {
@@ -287,7 +287,7 @@ export class LobGame extends Minigame {
     }
 
     private _setupLobsters(): void {
-        for (let i = 0; i < 11; i++) {
+        for (let i = 0; i < 6; i++) {
             // 2 seconds between each lobster, 7 to 3 catchable ones
 
             console.log("spawn lobster");

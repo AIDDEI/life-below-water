@@ -16,12 +16,13 @@ import * as PIXI from 'pixi.js'
  *
  */
 export class Lobster extends PIXI.Sprite {
-    isLob: boolean
-    maxX: number
-    minX: number
-    addPassedLob: () => void
-    screenH: number
-    i: number
+    public isLob: boolean
+    private maxX: number
+    private minX: number
+    private addPassedLob: () => void
+    private screenH: number
+    private i: number
+    private part: number
 
     constructor(minX: number, maxX: number, texture: PIXI.Texture, isLob: boolean, addPassedLob: () => void, screenH: number, i: number) {
         super(texture)
@@ -30,16 +31,37 @@ export class Lobster extends PIXI.Sprite {
         this.maxX = maxX
         this.anchor.set(0.5)
         this.rotation = Math.PI
-        this.scale.set(isLob ? 0.15 : 0.10)
+        this.scale.set(isLob ? 0.10 : 0.15)
         this.isLob = isLob
         this.addPassedLob = addPassedLob
-        this.x = this._getX()
         this.screenH = screenH
-        this.y = -100 - (i * 100)
+        this.part = this.maxX / 5
+        this.x = this._initgetX()
+        this.y = -100 - (this.i * 75)
+    }
+
+
+    private _initgetX() {
+        // devide the screen in 5 parts 
+        switch (this.i % 5) {
+            case 0:
+                return this.minX + this.part * 0
+            case 1:
+                return this.minX + this.part * 3.5
+            case 2:
+                return this.minX + this.part * 2
+            case 3:
+                return this.minX + this.part * 1.5
+            case 4:
+                return this.minX + this.part * 1
+            default:
+                return this.minX + this.part * 3
+        }
     }
 
     private _getX() {
-        return Math.random() * (this.maxX - this.minX) + this.minX;
+        // random x position within the screen
+        return Math.random() * (this.maxX - this.minX) + this.minX
     }
 
     /**
@@ -52,6 +74,7 @@ export class Lobster extends PIXI.Sprite {
         this.y += 1.5 * delta
 
         if (this.y > this.screenH) {
+            console.log('passed')
             this.setPos()
 
             if (this.isLob) this.addPassedLob()
@@ -59,7 +82,7 @@ export class Lobster extends PIXI.Sprite {
     }
 
     private setPos(): void {
-        this.y = -100 - (this.i * 10)
+        this.y = -100 - (this.i * 75)
         this.x = this._getX()
     }
 
