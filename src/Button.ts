@@ -2,14 +2,17 @@ import * as PIXI from 'pixi.js';
 /**
  * Class for dynamic buttons
  *
- * @param h - height of the button (width is calculated automatically)
+ * @param h - height of the button  
  * @param text - text to be displayed on the button
  * @param lineColor - color of the border of the button
  * @param buttonColor - color of the button
  * @param clickHandler - function to be called when the button is clicked
+ * @param w (optional) - width of the button (automatically calculated if not provided)
+ * 
  * @example
  * const button = new Button(50, 'Click me!', 0xFFBD01, 0x336699, () => { console.log('clicked!') }); 
- * const button = new Button(undefined, 'Click me!', undefined, undefined, () => { console.log('clicked!') }); 
+ * const button = new Button(undefined, 'Click me!', undefined, undefined, () => { console.log('clicked!') }, this.width); 
+ * const button = new Button( 50, 'Click me!', 0xFFBD01, 0x336699, () => { console.log('clicked!') }, 300);
  *
  */
 export class Button extends PIXI.Container {
@@ -23,7 +26,7 @@ export class Button extends PIXI.Container {
     private buttonColor: number
     private _clickHandler: (() => void) | undefined;
 
-    constructor(h: number, text: string, lineColor: number = 0xFFBD01, buttonColor: number = 0x336699, clickHandler?: () => void) {
+    constructor(h: number, text: string, lineColor: number = 0xFFBD01, buttonColor: number = 0x336699, clickHandler?: () => void, w?: number) {
         super();
         this.textStyle = new PIXI.TextStyle({
             fontSize: 20,
@@ -34,6 +37,7 @@ export class Button extends PIXI.Container {
         this.lineColor = lineColor;
         this.buttonColor = buttonColor;
         this.h = h;
+        this.w = w ? w : this._label.width + 30;
         this._clickHandler = clickHandler;
         this.eventMode = 'static';
         this.cursor = 'pointer';
@@ -41,6 +45,7 @@ export class Button extends PIXI.Container {
         this.initLabel();
         this.setupEvents();
     }
+
 
     public set label(text: string) {
         this._label.text = text;
@@ -54,7 +59,7 @@ export class Button extends PIXI.Container {
         this.button = new PIXI.Graphics();
         this.button.lineStyle(4, this.lineColor);
         this.button.beginFill(this.buttonColor);
-        this.button.drawRoundedRect(0, 0, this._label.width + 30, this.h, 3);
+        this.button.drawRoundedRect(0, 0, this.w, this.h, 3);
         this.button.endFill();
         // add button to container
         this.addChild(this.button);
