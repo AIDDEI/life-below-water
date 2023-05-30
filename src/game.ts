@@ -4,15 +4,17 @@ import { AssetLoader } from './AssetLoader';
 import { Player } from './Player';
 import { MailScreen } from './MailScreen';
 
+export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> }
+
 
 export class Game {
     public pixi: PIXI.Application
     private loader: AssetLoader
     public player: Player
-    private gameTexture: PIXI.Texture
     public mail: MailScreen
-    private officeAssets: PIXI.Texture
-    private mailAssets: PIXI.Texture[];
+    private mailAssets: PIXI.Texture<PIXI.Resource>
+    public lobGame: LobGame | undefined;
+    private lobAssets: PIXI.Texture<PIXI.Resource>
 
     constructor() {
         PIXI.settings.ROUND_PIXELS = true
@@ -26,12 +28,8 @@ export class Game {
     }
 
     async loadCompleted() {
-        console.log("Load completed")
-        console.log(this.loader.textures)
-
-        this.gameTexture = this.loader.textures.Player['flowerTop']
-        this.officeAssets = this.loader.textures.Office
         this.mailAssets = this.loader.textures.MailScreen
+        this.lobAssets = this.loader.textures.Lobgame
 
         // this.player = new Player(this.gameTexture)
         // this.pixi.stage.addChild(this.player)
@@ -44,7 +42,29 @@ export class Game {
         this.mail.add('Mail 3', 'This is the third mail.', 0, false, 'lob');
         this.mail.add('Mail 4', 'This is the third mail.', 0);
 
+        this.pixi.ticker.add((delta) => this.update(delta))
+    }
 
+
+    update(delta: number) {
+        // this.player.update(delta)
+        // this.mail.update(delta)
+
+        if (this.lobGame?.active) this.lobGame.update(delta)
+    }
+
+    public startLobGame() {
+        this.mail.visible = false;
+        this.lobGame = new LobGame(this.lobAssets, this);
+        this.pixi.stage.addChild(this.lobGame);
+
+    }
+
+    public endLobGame(score: number, reason: number): void {
+        if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
+        this.lobGame = undefined;
+        this.mail.visible = true;
+        this.mail.add('Lob lob lob', `End of lob.${score}`, 1, true);
     }
 }
 
