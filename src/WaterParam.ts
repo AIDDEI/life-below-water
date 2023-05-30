@@ -25,8 +25,8 @@ export class WaterParam {
   private _increment: number; // value with which to change the param's value per step (*1)
   private _minValue: number; // minimum value this parameter can be.
   private _maxValue: number; // maximum value (inclusive) this parameter can be.
-  private _optimalMinValue: number; //
-  private _optimalMaxValue: number; //
+  private _optimalMinValue: number; // minimum value for the optimal values range.
+  private _optimalMaxValue: number; // maximum value for the optimal values range.
 
   constructor(
     name: string,
@@ -44,17 +44,12 @@ export class WaterParam {
     this._optimalMinValue = optimalMinValue;
     this._optimalMaxValue = optimalMaxValue;
     this._keyName = keyName;
-    this._value =
-      value <= this._minValue
-        ? this._minValue
-        : value <= this._maxValue
-        ? value
-        : this._maxValue;
     this._increment = increment;
+    this.value = value;
 
     // sanity check DEBUG ONLY
     console.log(
-      `WaterParam created: ${this.name} (${this.keyName}), value: ${this.value} (${this.increment})`
+      `WaterParam created: ${this.name} (${this.keyName}), value: ${this.value}, increment:${this.increment}`
     );
   }
 
@@ -64,6 +59,37 @@ export class WaterParam {
 
   public get value() {
     return this._value;
+  }
+
+  /**
+   * Setter for the parameter's value.
+   * Enforces parameter's set range. Where value gets set to the minimum/maximum value when out of range.
+   *
+   * @param newValue - new value to set the parameter's value to.
+   *
+   * @example
+   * ```ts
+   * this.value = newValue;
+   * this.value = 20;
+   * ```
+   */
+  private set value(newValue: number) {
+    const range = this.range;
+    if (newValue < range.min || newValue > range.max) {
+      console.log(
+        `${newValue} is outside of allowed range. ${range.min}-${range.max}`
+      );
+      if (newValue < range.min) {
+        this._value = range.min;
+        console.log(`set to minimum instead : ${range.min} | ${this.value}`);
+      } else {
+        this._value = range.max;
+        console.log(`set to maximum instead : ${range.max} | ${this.value}`);
+      }
+    } else {
+      this._value = newValue;
+      console.log(`changed ${this.name}'s value. ${newValue} | ${this.value}`);
+    }
   }
 
   public get increment() {
@@ -93,15 +119,9 @@ export class WaterParam {
    */
   public updateValue(step: number) {
     if (step != null && step >= -5 && step <= 5) {
-      let tempValue = this._value + this.increment * step;
-      if (tempValue < this._minValue) {
-        this._value = this._minValue;
-      } else if (tempValue > this._maxValue) {
-        this._value = this._maxValue;
-      } else {
-        this._value = tempValue;
-      }
-      console.log(this._value);
+      console.log(`old: ${this.value} | step: ${step}`);
+      const tempValue = this.value + this.increment * step;
+      this.value = tempValue;
     } else {
       console.log(
         `Could not update value of ${this.name}. Invalid step value. (range: -5 - 5, given: ${step})`

@@ -4,12 +4,7 @@ import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
-import { WaterModel } from "./WaterModel";
-
-// Model
-const weights = "./model/model.weights.bin";
-const modelJSON = "./model/model.json";
-const metadata = "./model/model_meta.json";
+// import { WaterModel } from "./WaterModel";
 
 export class Game {
   public pixi: PIXI.Application;
@@ -23,9 +18,9 @@ export class Game {
   //water parameters related
   public waterParameters: WaterParam[];
   private waterParamA: WaterParam;
-  public waterModel: WaterModel;
   private waterParamB: WaterParam;
   private waterParamC: WaterParam;
+  // public waterModel: WaterModel;
 
   constructor() {
     PIXI.settings.ROUND_PIXELS = true;
@@ -72,32 +67,30 @@ export class Game {
     this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
     this.mail.add("Mail 4", "This is the third mail.", 0);
 
-    this.player = new Player(this.gameTexture);
-    this.pixi.stage.addChild(this.player);
-
-    // PARAM TESTING
+    // Parameter initialization
     this.waterParameters = [];
 
-    this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
-    this.waterParamA.updateValue(-6);
-    console.log(`${this.waterParamA.keyName}: ${this.waterParamA.value}`);
+    this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1); // should be set to 0
+    this.waterParamA.updateValue(-6); // should display error outside of step range
+    console.log(`${this.waterParamA.keyName}: ${this.waterParamA.value}`); // => parameter_a : 0
     this.waterParameters.push(this.waterParamA);
 
     this.waterParamB = new WaterParam("Parameter B", "parameter_b", 100, 11);
-    this.waterParamA.updateValue(1);
+    this.waterParamB.updateValue(1);
     console.log(`${this.waterParamB.keyName}: ${this.waterParamB.value}`);
     this.waterParameters.push(this.waterParamB);
 
-    // MODEL TESTING
-    this.waterModel = new WaterModel(modelJSON, metadata, weights);
-    let data: number[] = [];
-    for (let param of this.waterParameters) {
-      data.push(param.value);
-    }
-    console.log(data);
-
-    this.waterModel.predict(data);
-    // - DONE - //
+    this.waterParamC = new WaterParam(
+      "Parameter C",
+      "parameter_c",
+      624,
+      20,
+      500,
+      700
+    );
+    this.waterParamC.updateValue(-1);
+    console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
+    this.waterParameters.push(this.waterParamC);
   }
 }
 
