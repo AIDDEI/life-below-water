@@ -11,7 +11,9 @@ type MailType = {
     description: string,
     type: number
     read?: boolean,
-    identifier: string
+    identifier: string,
+    reason?: number,
+    score?: number
 }
 
 export class MailScreen extends PIXI.Container {
@@ -63,8 +65,8 @@ export class MailScreen extends PIXI.Container {
 * Renders the mail screen after adding a new mail
 *
 */
-    public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "") {
-        const mail = { title, description, type, forceOpen, identifier }
+    public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", score: number = 0, reason: number = 0) {
+        const mail = { title, description, type, forceOpen, identifier, score, reason }
         this.mails.push(mail);
         this._renderMails();
     }
