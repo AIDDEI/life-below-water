@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import { DrawModel } from './DrawModel';
 import { Game } from './game';
 
 
@@ -6,14 +7,15 @@ export class DrawableCanvas extends PIXI.Container {
     private graphics: PIXI.Graphics;
     private isDrawing: boolean;
     private lastPosition: PIXI.Point;
-    game: any;
+    private game: any;
+    private model: DrawModel
 
     constructor(game: Game) {
         super();
         this.game = game;
         this.graphics = new PIXI.Graphics();
         this.addChild(this.graphics);
-
+        this.model = new DrawModel(this, game);
         this.isDrawing = false;
         this.lastPosition = new PIXI.Point();
 
@@ -70,12 +72,37 @@ export class DrawableCanvas extends PIXI.Container {
         this.saveCanvas();
     }
 
-    public async saveCanvas(): void {
-        // download image from graphics 
-        let image = await this.game.pixi.renderer.extract.image(this.graphics);
-        let link = document.createElement('a');
-        link.download = 'image.png';
-        link.href = image.src;
+    public async saveCanvas(): Promise<void> {
+        // check if the thing drawn has the player in it 
+        // if not, return
+        // if so, send to model
+
+        // global position 
+        const playerPosition = this.game.player.getBounds();
+
+        const playerInCanvas = this.lastPosition.x > playerPosition.x && this.lastPosition.x < playerPosition.x + playerPosition.width && this.lastPosition.y > playerPosition.y && this.lastPosition.y < playerPosition.y + playerPosition.height;
+
+
+        if (!playerInCanvas) {
+            console.log('player not in canvas');
+
+        } else {
+            let image = await this.game.pixi.renderer.extract.image(this.graphics);
+
+            let canvas = document.createElement('canvas');
+            canvas.width = 60;
+            canvas.height = 60;
+            let ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(image, 0, 0, 60, 60);
+
+            image = canvas;
+
+
+            this.model.predict(image)
+        }
+
 
 
 

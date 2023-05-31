@@ -9,32 +9,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@parcel/config-default": "^2.9.1",
-    "@parcel/config-webextension": "^2.9.1",
-    "@pixi/canvas-graphics": "^7.2.4",
-    "fs-extra": "^11.1.1",
     "parcel": "^2.9.1",
-    "pixi.js": "^7.2.4",
-    "puppeteer": "^20.4.0",
-    "puppeteer-core": "^20.4.0"
+    "pixi.js": "^7.2.4"
   },
   "devDependencies": {
-    "@parcel/optimizer-data-url": "^2.8.3",
-    "@parcel/transformer-inline-string": "^2.8.3",
-    "@parcel/transformer-raw": "^2.9.1",
+    "@parcel/optimizer-data-url": "^2.9.1",
+    "@parcel/transformer-inline-string": "^2.9.1",
     "assert": "^2.0.0",
-    "browserify-zlib": "^0.2.0",
-    "constants-browserify": "^1.0.0",
-    "crypto-browserify": "^3.12.0",
-    "https-browserify": "^1.0.0",
-    "os-browserify": "^0.3.0",
-    "path-browserify": "^1.0.1",
     "punycode": "^1.4.1",
     "querystring-es3": "^0.2.1",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
     "typescript": "^5.0.4",
-    "util": "^0.12.5",
-    "vm-browserify": "^1.1.2"
+    "util": "^0.12.5"
   }
 }

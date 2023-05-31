@@ -5,11 +5,11 @@ import { Player } from './Player';
 import { MailScreen } from './MailScreen';
 import { LobGame } from './LobGame';
 import { DrawableCanvas } from './DrawableCanvas';
-import { DrawModel } from './DrawModel';
-import { setUp } from './test';
+import DrawMode from './DrawModel';
 
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> }
+
 
 
 export class Game {
@@ -20,12 +20,13 @@ export class Game {
     private mailAssets: PIXI.Texture<PIXI.Resource>
     public lobGame: LobGame | undefined;
     private lobAssets: PIXI.Texture<PIXI.Resource>
+    gameTexture: Texture<Resource>;
 
     constructor() {
         PIXI.settings.ROUND_PIXELS = true
 
         // init game
-        this.pixi = new PIXI.Application({ autoDensity: true, resolution: window.devicePixelRatio })
+        this.pixi = new PIXI.Application({ autoDensity: true, resolution: window.devicePixelRatio, backgroundColor: 0x1099bb })
 
         document.body.appendChild(this.pixi.view as HTMLCanvasElement)
         // Load images
@@ -33,11 +34,13 @@ export class Game {
     }
 
     async loadCompleted() {
+
         this.mailAssets = this.loader.textures.MailScreen
         this.lobAssets = this.loader.textures.Lobgame
+        console.log(this.loader.textures)
+        this.gameTexture = this.loader.textures.Crab
 
-        // this.player = new Player(this.gameTexture)
-        // this.pixi.stage.addChild(this.player)
+
 
         this.mail = new MailScreen(this.mailAssets, this)
         this.pixi.stage.addChild(this.mail)
@@ -48,13 +51,14 @@ export class Game {
         this.mail.add('Mail 4', 'This is the third mail.', 0);
 
         this.pixi.ticker.add((delta) => this.update(delta))
-
-
+        this.player = new Player(this.gameTexture)
+        this.pixi.stage.addChild(this.player)
+        this.mail.visible = false;
         const canvas = new DrawableCanvas(this)
         canvas.resizeCanvas(800, 400)
         this.pixi.stage.addChild(canvas)
 
-        setUp()
+
     }
 
 
