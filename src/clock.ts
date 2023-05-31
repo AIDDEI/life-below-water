@@ -2,103 +2,65 @@ import * as PIXI from 'pixi.js';
 import { Text, TextStyle } from "pixi.js";
 import { Game } from "./Game"
 
-// export class Clock {
-//   clockText: Text;
-//   game: Game;
 
-//   createClock() {
-//     const clockStyle = new TextStyle({
-//       fill: "white",
-//       fontSize: 24,
-//     });
+// Basisvariabelen
+let halfHourOffset = 0; // Half uur verschuiving in graden
+let smallHandOffset = 0; // Initialiseren van de offset van de kleine wijzer
 
-//     this.clockText = new Text("00:00:00", clockStyle);
-//     this.clockText.position.set(10, 10);
-//     this.game.stage.addChild(this.clockText);
-//   }
+// Pixi.js-app aanmaken
+const app = new PIXI.Application({
+    width: 400, // Breedte van het canvas
+    height: 400, // Hoogte van het canvas
+    antialias: true, // Anti-aliasing inschakelen voor een betere weergave
+    transparent: true
+});
 
-//   updateClock() {
-//     const date = new Date();
-//     const hours = String(date.getHours()).padStart(2, "0");
-//     const minutes = String(date.getMinutes()).padStart(2, "0");
-//     const seconds = String(date.getSeconds()).padStart(2, "0");
-//     this.clockText.text = `${hours}:${minutes}:${seconds}`;
-//   }
+// Canvas-element toevoegen aan de HTML-body
+document.body.appendChild(app.view);
 
-//   constructor(game: Game) {
-//     this.game = game;
-//     this.createClock();
+// Klokgraphics aanmaken
+const clockContainer = new PIXI.Container();
+const clockGraphics = new PIXI.Graphics();
 
-//     const app = new PIXI.Application({
-//       width: 800,
-//       height: 600,
-//       backgroundColor: 0x1099bb
-//     });
-
-//     document.body.appendChild(app.view);
-
-//     app.ticker.add(() => this.updateClock());
-//   }
-// }
+function drawClock() {
+  clockGraphics.clear();
 
 
+  // Klok wijzerplaat
+  clockGraphics.beginFill(0xffffff);
+  clockGraphics.lineStyle(8, 0x000000);
+  clockGraphics.drawCircle(200, 200, 180);
 
-export class Clock {
-  clockText: Text;
-  game: Game;
-  startTime: number;
-  timerInterval: any;
+  // Lange wijzer (minuten wijzer)
+  const longHandRotation = (halfHourOffset / 180) * Math.PI;
+  clockGraphics.lineStyle(6, 0xff0000);
+  clockGraphics.moveTo(200, 200);
+  clockGraphics.lineTo(200 + 150 * Math.sin(longHandRotation), 200 - 150 * Math.cos(longHandRotation));
 
-  createClock() {
-    const clockStyle = new TextStyle({
-      fill: "white",
-      fontSize: 24,
-    });
+  // Kleine wijzer (urenwijzer)
+  const smallHandRotation = (smallHandOffset / 180) * Math.PI;
+  clockGraphics.lineStyle(4, 0x000000);
+  clockGraphics.moveTo(200, 200);
+  clockGraphics.lineTo(200 + 80 * Math.sin(smallHandRotation), 200 - 80 * Math.cos(smallHandRotation));
 
-    this.clockText = new Text("00:00:00", clockStyle);
-    this.clockText.position.set(10, 10);
-    this.game.stage.addChild(this.clockText);
-  }
-
-  updateClock() {
-    const currentTime = new Date().getTime();
-    const elapsedTime = currentTime - this.startTime;
-    const seconds = Math.floor((elapsedTime / 400) % 60);
-    const minutes = Math.floor((elapsedTime / 400 / 60) % 60);
-    const hours = Math.floor((elapsedTime / 400 / 3600) % 24);
-
-    const formattedTime = `${hours.toString().padStart(2, "10")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-
-    this.clockText.text = formattedTime;
-  }
-
-  startTimer() {
-    this.startTime = new Date().getTime();
-    this.timerInterval = setInterval(() => {
-      this.updateClock();
-    }, 1000);
-  }
-
-  stopTimer() {
-    clearInterval(this.timerInterval);
-  }
-
-  constructor(game: Game) {
-    this.game = game;
-    this.createClock();
-
-    const app = new PIXI.Application({
-      width: 800,
-      height: 600,
-      backgroundColor: 0x1099bb,
-    });
-
-    document.body.appendChild(app.view);
-
-    app.ticker.add(() => this.updateClock());
-
-    this.startTimer();
-  }
+  clockContainer.addChild(clockGraphics);
 }
+
+drawClock();
+
+// Klokcontainer toevoegen aan de app
+app.stage.addChild(clockContainer);
+
+/// Klikgebeurtenis hanteren
+app.view.addEventListener('click', function() {
+  halfHourOffset += 90; // Verschuiving van 90 graden
+ 
+  if (halfHourOffset % 360 === 0) {
+     
+      smallHandOffset += 30;
+
+      smallHandOffset %= 360;
+  }
+
+  drawClock();
+});

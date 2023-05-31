@@ -27,9 +27,11 @@ export class AssetLoader {
             'eggHead2': sharkImage,
         });
 
+        
+
         PIXI.Assets.addBundle('UI', {
             'ToDoButton': ToDoImage,
-
+            
         })
 
         PIXI.Assets.add('Crab', sharkImage)
