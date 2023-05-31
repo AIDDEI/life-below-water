@@ -87,7 +87,7 @@ export class LobGame extends Minigame {
         this.instructions.x = 10
         this.instructions.rotation = -0.1
         this.instructions.y = 100
-        this.instructions.scale.set(0.95);
+        this.instructions.scale.set(0.05);
         this.addChild(this.instructions);
     }
 

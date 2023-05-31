@@ -4,6 +4,10 @@ import { AssetLoader } from './AssetLoader';
 import { Player } from './Player';
 import { MailScreen } from './MailScreen';
 import { LobGame } from './LobGame';
+import { DrawableCanvas } from './DrawableCanvas';
+import { DrawModel } from './DrawModel';
+import { setUp } from './test';
+
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> }
 
@@ -44,6 +48,13 @@ export class Game {
         this.mail.add('Mail 4', 'This is the third mail.', 0);
 
         this.pixi.ticker.add((delta) => this.update(delta))
+
+
+        const canvas = new DrawableCanvas(this)
+        canvas.resizeCanvas(800, 400)
+        this.pixi.stage.addChild(canvas)
+
+        setUp()
     }
 
 
@@ -69,4 +80,5 @@ export class Game {
     }
 }
 
-new Game();   
+new Game();
+
