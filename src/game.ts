@@ -13,7 +13,7 @@ export class Game {
   public player: Player;
   private gameTexture: PIXI.Texture;
   private officeAssets: PIXI.Texture;
-  private toDoButton: PIXI.Sprite;
+//   private toDoButton: PIXI.Sprite;
 
   constructor() {
     this.pixi = new PIXI.Application({
@@ -27,7 +27,7 @@ export class Game {
     // Laad afbeeldingen
     this.loader = new AssetLoader(this);
     this.clock = new Clock(this);
-    this.toDoMenu = new ToDoMenu(); 
+    this.toDoMenu = new ToDoMenu();
   }
 
   loadCompleted() {
@@ -41,7 +41,7 @@ export class Game {
     this.player = new Player(this.gameTexture);
     this.pixi.stage.addChild(this.player);
 
-    this.toDoButton = new PIXI.Sprite(this.loader.textures.UI['ToDoButton']);
+    // this.toDoButton = new PIXI.Sprite(this.loader.textures.UI['ToDoButton']);
     this.toDoButton.position.set(100, 100);
     this.toDoButton.interactive = true;
     this.toDoButton.buttonMode = true;
@@ -49,9 +49,7 @@ export class Game {
 
     this.toDoButton.on('click', () => {
       console.log('ToDoButton is geklikt!');
-      this.toDoMenu.show()
-; // Roep de show-methode aan in ToDoMenu
-      // Voeg hier je gewenste logica toe wanneer de ToDoButton wordt geklikt
+      this.toDoMenu.show();
     });
 
     this.pixi.stage.addChild(this.toDoButton);
@@ -59,3 +57,4 @@ export class Game {
 }
 
 new Game();
+
