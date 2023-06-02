@@ -4,17 +4,9 @@ import { MailItem } from './MailItem';
 
 import { ChallengeMail } from './ChallengeMail';
 import { ResultMail } from './ResultMail';
+import { BaseMail, ResultsMail } from '../globals';
 
-type MailType = {
-    forceOpen: any;
-    title: string,
-    description: string,
-    type: number
-    read?: boolean,
-    identifier: string,
-    reason?: number,
-    score?: number
-}
+type MailType = BaseMail | ResultsMail<BaseMail>
 
 export class MailScreen extends PIXI.Container {
     private _mails: MailType[]
@@ -26,7 +18,7 @@ export class MailScreen extends PIXI.Container {
     private mailContainer: PIXI.Container;
     public mailHeaderIcon: PIXI.Sprite;
     private game: Game
-    bgContainer: any;
+    private bgContainer: PIXI.Container;
 
     constructor(assets: AssetType, game: Game) {
         super();
@@ -65,12 +57,17 @@ export class MailScreen extends PIXI.Container {
 * Renders the mail screen after adding a new mail
 *
 */
-    public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", score: number = 0, reason: number = 0) {
-        const mail = { title, description, type, forceOpen, identifier, score, reason }
+    public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "") {
+        const mail: BaseMail = { title, description, type, forceOpen, identifier }
         this.mails.push(mail);
         this._renderMails();
     }
 
+    public addResultsMail(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", score: number = 0, reason: number = 0) {
+        const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, score, reason }
+        this.mails.push(mail);
+        this._renderMails();
+    }
 
     public get mailCount(): number {
         return this._mails.length;
@@ -118,7 +115,7 @@ export class MailScreen extends PIXI.Container {
 
             switch (activeMail.type) {
                 case 0:
-                    activeMailContainer = new ChallengeMail(activeMail, this.mailHeaderIcon, this.game, activeMail.identifier);
+                    activeMailContainer = new ChallengeMail(activeMail, this.mailHeaderIcon, this.game);
                     break;
 
                 case 1:

@@ -3,11 +3,9 @@ import { ActiveMail } from './ActiveMail';
 import { Button } from './Button';
 
 export class ChallengeMail extends ActiveMail {
-    private minigame: string;
 
-    constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: any, minigame: string) {
+    constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: any) {
         super(mail, mailHeaderIcon, game);
-        this.minigame = minigame;
         this.createContent();
     }
 
@@ -22,7 +20,7 @@ export class ChallengeMail extends ActiveMail {
         this.addChild(contentText);
 
         let button
-        switch (this.minigame) {
+        switch (this.mail.identifier) {
             case 'lob':
                 button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
                     this.game.startLobGame();

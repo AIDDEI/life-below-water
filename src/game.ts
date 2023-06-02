@@ -65,7 +65,7 @@ export class Game {
         if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
         this.lobGame = undefined;
         this.mail.visible = true;
-        this.mail.add('Lob lob lob', `Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`, 1, true, undefined, score, reason)
+        this.mail.addResultsMail('Lob lob lob', `Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`, 1, true, undefined, score, reason)
     }
 }
 
