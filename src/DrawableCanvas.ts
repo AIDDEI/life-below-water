@@ -42,6 +42,7 @@ export class DrawableCanvas extends PIXI.Container {
         });
 
         this.addChild(clearButton);
+
     }
 
     private onPointerDown(event: PIXI.InteractionEvent): void {
@@ -61,8 +62,6 @@ export class DrawableCanvas extends PIXI.Container {
 
             this.graphics.endFill();
 
-
-
             this.lastPosition.copyFrom(newPosition);
         }
     }
@@ -73,41 +72,52 @@ export class DrawableCanvas extends PIXI.Container {
     }
 
     public async saveCanvas(): Promise<void> {
-        // check if the thing drawn has the player in it 
-        // if not, return
-        // if so, send to model
 
-        // global position 
-        const playerPosition = this.game.player.getBounds();
+        for await (const player of this.game.players) {
+            const playerPosition = player.getBounds();
+            if (this.playerInside(playerPosition)) {
+                let image = await this.game.pixi.renderer.extract.image(this.graphics);
 
-        const playerInCanvas = this.lastPosition.x > playerPosition.x && this.lastPosition.x < playerPosition.x + playerPosition.width && this.lastPosition.y > playerPosition.y && this.lastPosition.y < playerPosition.y + playerPosition.height;
+                let canvas = document.createElement('canvas');
+                canvas.width = 60;
+                canvas.height = 60;
+                let ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(image, 0, 0, 60, 60);
 
-
-        if (!playerInCanvas) {
-            console.log('player not in canvas');
-
-        } else {
-            let image = await this.game.pixi.renderer.extract.image(this.graphics);
-
-            let canvas = document.createElement('canvas');
-            canvas.width = 60;
-            canvas.height = 60;
-            let ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#FFFFFF';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(image, 0, 0, 60, 60);
-
-            image = canvas;
+                const result = await this.model.predict(canvas)
+                console.log(result);
+                canvas.remove();
+                player.move()
 
 
-            this.model.predict(image)
+                // player tint green if shape drawn is predicted right
+                if (result === 'Square') {
+                    player.tint = 0x00FF00;
+
+                    // 3 seconds later 
+
+                } else {
+                    player.tint = 0xFF0000;
+
+                    // 1.5 seconds later set the tint back to white
+                    setTimeout(() => {
+                        player.tint = 0xFFFFFF;
+                    }, 1500);
+                }
+
+                break;
+            }
         }
 
-
-
+        this.graphics.clear();
 
     }
 
+    private playerInside(playerPosition: PIXI.Rectangle): boolean {
+        return (this.lastPosition.x > playerPosition.x && this.lastPosition.x < playerPosition.x + playerPosition.width && this.lastPosition.y > playerPosition.y && this.lastPosition.y < playerPosition.y + playerPosition.height)
+    }
 
     public clearCanvas(): void {
         this.graphics.clear();
