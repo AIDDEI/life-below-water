@@ -20,25 +20,25 @@ export class DrawModel {
         console.log('Model Loaded!');
     }
 
-    predict(image: any) {
+    async predict(image: any) {
 
-        this.nn.classify(image, (err, results) => {
+        const results = await this.nn.classify(image, (err, results) => {
             if (err) {
                 console.error(err);
                 return;
             }
-            console.log(results);
+
         });
+        return results[0].label
     }
 
-    gotResults(error, results) {
+    gotResults(error, results): string {
         if (error) {
             console.log(error);
-            return;
+            return 'error'
         }
         console.log(results);
-        // console.log(results[0].label);
-        // console.log(results[0].confidence);
+
     }
 
 

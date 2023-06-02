@@ -21,7 +21,7 @@ export class Game {
     public lobGame: LobGame | undefined;
     private lobAssets: PIXI.Texture<PIXI.Resource>
     gameTexture: Texture<Resource>;
-
+    players = [];
     constructor() {
         PIXI.settings.ROUND_PIXELS = true
 
@@ -52,10 +52,14 @@ export class Game {
 
         this.pixi.ticker.add((delta) => this.update(delta))
         this.player = new Player(this.gameTexture)
-        this.pixi.stage.addChild(this.player)
+        this.player2 = new Player(this.gameTexture)
+
+        this.pixi.stage.addChild(this.player, this.player2)
+
+        this.players.push(this.player, this.player2)
         this.mail.visible = false;
         const canvas = new DrawableCanvas(this)
-        canvas.resizeCanvas(800, 400)
+        canvas.resizeCanvas(800, 600)
         this.pixi.stage.addChild(canvas)
 
 
@@ -67,6 +71,8 @@ export class Game {
         // this.mail.update(delta)
 
         if (this.lobGame?.active) this.lobGame.update(delta)
+
+
     }
 
     public startLobGame() {
