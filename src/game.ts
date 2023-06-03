@@ -4,6 +4,8 @@ import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
+import { Schedule } from "./Schedule";
+import { Transition } from "./Transition";
 // import { WaterModel } from "./WaterModel";
 
 export class Game {
@@ -14,12 +16,14 @@ export class Game {
   public mail: MailScreen;
   private officeAssets: PIXI.Texture;
   private mailAssets: PIXI.Texture[];
-
+  private dayAssets: any;
+  public schedule: Schedule;
   //water parameters related
   public waterParameters: WaterParam[];
   private waterParamA: WaterParam;
   private waterParamB: WaterParam;
   private waterParamC: WaterParam;
+
   // public waterModel: WaterModel;
 
   constructor() {
@@ -48,18 +52,23 @@ export class Game {
   }
 
   loadCompleted() {
+
     console.log("Load completed");
     console.log(this.loader.textures);
 
     this.gameTexture = this.loader.textures.Player["flowerTop"];
     this.officeAssets = this.loader.textures.Office;
     this.mailAssets = this.loader.textures.MailScreen;
+    this.dayAssets = this.loader.textures.DayScreen;
 
+
+    this.schedule = new Schedule(this.dayAssets, this)
     // this.player = new Player(this.gameTexture)
     // this.pixi.stage.addChild(this.player)
 
     this.mail = new MailScreen(this.mailAssets, this);
     this.pixi.stage.addChild(this.mail);
+
 
     this.mail.add(
       "Lob lob lob",
@@ -87,6 +96,8 @@ export class Game {
 
     this.waterParamC.updateValue(-1);
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
+
+    this.pixi.stage.addChild(this.schedule)
   }
 }
 

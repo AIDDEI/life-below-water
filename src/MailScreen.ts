@@ -1,7 +1,6 @@
 import * as PIXI from 'pixi.js';
 import { AssetType, Game } from './game';
 import { MailItem } from './MailItem';
-
 import { ChallengeMail } from './ChallengeMail';
 
 type MailType = {

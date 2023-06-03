@@ -6,6 +6,8 @@ import mailbg from "./images/screenbg.png"
 import mailIcon from "./images/mail.png"
 import mailIconUnread from "./images/mailUnread.png"
 import mailHeaderIcon from "./images/mailheaderIcon.png"
+import desk from "./images/desk.jpg"
+import border from "./images/border.png"
 import { Player } from "./Player"
 
 
@@ -44,11 +46,16 @@ export class AssetLoader {
             'mailHeaderIcon': mailHeaderIcon
         });
 
+        PIXI.Assets.addBundle('DayScreen', {
+            'daybg': desk,
+            'border': border,
+        });
+
     }
 
     public async loadAssets() {
 
-        const bundlePromise = await PIXI.Assets.loadBundle(['Player', 'Office', 'MailScreen'], (progress) => { this.showProgress(progress) })
+        const bundlePromise = await PIXI.Assets.loadBundle(['Player', 'Office', 'MailScreen', 'DayScreen'], (progress) => { this.showProgress(progress) })
         const texturePromise = await PIXI.Assets.load(['Crab', 'Crab2'])
 
         // give textures the right index using reduce 
