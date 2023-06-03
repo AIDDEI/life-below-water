@@ -59,7 +59,7 @@ export class Game {
         this.players.push(this.player, this.player2)
         this.mail.visible = false;
         const canvas = new DrawableCanvas(this)
-        canvas.resizeCanvas(800, 600)
+
         this.pixi.stage.addChild(canvas)
 
 
