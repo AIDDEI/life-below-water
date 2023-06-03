@@ -25,7 +25,7 @@ export class Schedule extends Container {
             dropShadowDistance: 3,
             fontWeight: 'bold'
         });
-        this._goalText = new Text(`Welkom bij Waterschappen! Wat leuk dat je een onderdeel uitmaakt van ons team. Ik ben Neeldert, jouw begeleider. Je draait vandaag met mij mee. Ons voornaamste doel vandaag is het op peil houden van de waterkwaliteit. Klink simpel, maar dat is het niet! Daar kom je nog wel achter. Wij moeten veel ingewikkelde keuzes maken die gevolgen hebben voor verschillende groepen in de samenleving. Als ik een opdracht voor je heb, stuur ik dit via de mail. Succes! `, { fill: 'blue', fontSize: 15 });
+        this._goalText = new Text(`Welkom bij Waterschappen! Wat leuk dat je bij ons team zit. Ik ben Neeldert, jouw begeleider voor vandaag! Ons voornaamste doel vandaag is het op peil houden van de waterkwaliteit. Dat klinkt simpel, maar dat is het niet! Je zult ontdekken dat we veel ingewikkelde beslissingen over water moeten nemen, die gevolgen kunnen hebben voor verschillende groepen in de samenleving. Als ik een opdracht voor je heb, stuur ik dit via de mail. Succes! `, { fill: 'blue', fontSize: 15 });
         this._goalText.style.wordWrap = true;
         this._goalText.style.wordWrapWidth = 400;
         this._renderDayScreen()
@@ -50,8 +50,8 @@ export class Schedule extends Container {
         const bg = new Sprite(this.assets.daybg);
         // apply blur filter
         bg.filters = [new BlurFilter(5, 5, 1)];
-        bg.width = 1000
-        bg.height = 600
+        bg.width = 1100
+        bg.height = 700
 
         const border = new Sprite(this.assets.border);
         border.position.set(this.game.pixi.screen.width / 2 - border.width / 2, this.game.pixi.screen.height / 2 - border.height / 2);
@@ -64,9 +64,9 @@ export class Schedule extends Container {
         borderBg.position.set(border.x + 20, border.y + 20);
 
         // place day text in the middle of the border
-        this._dayText.position.set(this.game.pixi.screen.width / 2 - this._dayText.width / 2, border.y + 80);
+        this._dayText.position.set(this.game.pixi.screen.width / 2 - this._dayText.width / 2, border.y + 70);
         // place goal text in the middle of the border
-        this._goalText.position.set(this.game.pixi.screen.width / 2 - this._goalText.width / 2, this.game.pixi.screen.height / 2 - this._goalText.height / 2);
+        this._goalText.position.set(this.game.pixi.screen.width / 2 - this._goalText.width / 2, this._dayText.y + 70);
 
 
         const button = new Button(35, 'Start dag', 0x2c5eab, 0x4287f5, () => {
