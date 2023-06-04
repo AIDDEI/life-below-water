@@ -36,14 +36,23 @@ export class Game {
     this.loader = new AssetLoader(this);
 
     this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
-    this.waterParamB = new WaterParam("Parameter B", "parameter_b", 100, 11);
+    this.waterParamB = new WaterParam(
+      "Parameter B", // name
+      "parameter_b", //keyName
+      100, // value
+      11, // increment
+      100, // min
+      1000, // max
+      300, // opt min
+      700 // opt max
+    );
     this.waterParamC = new WaterParam(
-      "Parameter C",
-      "parameter_c",
-      624,
-      20,
-      500,
-      700
+      "Parameter C", //Name
+      "parameter_c", //keyname
+      624, //value
+      20, // increment
+      500, // min
+      700 // max
     );
   }
 
@@ -87,6 +96,15 @@ export class Game {
 
     this.waterParamC.updateValue(-1);
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
+
+    this.waterParamA.draw(0, 0, 100, this.pixi.stage.width);
+    this.waterParamB.draw(0, 200, 100, this.pixi.stage.width);
+    this.waterParamC.draw(0, 400, 100, this.pixi.stage.width);
+    this.pixi.stage.addChild(
+      this.waterParamA,
+      this.waterParamB,
+      this.waterParamC
+    );
   }
 }
 
