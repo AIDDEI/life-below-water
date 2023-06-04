@@ -32,6 +32,9 @@ export class WaterParam extends PIXI.Container {
   private bgRect: PIXI.Graphics;
   private optimalRect: PIXI.Graphics;
   private valueRect: PIXI.Graphics;
+  private nameText: PIXI.Text;
+  private textMargin: number;
+  private rectRadius: number;
 
   constructor(
     name: string,
@@ -57,11 +60,14 @@ export class WaterParam extends PIXI.Container {
     this.optimalMaxValue = optimalMaxValue;
 
     // drawing related
+    this.rectRadius = 20;
+    this.textMargin = 10;
     this.visible = false;
     this.bgRect = new PIXI.Graphics();
     this.valueRect = new PIXI.Graphics();
     this.optimalRect = new PIXI.Graphics();
-    this.addChild(this.bgRect, this.optimalRect, this.valueRect);
+    this.nameText = new PIXI.Text(this.name);
+    this.addChild(this.bgRect, this.optimalRect, this.valueRect, this.nameText);
 
     console.log(
       `WaterParam created: ${this.name} (${this.keyName}), value: ${this.value}, increment: ${this.increment}`
@@ -260,9 +266,29 @@ export class WaterParam extends PIXI.Container {
    *
    */
   public draw(x: number, y: number, height: number, width: number) {
+    // draw text and place it on the screen
+    const widthText = width * 0.3;
+    const widthBar = width * 0.7;
+
+    this.nameText.anchor.set(0.5, 0);
+    this.nameText.x = widthText / 2;
+    this.nameText.y = y;
+    this.nameText.height = height;
+    this.nameText.width = width * 0.2;
+
     this.bgRect.beginFill("rgba(255,215,0)");
-    this.bgRect.lineStyle(1, "rgba(160,82,45)");
-    this.bgRect.drawRect(x, y, width, height);
+    this.bgRect.lineStyle({
+      width: 2,
+      color: "rgba(160,82,45)",
+      alignment: 0.5,
+    });
+    this.bgRect.drawRoundedRect(
+      widthText,
+      y,
+      widthBar,
+      height,
+      this.rectRadius
+    );
     this.bgRect.endFill();
 
     //draw optimal range indicators
@@ -274,13 +300,13 @@ export class WaterParam extends PIXI.Container {
 
     // optimalX is the x-coordinate for the optimal range indicator.
     const optimalX: number =
-      x +
-      width *
+      widthText +
+      widthBar *
         ((this.optimalRange.min - this.range.min) /
           (this.range.max - this.range.min));
     // optimalWidth is the width of the optimal range indicator
     const optimalWidth: number =
-      width *
+      widthBar *
       ((this.optimalRange.max - this.optimalRange.min) /
         (this.range.max - this.range.min));
 
