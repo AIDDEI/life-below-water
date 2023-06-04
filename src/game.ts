@@ -20,6 +20,7 @@ export class Game {
   private waterParamA: WaterParam;
   private waterParamB: WaterParam;
   private waterParamC: WaterParam;
+  flag: boolean;
   // public waterModel: WaterModel;
 
   constructor() {
@@ -97,14 +98,44 @@ export class Game {
     this.waterParamC.updateValue(-1);
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
 
-    this.waterParamA.draw(0, 0, 100, this.pixi.stage.width);
-    this.waterParamB.draw(0, 200, 100, this.pixi.stage.width);
-    this.waterParamC.draw(0, 400, 100, this.pixi.stage.width);
+    this.waterParamA.draw(
+      0,
+      this.pixi.stage.height - 190,
+      20,
+      this.pixi.stage.width * 0.9
+    );
+    this.waterParamB.draw(
+      0,
+      this.pixi.stage.height - 160,
+      20,
+      this.pixi.stage.width * 0.9
+    );
+    this.waterParamC.draw(
+      0,
+      this.pixi.stage.height - 130,
+      20,
+      this.pixi.stage.width * 0.9
+    );
     this.pixi.stage.addChild(
       this.waterParamA,
       this.waterParamB,
       this.waterParamC
     );
+
+    this.flag = true; // debug flag
+    this.pixi.ticker.add((delta) => {
+      if (this.flag) {
+        this.waterParamA.updateValue(0.2);
+        if (this.waterParamA.value >= this.waterParamA.range.max) {
+          this.flag = false;
+        }
+      } else {
+        this.waterParamA.updateValue(-0.2);
+        if (this.waterParamA.value <= this.waterParamA.range.min) {
+          this.flag = true;
+        }
+      }
+    });
   }
 }
 
