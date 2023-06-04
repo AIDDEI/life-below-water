@@ -31,7 +31,7 @@ export class WaterParam extends PIXI.Container {
   // drawing fields
   private bgRect: PIXI.Graphics;
   private optimalRect: PIXI.Graphics;
-  private valueRect: PIXI.Graphics;
+  private valueIndicator: PIXI.Graphics;
   private nameText: PIXI.Text;
   private textMargin: number;
   private rectRadius: number;
@@ -64,10 +64,15 @@ export class WaterParam extends PIXI.Container {
     this.textMargin = 10;
     this.visible = false;
     this.bgRect = new PIXI.Graphics();
-    this.valueRect = new PIXI.Graphics();
+    this.valueIndicator = new PIXI.Graphics();
     this.optimalRect = new PIXI.Graphics();
     this.nameText = new PIXI.Text(this.name);
-    this.addChild(this.bgRect, this.optimalRect, this.valueRect, this.nameText);
+    this.addChild(
+      this.bgRect,
+      this.optimalRect,
+      this.valueIndicator,
+      this.nameText
+    );
 
     console.log(
       `WaterParam created: ${this.name} (${this.keyName}), value: ${this.value}, increment: ${this.increment}`
@@ -246,6 +251,8 @@ export class WaterParam extends PIXI.Container {
       console.log(`old: ${this.value} | step: ${step}`);
       const tempValue = this.value + this.increment * step;
       this.value = tempValue;
+      const change = this.increment * step;
+      this.updateDraw(change);
     } else {
       console.log(
         `Could not update value of ${this.name}. Invalid step value. (range: -5 - 5, given: ${step})`
@@ -266,6 +273,7 @@ export class WaterParam extends PIXI.Container {
    *
    */
   public draw(x: number, y: number, height: number, width: number) {
+    this.visible = true;
     // draw text and place it on the screen
     const widthText = width * 0.3;
     const widthBar = width * 0.7;
@@ -315,13 +323,44 @@ export class WaterParam extends PIXI.Container {
       `X: ${x}, OptimalX: ${optimalX}, Width: ${width}, OptimalWidth: ${optimalWidth}`
     );
 
-    this.optimalRect.drawRect(optimalX, y, optimalWidth, height);
+    // decide if it's supposed to be visible based on values
+    if (Number.isNaN(optimalX) && Number.isNaN(optimalWidth)) {
+      console.log(`ERROR: optimalRect can't be drawn due to NaN errors.`);
+      this.optimalRect.visible = false;
+    } else {
+      this.optimalRect.drawRect(optimalX, y, optimalWidth, height);
+      this.optimalRect.visible = true;
+    }
 
     // draw / update value indicator
-    if (Number.isNaN(optimalX) && Number.isNaN(optimalWidth)) {
-      console.log(`ERROR: value can't be drawn due to NaN errors.`);
+    this.valueIndicator.beginFill("rgba(0, 255, 255, 0.1)");
+    this.valueIndicator.lineStyle({
+      width: 1,
+      color: "rgba(8, 24, 168, 1)",
+      alignment: 0.5,
+    });
+
+    const valueX =
+      this.value > height / 2
+        ? widthText +
+          widthBar * (this.value / (this.range.max - this.range.min))
+        : widthText + height / 2;
+    this.valueIndicator.drawCircle(valueX, y + height / 2, height / 2);
+  }
+
+  public updateDraw(change: number) {
+    const newX =
+      this.valueIndicator.x +
+      this.bgRect.width * (change / (this.range.max - this.range.min));
+    console.log(change, newX);
+    if (newX > this.bgRect.x + this.bgRect.width) {
+      this.valueIndicator.x =
+        this.bgRect.x + this.bgRect.width - this.valueIndicator.height / 0.7;
+    } else if (newX < this.bgRect.x + this.valueIndicator.height / 2) {
+      this.valueIndicator.x = this.bgRect.x + this.valueIndicator.height / 2;
     } else {
-      this.visible = true;
+      this.valueIndicator.x +=
+        this.bgRect.width * (change / (this.range.max - this.range.min));
     }
   }
 }
