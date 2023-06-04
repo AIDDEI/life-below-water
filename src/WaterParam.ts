@@ -48,6 +48,7 @@ export class WaterParam extends PIXI.Container {
     this._name = name;
     this._keyName = keyName;
     this._increment = increment;
+
     // fields set via setters
     this.value = value;
     this.minValue = minValue;
@@ -126,6 +127,17 @@ export class WaterParam extends PIXI.Container {
     return this._minValue;
   }
 
+  /**
+   * Setter for the parameter's minValue.
+   * Enforces a minimum value of 0.
+   *
+   * @param value - value to set minValue to.
+   *
+   * @example
+   * ```ts
+   * this.minValue = 0;
+   * ```
+   */
   private set minValue(value: number) {
     if (value < 0) {
       console.log(`ERROR: minValue cant be below 0. value:${value}`);
@@ -138,6 +150,17 @@ export class WaterParam extends PIXI.Container {
     return this._maxValue;
   }
 
+  /**
+   * Setter for the parameter's maxValue.
+   * Enforces a minimum value above the parameter's minValue.
+   *
+   * @param value - value to set maxValue to.
+   *
+   * @example
+   * ```ts
+   * this.maxValue = 5;
+   * ```
+   */
   private set maxValue(value: number) {
     if (value < this.minValue) {
       console.log(
@@ -159,6 +182,17 @@ export class WaterParam extends PIXI.Container {
     return this._optimalMinValue;
   }
 
+  /**
+   * Setter for the parameter's optimal Minimum Value.
+   * Enforces a minimum value above the parameter's minValue, and below the parameter's maxValue.
+   *
+   * @param value - value to set optimalMinValue to.
+   *
+   * @example
+   * ```ts
+   * this.maxValue = 2;
+   * ```
+   */
   private set optimalMinValue(value: number) {
     if (value > this.minValue && value < this.maxValue) {
       this._optimalMinValue = value;
@@ -173,6 +207,17 @@ export class WaterParam extends PIXI.Container {
     return this._optimalMaxValue;
   }
 
+  /**
+   * Setter for the parameter's optimal Maximum Value.
+   * Enforces a minimum value above the parameter's optimalMinValue, and below the parameter's maxValue.
+   *
+   * @param value - value to set optimalMaxValue to.
+   *
+   * @example
+   * ```ts
+   * this.maxValue = 4;
+   * ```
+   */
   private set optimalMaxValue(value: number) {
     if (value > this.optimalMinValue && value < this.maxValue) {
       this._optimalMaxValue = value;
@@ -203,6 +248,7 @@ export class WaterParam extends PIXI.Container {
   }
 
   //drawing functions
+
   /**
    * function draw the parameter's value onto the screen, in bar form.
    * Comes with a background, optimal value range, and value indicator.
@@ -213,7 +259,6 @@ export class WaterParam extends PIXI.Container {
    * @param width - width of the bar
    *
    */
-
   public draw(x: number, y: number, height: number, width: number) {
     this.bgRect.beginFill("rgba(255,215,0)");
     this.bgRect.lineStyle(1, "rgba(160,82,45)");
