@@ -123,6 +123,8 @@ export class Game {
     );
 
     this.flag = true; // debug flag
+
+    // game delta loop, put updates here.
     this.pixi.ticker.add((delta) => {
       if (this.flag) {
         this.waterParamA.updateValue(0.2);
