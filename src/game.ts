@@ -99,19 +99,19 @@ export class Game {
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
 
     this.waterParamA.draw(
-      0,
+      500,
       this.pixi.stage.height - 190,
       20,
       this.pixi.stage.width * 0.9
     );
     this.waterParamB.draw(
-      0,
+      500,
       this.pixi.stage.height - 160,
       20,
       this.pixi.stage.width * 0.9
     );
     this.waterParamC.draw(
-      0,
+      500,
       this.pixi.stage.height - 130,
       20,
       this.pixi.stage.width * 0.9
@@ -126,11 +126,15 @@ export class Game {
     this.pixi.ticker.add((delta) => {
       if (this.flag) {
         this.waterParamA.updateValue(0.2);
+        //this.waterParamB.updateValue(1);
+        //this.waterParamC.updateValue(5);
         if (this.waterParamA.value >= this.waterParamA.range.max) {
           this.flag = false;
         }
       } else {
         this.waterParamA.updateValue(-0.2);
+        //this.waterParamB.updateValue(-2);
+        //this.waterParamC.updateValue(-3);
         if (this.waterParamA.value <= this.waterParamA.range.min) {
           this.flag = true;
         }

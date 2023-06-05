@@ -33,7 +33,6 @@ export class WaterParam extends PIXI.Container {
   private optimalRect: PIXI.Graphics;
   private valueIndicator: PIXI.Graphics;
   private nameText: PIXI.Text;
-  private textMargin: number;
   private rectRadius: number;
 
   constructor(
@@ -61,7 +60,6 @@ export class WaterParam extends PIXI.Container {
 
     // drawing related
     this.rectRadius = 20;
-    this.textMargin = 10;
     this.visible = false;
     this.bgRect = new PIXI.Graphics();
     this.valueIndicator = new PIXI.Graphics();
@@ -119,7 +117,7 @@ export class WaterParam extends PIXI.Container {
       }
     } else {
       this._value = newValue;
-      console.log(`changed ${this.name}'s value. ${newValue} | ${this.value}`);
+      // console.log(`changed ${this.name}'s value. ${newValue} | ${this.value}`); // spams console
     }
   }
 
@@ -248,7 +246,7 @@ export class WaterParam extends PIXI.Container {
    */
   public updateValue(step: number) {
     if (step != null && step >= -5 && step <= 5) {
-      console.log(`old: ${this.value} | step: ${step}`);
+      //console.log(`old: ${this.value} | step: ${step}`); // spams console
       const tempValue = this.value + this.increment * step;
       this.value = tempValue;
       const change = this.increment * step;
@@ -288,7 +286,6 @@ export class WaterParam extends PIXI.Container {
     this.bgRect.lineStyle({
       width: 2,
       color: "rgba(160,82,45)",
-      alignment: 0.5,
     });
     this.bgRect.drawRoundedRect(
       widthText,
@@ -323,7 +320,7 @@ export class WaterParam extends PIXI.Container {
       `X: ${x}, OptimalX: ${optimalX}, Width: ${width}, OptimalWidth: ${optimalWidth}`
     );
 
-    // decide if it's supposed to be visible based on values
+    // decide if optimal value range can be shown based on values
     if (Number.isNaN(optimalX) && Number.isNaN(optimalWidth)) {
       console.log(`ERROR: optimalRect can't be drawn due to NaN errors.`);
       this.optimalRect.visible = false;
@@ -348,16 +345,25 @@ export class WaterParam extends PIXI.Container {
     this.valueIndicator.drawCircle(valueX, y + height / 2, height / 2);
   }
 
-  public updateDraw(change: number) {
+  /**
+   * function to update the valueIndicator's position on the bar.
+   * Gets already called inside the updateValue function upon updating value.
+   *
+   * @param change - number - Amount with which the value was changed. (increment * step)
+   *
+   */
+  private updateDraw(change: number) {
+    // calculate new X position.
     const newX =
       this.valueIndicator.x +
       this.bgRect.width * (change / (this.range.max - this.range.min));
-    console.log(change, newX);
-    if (newX > this.bgRect.x + this.bgRect.width) {
+    // console.log(change, newX); // spams console
+    // check if X is within bounds of the bgRect
+    if (newX >= this.bgRect.x + this.bgRect.width - this.valueIndicator.width) {
       this.valueIndicator.x =
-        this.bgRect.x + this.bgRect.width - this.valueIndicator.height / 0.7;
-    } else if (newX < this.bgRect.x + this.valueIndicator.height / 2) {
-      this.valueIndicator.x = this.bgRect.x + this.valueIndicator.height / 2;
+        this.bgRect.x + this.bgRect.width - this.valueIndicator.width;
+    } else if (newX <= this.bgRect.x) {
+      this.valueIndicator.x = this.bgRect.x;
     } else {
       this.valueIndicator.x +=
         this.bgRect.width * (change / (this.range.max - this.range.min));
