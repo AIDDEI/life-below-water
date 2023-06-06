@@ -6,6 +6,6 @@ body {
 
 canvas {
     /* for a 800 pixel canvas, place 400 pixels left of center */
-    margin: 0 auto;
+    margin: 20px calc(50vw - 400px);
     background-color: white;
 }
