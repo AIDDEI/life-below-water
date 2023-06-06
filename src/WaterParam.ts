@@ -249,8 +249,7 @@ export class WaterParam extends PIXI.Container {
       //console.log(`old: ${this.value} | step: ${step}`); // spams console
       const tempValue = this.value + this.increment * step;
       this.value = tempValue;
-      const change = this.increment * step;
-      this.updateDraw(change);
+      this.updateDraw();
     } else {
       console.log(
         `Could not update value of ${this.name}. Invalid step value. (range: -5 - 5, given: ${step})`
@@ -340,7 +339,7 @@ export class WaterParam extends PIXI.Container {
     const valueX =
       this.value > height / 2
         ? widthText +
-          widthBar * (this.value / (this.range.max - this.range.min))
+          widthBar * ((this.value = this.range.min) / (this.range.max - this.range.min))
         : widthText + height / 2;
     this.valueIndicator.drawCircle(valueX, y + height / 2, height / 2);
   }
@@ -352,21 +351,22 @@ export class WaterParam extends PIXI.Container {
    * @param change - number - Amount with which the value was changed. (increment * step)
    *
    */
-  private updateDraw(change: number) {
+  private updateDraw() {
     // calculate new X position.
     const newX =
-      this.valueIndicator.x +
-      this.bgRect.width * (change / (this.range.max - this.range.min));
+      this.bgRect.width * (
+        (this.value - this.range.min) /
+       (this.range.max - this.range.min)
+       );
     // console.log(change, newX); // spams console
     // check if X is within bounds of the bgRect
-    if (newX >= this.bgRect.x + this.bgRect.width - this.valueIndicator.width) {
+    if (newX >= this.bgRect.width - this.valueIndicator.width) {
       this.valueIndicator.x =
         this.bgRect.x + this.bgRect.width - this.valueIndicator.width;
     } else if (newX <= this.bgRect.x) {
       this.valueIndicator.x = this.bgRect.x;
     } else {
-      this.valueIndicator.x +=
-        this.bgRect.width * (change / (this.range.max - this.range.min));
+      this.valueIndicator.x = newX;
     }
   }
 }

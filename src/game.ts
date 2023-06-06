@@ -128,14 +128,14 @@ export class Game {
     this.pixi.ticker.add((delta) => {
       if (this.flag) {
         this.waterParamA.updateValue(0.2);
-        //this.waterParamB.updateValue(1);
+        this.waterParamB.updateValue(0.2);
         //this.waterParamC.updateValue(5);
         if (this.waterParamA.value >= this.waterParamA.range.max) {
           this.flag = false;
         }
       } else {
         this.waterParamA.updateValue(-0.2);
-        //this.waterParamB.updateValue(-2);
+        this.waterParamB.updateValue(-0.2);
         //this.waterParamC.updateValue(-3);
         if (this.waterParamA.value <= this.waterParamA.range.min) {
           this.flag = true;
