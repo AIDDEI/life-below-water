@@ -7,7 +7,6 @@ export class ChallengeMail extends ActiveMail {
 
     constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: Game) {
         super(mail, mailHeaderIcon, game);
-        console.log(mail);
         this.createContent();
     }
 
@@ -22,14 +21,13 @@ export class ChallengeMail extends ActiveMail {
         this.addChild(contentText);
 
         let button
+
         switch (this.mail.identifier) {
             case 'lob':
                 if (this.mail.played) return
                 button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
                     this.game.startLobGame();
                     this.game.mail.mails[this.mail.index].played = true;
-                });
-                break;
             default:
                 button = new Button(50, 'Dit hoort niet..', undefined, undefined, () => {
                     console.log('This should not happen');
@@ -40,3 +38,4 @@ export class ChallengeMail extends ActiveMail {
         this.addChild(button);
     }
 }
+

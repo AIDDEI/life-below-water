@@ -8,7 +8,7 @@ type MailType = {
     title: string,
     description: string,
     type: number,
-    read: boolean,
+    read?: boolean,
     identifier: string
 }
 

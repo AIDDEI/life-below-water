@@ -27,6 +27,7 @@ export class MailScreen extends PIXI.Container {
     private game: Game
     private bgContainer: any;
 
+
     constructor(assets: AssetType, game: Game) {
         super();
         this.game = game;
@@ -64,8 +65,10 @@ export class MailScreen extends PIXI.Container {
 * Renders the mail screen after adding a new mail
 *
 */
+
     public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", played: boolean = false) {
         const mail = { title, description, type, forceOpen, identifier, played }
+
         this.mails.push(mail);
         this._renderMails();
     }
