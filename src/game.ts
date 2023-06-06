@@ -4,9 +4,7 @@ import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
-import { Schedule } from "./Schedule";
-import { Transition } from "./Transition";
-// import { WaterModel } from "./WaterModel";
+import { Calendar } from "./Calendar";
 
 export class Game {
   public pixi: PIXI.Application;
@@ -17,7 +15,7 @@ export class Game {
   private officeAssets: PIXI.Texture;
   private mailAssets: PIXI.Texture[];
   private dayAssets: any;
-  public schedule: Schedule;
+  public calendar: Calendar;
   //water parameters related
   public waterParameters: WaterParam[];
   private waterParamA: WaterParam;
@@ -62,7 +60,7 @@ export class Game {
     this.dayAssets = this.loader.textures.DayScreen;
 
 
-    this.schedule = new Schedule(this.dayAssets, this)
+    this.calendar = new Calendar(this.dayAssets, this)
     // this.player = new Player(this.gameTexture)
     // this.pixi.stage.addChild(this.player)
 
@@ -97,7 +95,8 @@ export class Game {
     this.waterParamC.updateValue(-1);
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
 
-    this.pixi.stage.addChild(this.schedule)
+    // ! Keep this last 
+    this.pixi.stage.addChild(this.calendar)
   }
 }
 
