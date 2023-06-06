@@ -20,7 +20,7 @@ export class ChallengeMail extends ActiveMail {
         // Add the content to the content container
         this.addChild(contentText);
 
-        let button
+        let button: Button;
 
         switch (this.mail.identifier) {
             case 'lob':
@@ -28,6 +28,8 @@ export class ChallengeMail extends ActiveMail {
                 button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
                     this.game.startLobGame();
                     this.game.mail.mails[this.mail.index].played = true;
+                });
+                break;
             default:
                 button = new Button(50, 'Dit hoort niet..', undefined, undefined, () => {
                     console.log('This should not happen');
