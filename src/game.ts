@@ -1,10 +1,11 @@
-// Import PIXI
 import * as PIXI from "pixi.js";
 import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
-// import { WaterModel } from "./WaterModel";
+import { LobGame } from './LobGame';
+
+export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> }
 
 export class Game {
   public pixi: PIXI.Application;
@@ -12,6 +13,8 @@ export class Game {
   public player: Player;
   private gameTexture: PIXI.Texture;
   public mail: MailScreen;
+  public lobGame: LobGame | undefined;
+  private lobAssets: PIXI.Texture<PIXI.Resource>
   private officeAssets: PIXI.Texture;
   private mailAssets: PIXI.Texture[];
 
@@ -51,9 +54,9 @@ export class Game {
     console.log("Load completed");
     console.log(this.loader.textures);
 
-    this.gameTexture = this.loader.textures.Player["flowerTop"];
     this.officeAssets = this.loader.textures.Office;
     this.mailAssets = this.loader.textures.MailScreen;
+    this.lobAssets = this.loader.textures.Lobgame
 
     // this.player = new Player(this.gameTexture)
     // this.pixi.stage.addChild(this.player)
@@ -87,7 +90,31 @@ export class Game {
 
     this.waterParamC.updateValue(-1);
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
+    
+    this.pixi.ticker.add((delta) => this.update(delta))
   }
+  
+    private update(delta: number) {
+        // this.player.update(delta)
+        // this.mail.update(delta)
+
+        if (this.lobGame?.active) this.lobGame.update(delta)
+    }
+
+    public startLobGame() {
+        this.mail.visible = false;
+        this.lobGame = new LobGame(this.lobAssets, this);
+        this.pixi.stage.addChild(this.lobGame);
+
+    }
+
+    public endLobGame(score: number, reason: number): void {
+        if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
+        this.lobGame = undefined;
+        this.mail.visible = true;
+        this.mail.add('Lob lob lob', `End of lob. ${score}`, 0, true);
+    }
 }
 
 new Game();
+ 

@@ -1,13 +1,12 @@
 import * as PIXI from 'pixi.js';
 import { ActiveMail } from './ActiveMail';
 import { Button } from './Button';
+import { Game } from './game';
 
 export class ChallengeMail extends ActiveMail {
-    private minigame: string;
 
-    constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: any, minigame: string) {
+    constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: Game) {
         super(mail, mailHeaderIcon, game);
-        this.minigame = minigame;
         this.createContent();
     }
 
@@ -22,12 +21,13 @@ export class ChallengeMail extends ActiveMail {
         this.addChild(contentText);
 
         let button
-        switch (this.minigame) {
+
+        switch (this.mail.identifier) {
             case 'lob':
+                if (this.mail.played) return
                 button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
                     this.game.startLobGame();
-                });
-                break;
+                    this.game.mail.mails[this.mail.index].played = true;
             default:
                 button = new Button(50, 'Dit hoort niet..', undefined, undefined, () => {
                     console.log('This should not happen');
@@ -38,3 +38,4 @@ export class ChallengeMail extends ActiveMail {
         this.addChild(button);
     }
 }
+
