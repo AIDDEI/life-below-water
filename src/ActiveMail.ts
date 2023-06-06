@@ -2,12 +2,12 @@ import * as PIXI from 'pixi.js';
 import { Game } from './game';
 
 type MailType = {
-    played: any;
+    played: boolean,
     index: number,
     forceOpen: any;
     title: string,
     description: string,
-    type: number
+    type: number,
     read: boolean,
     identifier: string
 }
@@ -19,10 +19,10 @@ export class ActiveMail extends PIXI.Container {
 
     constructor(mail: MailType, mailHeaderIcon: PIXI.Sprite, game: Game) {
         super();
-        this.x = 80
-        this.y = 35
+        this.x = 80;
+        this.y = 35;
         this.game = game;
-        this.mailHeaderIcon = mailHeaderIcon
+        this.mailHeaderIcon = mailHeaderIcon;
         this.mail = mail;
         this.createTitle();
     }

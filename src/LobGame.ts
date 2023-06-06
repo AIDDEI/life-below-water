@@ -84,9 +84,9 @@ export class LobGame extends Minigame {
 
     private _setupInstructions(): void {
         this.instructions = new PIXI.Sprite(this.assets.instructions);
-        this.instructions.x = 10
-        this.instructions.rotation = -0.1
-        this.instructions.y = 100
+        this.instructions.x = 10;
+        this.instructions.rotation = -0.1;
+        this.instructions.y = 100;
         this.instructions.scale.set(0.95);
         this.addChild(this.instructions);
     }
@@ -105,19 +105,19 @@ export class LobGame extends Minigame {
     }
 
     private _setupLiveContainer() {
-        this.livesContainer = new PIXI.Container()
+        this.livesContainer = new PIXI.Container();
         this.addChild(this.livesContainer);
 
         for (let i = 0; i < this.lives; i++) {
             const heart = new PIXI.Sprite(this.assets.heart)
-            heart.scale.set(0.25)
-            heart.x = this.water.x + heart.width * i
-            heart.y = 0
-            heart.position.set(heart.width * i, this.scoreText.height)
-            this.livesContainer.addChild(heart)
+            heart.scale.set(0.25);
+            heart.x = this.water.x + heart.width * i;
+            heart.y = 0;
+            heart.position.set(heart.width * i, this.scoreText.height);
+            this.livesContainer.addChild(heart);
         }
 
-        this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20)
+        this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20);
     }
 
     private _setupSideButtons(): void {

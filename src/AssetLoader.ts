@@ -24,7 +24,7 @@ export class AssetLoader {
         this.graphics = new PIXI.Graphics()
         game.pixi.stage.addChild(this.graphics)
 
-        this.game = game
+        this.game = game;
 
 
         PIXI.Assets.addBundle('Player', {
