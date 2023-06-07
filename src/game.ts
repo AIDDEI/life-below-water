@@ -4,6 +4,7 @@ import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
+import { QualityScreen } from "./QualityScreen";
 // import { WaterModel } from "./WaterModel";
 
 export class Game {
@@ -14,6 +15,8 @@ export class Game {
   public mail: MailScreen;
   private officeAssets: PIXI.Texture;
   private mailAssets: PIXI.Texture[];
+  private qualityAssets: PIXI.Texture[];
+  private qualityScreen: QualityScreen;
 
   //water parameters related
   public waterParameters: WaterParam[];
@@ -64,12 +67,15 @@ export class Game {
     this.gameTexture = this.loader.textures.Player["flowerTop"];
     this.officeAssets = this.loader.textures.Office;
     this.mailAssets = this.loader.textures.MailScreen;
+    this.qualityAssets = this.loader.textures.QualityScreen;
 
     // this.player = new Player(this.gameTexture)
     // this.pixi.stage.addChild(this.player)
 
     this.mail = new MailScreen(this.mailAssets, this);
-    this.pixi.stage.addChild(this.mail);
+    this.qualityScreen = new QualityScreen(this.qualityAssets, this);
+    this.pixi.stage.addChild(this.mail, this.qualityScreen);
+    this.mail.visible = false;
 
     this.mail.add(
       "Lob lob lob",
@@ -128,14 +134,14 @@ export class Game {
     this.pixi.ticker.add((delta) => {
       if (this.flag) {
         this.waterParamA.updateValue(0.2);
-        this.waterParamB.updateValue(0.2);
+        //this.waterParamB.updateValue(0.2);
         //this.waterParamC.updateValue(5);
         if (this.waterParamA.value >= this.waterParamA.range.max) {
           this.flag = false;
         }
       } else {
         this.waterParamA.updateValue(-0.2);
-        this.waterParamB.updateValue(-0.2);
+        //this.waterParamB.updateValue(-0.2);
         //this.waterParamC.updateValue(-3);
         if (this.waterParamA.value <= this.waterParamA.range.min) {
           this.flag = true;

@@ -339,7 +339,8 @@ export class WaterParam extends PIXI.Container {
     const valueX =
       this.value > height / 2
         ? widthText +
-          widthBar * ((this.value = this.range.min) / (this.range.max - this.range.min))
+          widthBar *
+            ((this.value = this.range.min) / (this.range.max - this.range.min))
         : widthText + height / 2;
     this.valueIndicator.drawCircle(valueX, y + height / 2, height / 2);
   }
@@ -352,12 +353,12 @@ export class WaterParam extends PIXI.Container {
    *
    */
   private updateDraw() {
+    // TODO: fix x shifting on non 0 starting ranges. x gets shifted to the right.
+
     // calculate new X position.
     const newX =
-      this.bgRect.width * (
-        (this.value - this.range.min) /
-       (this.range.max - this.range.min)
-       );
+      this.bgRect.width *
+      ((this.value - this.range.min) / (this.range.max - this.range.min));
     // console.log(change, newX); // spams console
     // check if X is within bounds of the bgRect
     if (newX >= this.bgRect.width - this.valueIndicator.width) {
