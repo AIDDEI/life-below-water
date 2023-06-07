@@ -65,7 +65,7 @@ export class Game {
 		this.browser.addTab("Kwaliteit", undefined);
 		this.browser.addTab("E-mail", this.mail);
 		this.browser.addTab("Kaart", undefined);
-		this.browser.addTab("Over ons", this.mail);
+		this.browser.addTab("Over ons", undefined);
 
 		this.browser.openTab = 1;
 		this.pixi.stage.addChild(this.browser);
