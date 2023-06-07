@@ -14,7 +14,7 @@ export class Player extends PIXI.Sprite {
 
     public move(x: number, y: number) {
 
-        this.x = Math.floor(Math.random() * 600) + 200
+        this.x = Math.floor(Math.random() * 1200) + 200
         this.y = Math.floor(Math.random() * 400) + 200
     }
 

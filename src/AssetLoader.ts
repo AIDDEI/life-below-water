@@ -6,7 +6,7 @@ import mailbg from "./images/screenbg.png"
 import mailIcon from "./images/mail.png"
 import mailIconUnread from "./images/mailUnread.png"
 import mailHeaderIcon from "./images/mailheaderIcon.png"
-import { Player } from "./Player"
+
 
 
 export class AssetLoader {
@@ -36,6 +36,7 @@ export class AssetLoader {
 
         PIXI.Assets.add('Crab', sharkImage)
         PIXI.Assets.add('Crab2', sharkImage)
+        PIXI.Assets.add('spritesheet', "http://127.0.0.1:5500/spritesheets/waterSheet.json")
 
         PIXI.Assets.addBundle('MailScreen', {
             'mailbg': mailbg,
@@ -49,7 +50,7 @@ export class AssetLoader {
     public async loadAssets() {
 
         const bundlePromise = await PIXI.Assets.loadBundle(['Player', 'Office', 'MailScreen'], (progress) => { this.showProgress(progress) })
-        const texturePromise = await PIXI.Assets.load(['Crab', 'Crab2'])
+        const texturePromise = await PIXI.Assets.load(['Crab', 'Crab2', 'spritesheet'])
 
         // give textures the right index using reduce 
         const textures = [bundlePromise, texturePromise]

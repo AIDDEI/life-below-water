@@ -5,6 +5,8 @@ import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
 import { DrawableCanvas } from "./DrawableCanvas";
+import { Water } from "./Water";
+import { Graphics } from "pixi.js";
 // import { WaterModel } from "./WaterModel";
 
 export class Game {
@@ -32,6 +34,8 @@ export class Game {
         this.pixi = new PIXI.Application({
             autoDensity: true,
             resolution: window.devicePixelRatio,
+            width: 800,
+            height: 600,
             backgroundColor: 0xFFFFFF
         });
         this.players = []
@@ -58,6 +62,8 @@ export class Game {
         this.gameTexture = this.loader.textures.Player["flowerTop"];
         this.officeAssets = this.loader.textures.Office;
         this.mailAssets = this.loader.textures.MailScreen;
+        this.waterTexture = this.loader.textures.spritesheet.animations["swoosh"]
+
 
         // this.player = new Player(this.gameTexture)
         // this.pixi.stage.addChild(this.player)
@@ -82,27 +88,101 @@ export class Game {
         this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
         this.mail.add("Mail 4", "This is the third mail.", 0);
 
-        // Parameter testing
-        this.waterParamA.updateValue(-6); // should display error outside of step range
-        console.log(`${this.waterParamA.keyName}: ${this.waterParamA.value}`); // => parameter_a : 0
-
-        this.waterParamB.updateValue(1);
-        console.log(`${this.waterParamB.keyName}: ${this.waterParamB.value}`);
-
-        this.waterParamC.updateValue(-1);
-        console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
-
         this.player = new Player(this.gameTexture)
         this.player2 = new Player(this.gameTexture)
 
-        this.pixi.stage.addChild(this.player, this.player2)
 
         this.players.push(this.player, this.player2)
+
+
+
+
 
         const canvas = new DrawableCanvas(this)
 
         this.pixi.stage.addChild(canvas)
+        // ticker
+
+        this.graphicsContainer = new PIXI.Container();
+        // draw 3 rectangles different colors width 800 height 600
+        for (let i = 0; i < 3; i++) {
+            const graphics = new PIXI.Graphics();
+            const color = i === 0 ? 0xff0000 : i === 1 ? 0xC9C9C9 : 0x00ff00;
+            graphics.beginFill(color);
+
+            graphics.drawRect(800 * i, 0, 800, 600);
+            graphics.endFill();
+
+            this.graphicsContainer.addChild(graphics);
+
+        }
+        this.pixi.stage.addChild(this.graphicsContainer);
+        this.graphicsContainer.pivot.x = 1600;
+        // draw 2 circles at x = 400, y = 300
+
+
+        // circle 
+        const graphics = new PIXI.Graphics();
+        graphics.beginFill(0x000000);
+        graphics.drawCircle(400, 300, 50);
+        graphics.endFill();
+
+        this.pixi.stage.addChild(graphics);
+
+
+        const draw = new DrawableCanvas(this);
+
+
+        this.pixi.stage.addChild(draw);
+
+        this.pixi.ticker.add(this.update);
+
+        // draw left and right arrow at the edges of the screen
+        const leftArrow = new PIXI.Graphics();
+        leftArrow.beginFill(0x000000);
+        leftArrow.drawPolygon([0, 0, 20, 10, 0, 20]);
+        leftArrow.endFill();
+        leftArrow.x = 0;
+        leftArrow.y = 300;
+        this.pixi.stage.addChild(leftArrow);
+
+        leftArrow.eventMode = 'static'
+        leftArrow.cursor = 'pointer'
+        leftArrow.hitArea = new PIXI.Rectangle(0, 0, 20, 20)
+        leftArrow.onclick = () => {
+            console.log(this.graphicsContainer.pivot.x)
+            if (this.graphicsContainer.pivot.x > 0) {
+                this.graphicsContainer.pivot.x -= 800
+            }
+        }
+
+
+        const rightArrow = new PIXI.Graphics();
+        rightArrow.beginFill(0x000000);
+        rightArrow.drawPolygon([0, 0, 20, 10, 0, 20]);
+        rightArrow.endFill();
+        rightArrow.x = 780;
+        rightArrow.y = 300;
+
+        rightArrow.eventMode = 'static'
+        rightArrow.cursor = 'pointer'
+        rightArrow.hitArea = new PIXI.Rectangle(0, 0, 20, 20)
+        rightArrow.onclick = () => {
+            console.log(this.graphicsContainer.pivot.x)
+            if (this.graphicsContainer.pivot.x < this.graphicsContainer.width - 800) {
+                this.graphicsContainer.pivot.x += 800
+            }
+        }
+        this.pixi.stage.addChild(rightArrow);
+
+        this.graphicsContainer.addChild(this.player, this.player2)
     }
+
+    public update = (delta: number) => {
+
+
+    }
+
 }
 
 new Game();

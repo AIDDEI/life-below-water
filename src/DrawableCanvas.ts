@@ -12,15 +12,15 @@ export class DrawableCanvas extends PIXI.Container {
     private w: number;
     private h: number;
 
-    constructor(game: Game) {
+    constructor(game: Game, width: number = 2400, height: number = 600) {
         super();
         this.game = game;
         this._model = new DrawModel();
         this.graphics = new PIXI.Graphics();
         this.addChild(this.graphics);
 
-        this.w = 800;
-        this.h = 600;
+        this.w = width;
+        this.h = height;
         this.graphics.hitArea = new PIXI.Rectangle(0, 0, this.w, this.h);
 
         this._isDrawing = false;
@@ -52,12 +52,12 @@ export class DrawableCanvas extends PIXI.Container {
         this._isDrawing = true;
         this._lastPosition.copyFrom(event.data.global);
         console.log('down');
+
     }
 
     private onPointerMove(event: PIXI.InteractionEvent): void {
         if (this._isDrawing) {
             // new smooth rounded line will be drawn
-
             const newPosition = event.data.global;
             this.graphics.lineTextureStyle({ width: 10, color: 0x000000, alpha: 1, alignment: 0.5, cap: PIXI.LINE_CAP.ROUND, join: PIXI.LINE_JOIN.ROUND });
             this.graphics.moveTo(this._lastPosition.x, this._lastPosition.y);
@@ -95,7 +95,7 @@ export class DrawableCanvas extends PIXI.Container {
                 const result = await this._model.predict(canvas);
 
                 // log for debug
-                console.log(`I think you draw a ${result}`);
+                console.log(`I think you drew a ${result}`);
 
                 // TODO, check if drawn shape is the same as the expected one then do something
 
@@ -120,6 +120,11 @@ export class DrawableCanvas extends PIXI.Container {
     public clearCanvas(): void {
         this.graphics.clear();
     }
+
+    public setXPivot(x: number): void {
+        this.offset = x;
+    }
+
 }
 
 
