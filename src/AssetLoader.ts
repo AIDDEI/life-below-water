@@ -14,6 +14,7 @@ import displacement from "./images/displacement.jpg"
 import lobster from "./images/lobster.png"
 import heart from "./images/heart.png"
 import instructions from "./images/instructions.png"
+import browser from "./images/browser.png"
 
 export class AssetLoader {
 
@@ -41,6 +42,7 @@ export class AssetLoader {
 
         PIXI.Assets.add('Crab', sharkImage)
         PIXI.Assets.add('Crab2', sharkImage)
+        PIXI.Assets.add('browser', browser)
 
         PIXI.Assets.addBundle('MailScreen', {
             'mailbg': mailbg,
@@ -49,12 +51,12 @@ export class AssetLoader {
             'mailHeaderIcon': mailHeaderIcon
         });
 
- 
+
         PIXI.Assets.addBundle('DayScreen', {
             'daybg': desk,
             'border': border,
         });
- 
+
         PIXI.Assets.addBundle('Lobgame', {
             'catcher': rod,
             'lobbg': lobBg,
@@ -64,14 +66,14 @@ export class AssetLoader {
             'heart': heart,
             'instructions': instructions
         });
- 
+
     }
 
     public async loadAssets() {
- 
+
         const bundlePromise = await PIXI.Assets.loadBundle(['Player', 'Office', 'MailScreen', 'Lobgame', 'DayScreen'], (progress) => { this.showProgress(progress) })
- 
-        const texturePromise = await PIXI.Assets.load(['Crab', 'Crab2'])
+
+        const texturePromise = await PIXI.Assets.load(['Crab', 'Crab2', 'browser'])
 
         // give textures the right index using reduce 
         const textures = [bundlePromise, texturePromise]
