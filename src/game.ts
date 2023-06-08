@@ -11,9 +11,9 @@ export class Game {
   public pixi: PIXI.Application;
   private loader: AssetLoader;
   public player: Player;
-  private gameTexture: PIXI.Texture;
+  private gameTexture: PIXI.Texture; // declared but never read.
   public mail: MailScreen;
-  private officeAssets: PIXI.Texture;
+  private officeAssets: PIXI.Texture; // declared but never read.
   private mailAssets: PIXI.Texture[];
   private qualityAssets: PIXI.Texture[];
   private qualityScreen: QualityScreen;
