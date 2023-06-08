@@ -35,7 +35,7 @@ export class Browser extends Container {
 			align: "center",
 		});
 		this._searchBarText.x = 185;
-		this._searchBarText.y = 65;
+		this._searchBarText.y = 66;
 		this._tabs = [];
 		this._setUpBackground(texture);
 		this.addChild(this._searchBarText, this.tabContainer);
