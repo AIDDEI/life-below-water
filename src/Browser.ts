@@ -25,7 +25,7 @@ export class Browser extends Container {
 		this.tabContainer = new Container();
 		this.tabContainer.x = 0;
 		this.tabContainer.y = 10;
-		// mail open by default
+		// nothing open by default
 		this._openTab = -1;
 		this._lastOpenTab = -1;
 		this._searchBarText = new Text("", {
