@@ -120,7 +120,7 @@ export class Browser extends Container {
 
 		const tabText = new Text(tab.tabName, {
 			fontFamily: "Arial",
-			fontSize: 18,
+			fontSize: 16,
 			fill: 0x000000,
 			align: "center",
 		});
