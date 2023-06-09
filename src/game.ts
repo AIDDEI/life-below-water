@@ -65,7 +65,7 @@ export class Game {
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: undefined },
 			{ tabName: "E-mail", screen: this.mail },
-			{ tabName: "Kaart", screen: this.mail },
+			{ tabName: "Kaart", screen: undefined },
 			{ tabName: "Over ons", screen: undefined },
 		]);
 
