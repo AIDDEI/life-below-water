@@ -62,10 +62,12 @@ export class Game {
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.browser = new Browser(this.loader.textures.browser);
 
-		this.browser.addTab("Kwaliteit", undefined);
-		this.browser.addTab("E-mail", this.mail);
-		this.browser.addTab("Kaart", undefined);
-		this.browser.addTab("Over ons", undefined);
+		this.browser.addTabs([
+			{ tabName: "Kwaliteit", screen: undefined },
+			{ tabName: "E-mail", screen: this.mail },
+			{ tabName: "Kaart", screen: this.mail },
+			{ tabName: "Over ons", screen: undefined },
+		]);
 
 		this.browser.openTab = 1;
 		this.pixi.stage.addChild(this.browser);
