@@ -57,8 +57,8 @@ export class MailScreen extends PIXI.Container {
 * Renders the mail screen after adding a new mail
 *
 */
-    public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "") {
-        const mail: BaseMail = { title, description, type, forceOpen, identifier }
+    public add(title: string, description: string, type: number, forceOpen: boolean = false) {
+        const mail: BaseMail = { title, description, type, forceOpen }
         this.mails.push(mail);
         this._renderMails();
     }

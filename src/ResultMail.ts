@@ -11,13 +11,6 @@ export class ResultMail extends ActiveMail {
   }
 
   private createContent() {
-
-    const contentText = new PIXI.Text("Minigame Salaris", { fill: 'black', fontSize: 20, fontWeight: '600' });
-    contentText.style.wordWrap = true;
-    contentText.style.wordWrapWidth = this.width - 25;
-
-    contentText.position.set(this.x + 20, 150);
-
     let salary = 0;
 
     salary = this.mail.reason == 0 ? 150 : 75;
@@ -35,7 +28,7 @@ export class ResultMail extends ActiveMail {
 
 
     // Add the content to the content container
-    this.addChild(contentText, salaryText, reasonText, button)
+    this.addChild(salaryText, reasonText, button)
 
   }
 }

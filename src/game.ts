@@ -41,7 +41,7 @@ export class Game {
         this.mail.add('Mail 1', 'This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.', 0, false, 'lob');
         this.mail.add('Mail 3', 'This is the third mail.', 0, false, 'lob');
         this.mail.add('Mail 4', 'This is the third mail.', 0);
-        this.mail.add('Lob lob lob', `Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`, 1, true);
+        this.mail.add('Lob lob lob', `Minigame Salaris`, 1, true);
 
         this.pixi.ticker.add((delta) => this.update(delta))
     }
@@ -65,7 +65,7 @@ export class Game {
         if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
         this.lobGame = undefined;
         this.mail.visible = true;
-        this.mail.addResultsMail('Lob lob lob', `Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`, 1, true, undefined, score, reason)
+        this.mail.addResultsMail('Salaris Kreeftopdracht', `Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`, 1, true, undefined, score, reason)
     }
 }
 
