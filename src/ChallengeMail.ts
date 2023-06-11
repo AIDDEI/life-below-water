@@ -5,6 +5,7 @@ import { Game } from './game';
 
 export class ChallengeMail extends ActiveMail {
 
+ 
     constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: Game) {
         super(mail, mailHeaderIcon, game);
         this.createContent();

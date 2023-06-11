@@ -25,7 +25,10 @@ export class Game {
   private waterParamA: WaterParam;
   private waterParamB: WaterParam;
   private waterParamC: WaterParam;
-
+  private mailAssets: PIXI.Texture<PIXI.Resource>
+  public lobGame: LobGame | undefined;
+  private lobAssets: PIXI.Texture<PIXI.Resource>
+  
   constructor() {
     PIXI.settings.ROUND_PIXELS = true;
 
@@ -70,23 +73,16 @@ export class Game {
     this.pixi.stage.addChild(this.mail);
 
 
-    this.mail.add(
-      "Lob lob lob",
-      "De zomer is aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
-      0,
-      true,
-      "lob"
-    );
-    this.mail.add(
-      "Mail 1",
-      "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.",
-      0,
-      false,
-      "lob"
-    );
-    this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
-    this.mail.add("Mail 4", "This is the third mail.", 0);
+        this.mail.add('Lob lob lob', 'De zomer is aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.', 0, true, 'lob');
+        this.mail.add('Mail 1', 'This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.', 0, false, 'lob');
+        this.mail.add('Mail 3', 'This is the third mail.', 0, false, 'lob');
+        this.mail.add('Mail 4', 'This is the third mail.', 0);
 
+        this.pixi.ticker.add((delta) => this.update(delta))
+  }
+
+
+    update(delta: number) {
     // Parameter testing
     this.waterParamA.updateValue(-6); // should display error outside of step range
     console.log(`${this.waterParamA.keyName}: ${this.waterParamA.value}`); // => parameter_a : 0
@@ -116,14 +112,13 @@ export class Game {
         this.pixi.stage.addChild(this.lobGame);
 
     }
-
-    public endLobGame(score: number, reason: number): void {
+    public endLobGame(score: number, reason: number, description: string): void {
         if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
         this.lobGame = undefined;
         this.mail.visible = true;
-        this.mail.add('Lob lob lob', `End of lob. ${score}`, 0, true);
+        this.mail.addResultsMail('Salaris Kreeftopdracht', `Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`, 1, true, undefined, score, reason)
     }
 }
 
 new Game();
- 
+

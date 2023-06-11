@@ -2,6 +2,11 @@ import * as PIXI from 'pixi.js';
 import { AssetType, Game } from './game';
 import { MailItem } from './MailItem';
 import { ChallengeMail } from './ChallengeMail';
+import { ResultMail } from './ResultMail';
+import { BaseMail, ResultsMail } from '../globals';
+
+
+type MailType = BaseMail | ResultsMail<BaseMail>
 
 type MailType = {
     index?: number;
@@ -24,8 +29,7 @@ export class MailScreen extends PIXI.Container {
     private mailContainer: PIXI.Container;
     public mailHeaderIcon: PIXI.Sprite;
     private game: Game
-    private bgContainer: any;
-
+    private bgContainer: PIXI.Container;
 
     constructor(assets: AssetType, game: Game) {
         super();
@@ -50,11 +54,10 @@ export class MailScreen extends PIXI.Container {
         this.bgContainer.addChild(this.mailContainer);
         this.bgContainer.addChild(this.contentContainer);
         this.addChild(this.bgContainer);
-
     }
 
     /**
-* function to add an e-mail
+* function to add a base e-mail
 * @param title - title of the mail
 * @param description - description of the mail
 * @param type - type of the mail (0 = challenge, 1 = after game, 2 = choice picking, can expand)
@@ -64,13 +67,28 @@ export class MailScreen extends PIXI.Container {
 * Renders the mail screen after adding a new mail
 *
 */
-
     public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", played: boolean = false) {
         const mail = { title, description, type, forceOpen, identifier, played }
-
         this.mails.push(mail);
         this._renderMails();
     }
+  
+    /**
+* function to add a result e-mail
+* @param title - title of the mail
+* @param description - description of the mail
+* @param type - type of the mail (0 = challenge, 1 = after game, 2 = choice picking, can expand)
+* @param forceOpen - if true, the mail will be opened immediately, otherwise it will be marked as unread
+* @param identifier - identifier of the mail, used for checks for button and content 
+* @param score - score of the mail, used for the result mail
+* @param reason - reason of the mail, used for the result mail (1 win 0 loss)
+* 
+* Renders the mail screen after adding a new mail
+*
+*/
+    public addResultsMail(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", score: number = 0, reason: number = 0) {
+        const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, score, reason }
+        }
 
 
     public get mailCount(): number {
@@ -123,6 +141,9 @@ export class MailScreen extends PIXI.Container {
                 case 0:
                     activeMailContainer = new ChallengeMail(activeMail, this.mailHeaderIcon, this.game);
                     break;
+
+                case 1:
+                    activeMailContainer = new ResultMail(activeMail, this.mailHeaderIcon, this.game);
             }
 
             activeMailContainer.position.set(80, 35);
