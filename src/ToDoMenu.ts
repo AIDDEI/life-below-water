@@ -64,8 +64,8 @@ export class ToDoMenu {
 
     // Voeg de sluitknop toe
     this.closeButton.position.set(280, 20);
-    this.closeButton.interactive = true;
-    this.closeButton.buttonMode = true;
+    this.closeButton.eventMode = 'static';
+ 
     this.closeButton.on('pointerdown', this.hidePopup.bind(this));
     this.popupContainer.addChild(this.closeButton);
   }

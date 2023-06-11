@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js';
 import { AssetLoader } from './AssetLoader';
 import { Player } from './Player';
 import { PopUp } from './tip-popUp';
+import { Clock } from './clock';
 
 export class Game {
   public pixi: PIXI.Application
@@ -11,6 +12,7 @@ export class Game {
   private gameTexture: PIXI.Texture
   private officeAssets: PIXI.Texture
   private popUp: PopUp
+  private clock: Clock;
 
   constructor() {
     this.pixi = new PIXI.Application()
@@ -18,6 +20,8 @@ export class Game {
     // Load images
     this.loader = new AssetLoader(this)
     this.popUp = new PopUp(this.pixi);
+    this.clock = new Clock(this);
+    this.pixi.stage.addChild(this.clock)
     
   }
 
@@ -33,12 +37,13 @@ export class Game {
     this.pixi.stage.addChild(this.player)
     this.pixi.stage.addChild(this.popUp.container)
 
+    
+
     const openButton = new PIXI.Graphics();
     openButton.beginFill(0xffffff);
     openButton.drawRect(-70, -70, 100, 50);
     openButton.endFill();
-    openButton.interactive = true;
-    openButton.buttonMode = true;
+    openButton.eventMode = 'static';
     openButton.x = 100;
     openButton.y = 100;
     this.pixi.stage.addChild(openButton);
