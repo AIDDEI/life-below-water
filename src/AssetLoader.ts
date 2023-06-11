@@ -1,27 +1,32 @@
 import * as PIXI from "pixi.js"
-import { Game } from "./game"
-
+import { AssetType, Game } from "./game"
 import sharkImage from "./images/dino.png"
 import mailbg from "./images/screenbg.png"
 import mailIcon from "./images/mail.png"
 import mailIconUnread from "./images/mailUnread.png"
 import mailHeaderIcon from "./images/mailheaderIcon.png"
-import { Player } from "./Player"
-
+import desk from "./images/desk.jpg"
+import border from "./images/border.png"
+import rod from "./images/rod.png"
+import lobBg from "./images/grass.png"
+import water from "./images/water.jpg"
+import displacement from "./images/displacement.jpg"
+import lobster from "./images/lobster.png"
+import heart from "./images/heart.png"
+import instructions from "./images/instructions.png"
 
 export class AssetLoader {
 
     graphics: PIXI.Graphics
     game: Game
-    // ??
-    textures: any
+    textures: AssetType
 
     constructor(game: Game) {
         this.loadAssets()
         this.graphics = new PIXI.Graphics()
         game.pixi.stage.addChild(this.graphics)
 
-        this.game = game
+        this.game = game;
 
 
         PIXI.Assets.addBundle('Player', {
@@ -44,11 +49,28 @@ export class AssetLoader {
             'mailHeaderIcon': mailHeaderIcon
         });
 
+ 
+        PIXI.Assets.addBundle('DayScreen', {
+            'daybg': desk,
+            'border': border,
+        });
+ 
+        PIXI.Assets.addBundle('Lobgame', {
+            'catcher': rod,
+            'lobbg': lobBg,
+            'water': water,
+            'displacement': displacement,
+            'lobster': lobster,
+            'heart': heart,
+            'instructions': instructions
+        });
+ 
     }
 
     public async loadAssets() {
-
-        const bundlePromise = await PIXI.Assets.loadBundle(['Player', 'Office', 'MailScreen'], (progress) => { this.showProgress(progress) })
+ 
+        const bundlePromise = await PIXI.Assets.loadBundle(['Player', 'Office', 'MailScreen', 'Lobgame', 'DayScreen'], (progress) => { this.showProgress(progress) })
+ 
         const texturePromise = await PIXI.Assets.load(['Crab', 'Crab2'])
 
         // give textures the right index using reduce 

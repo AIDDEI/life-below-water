@@ -1,12 +1,23 @@
 import * as PIXI from 'pixi.js';
 import { AssetType, Game } from './game';
 import { MailItem } from './MailItem';
-
 import { ChallengeMail } from './ChallengeMail';
 import { ResultMail } from './ResultMail';
 import { BaseMail, ResultsMail } from '../globals';
 
+
 type MailType = BaseMail | ResultsMail<BaseMail>
+
+type MailType = {
+    index?: number;
+    forceOpen: any;
+    title: string,
+    description: string,
+    type: number
+    read?: boolean,
+    identifier: string,
+    played: boolean;
+}
 
 export class MailScreen extends PIXI.Container {
     private _mails: MailType[]
@@ -43,7 +54,6 @@ export class MailScreen extends PIXI.Container {
         this.bgContainer.addChild(this.mailContainer);
         this.bgContainer.addChild(this.contentContainer);
         this.addChild(this.bgContainer);
-
     }
 
     /**
@@ -57,11 +67,12 @@ export class MailScreen extends PIXI.Container {
 * Renders the mail screen after adding a new mail
 *
 */
-    public add(title: string, description: string, type: number, forceOpen: boolean = false) {
-        const mail: BaseMail = { title, description, type, forceOpen }
+    public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", played: boolean = false) {
+        const mail = { title, description, type, forceOpen, identifier, played }
         this.mails.push(mail);
         this._renderMails();
     }
+  
     /**
 * function to add a result e-mail
 * @param title - title of the mail
@@ -77,9 +88,8 @@ export class MailScreen extends PIXI.Container {
 */
     public addResultsMail(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", score: number = 0, reason: number = 0) {
         const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, score, reason }
-        this.mails.push(mail);
-        this._renderMails();
-    }
+        }
+
 
     public get mailCount(): number {
         return this._mails.length;
@@ -106,6 +116,8 @@ export class MailScreen extends PIXI.Container {
 
         // Render all mails, re-render when active mail changes otherwise you will have the active mail still there
         this.mails.forEach((mail, index) => {
+            mail.index = index;
+
             if (mail.forceOpen) {
                 this.setActiveMail(index);
             }

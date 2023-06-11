@@ -1,10 +1,12 @@
 import * as PIXI from 'pixi.js';
 import { ActiveMail } from './ActiveMail';
 import { Button } from './Button';
+import { Game } from './game';
 
 export class ChallengeMail extends ActiveMail {
 
-    constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: any) {
+ 
+    constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: Game) {
         super(mail, mailHeaderIcon, game);
         this.createContent();
     }
@@ -19,11 +21,14 @@ export class ChallengeMail extends ActiveMail {
         // Add the content to the content container
         this.addChild(contentText);
 
-        let button
+        let button: Button;
+
         switch (this.mail.identifier) {
             case 'lob':
+                if (this.mail.played) return
                 button = new Button(50, 'Accepteer missie', undefined, undefined, () => {
                     this.game.startLobGame();
+                    this.game.mail.mails[this.mail.index].played = true;
                 });
                 break;
             default:
@@ -36,3 +41,4 @@ export class ChallengeMail extends ActiveMail {
         this.addChild(button);
     }
 }
+
