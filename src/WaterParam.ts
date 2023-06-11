@@ -64,7 +64,7 @@ export class WaterParam extends PIXI.Container {
     this.bgRect = new PIXI.Graphics();
     this.valueIndicator = new PIXI.Graphics();
     this.optimalRect = new PIXI.Graphics();
-    this.nameText = new PIXI.Text(this.name);
+    this.nameText = new PIXI.Text();
     this.addChild(
       this.bgRect,
       this.optimalRect,
@@ -269,18 +269,27 @@ export class WaterParam extends PIXI.Container {
    * @param width - width of the bar
    *
    */
-  public draw(x: number, y: number, height: number, width: number) {
+  public draw(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    textStyle: PIXI.TextStyle
+  ) {
     this.visible = true;
     // draw text and place it on the screen
     const widthText = width * 0.3;
     const widthBar = width * 0.7;
 
-    this.nameText.anchor.set(0.5, 0);
+    this.nameText.text = this.name;
+    this.nameText.style = textStyle;
+    this.nameText.anchor.set(0.5, 0.5);
     this.nameText.x = widthText / 2;
-    this.nameText.y = y;
-    this.nameText.height = height;
+    this.nameText.y = y + height / 2;
+    // this.nameText.height = height;
     this.nameText.width = width * 0.2;
 
+    //TODO: better styling to fit figma mockup
     this.bgRect.beginFill("rgba(255,215,0)");
     this.bgRect.lineStyle({
       width: 2,

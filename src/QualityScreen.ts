@@ -2,29 +2,38 @@ import * as PIXI from "pixi.js";
 import { AssetType, Game } from "./game";
 
 import { ChallengeMail } from "./ChallengeMail";
+import { WaterParam } from "./WaterParam";
 
 export class QualityScreen extends PIXI.Container {
   private game: Game;
   private assets: AssetType;
   private bg: PIXI.Sprite;
+  private textStyle: PIXI.TextStyle;
 
   // containers
   private bgContainer: PIXI.Container;
   private contentContainer: PIXI.Container;
   private waterParamContainer: PIXI.Container;
   private qualityIndicatorContainer: PIXI.Container;
-  private barContainer: PIXI.Container;
+  private paramBars: WaterParam[];
 
   //Rects to make container width/height static.
   private contentBG: PIXI.Graphics;
   private waterParamBG: PIXI.Graphics;
   private qualityIndicatorBG: PIXI.Graphics;
-  private barBG: PIXI.Graphics;
 
   constructor(assets: AssetType, game: Game) {
     super();
     this.game = game;
     this.assets = assets;
+    this.textStyle = new PIXI.TextStyle({
+      fill: "#ffffff",
+      fontFamily: "Arial Black",
+      fontSize: 28,
+      fontVariant: "small-caps",
+      fontWeight: "bold",
+      lineJoin: "bevel",
+    });
 
     // set up the background page
     this.bg = new PIXI.Sprite(this.assets.browserWindowBG);
@@ -40,7 +49,7 @@ export class QualityScreen extends PIXI.Container {
 
     //temporary background fill to check positioning
     this.contentBG = new PIXI.Graphics();
-    this.contentBG.beginFill("rgba(10,200,20,0.4)");
+    this.contentBG.beginFill("rgba(10,200,20,0)");
     this.contentBG.drawRect(
       0,
       this.bg.height * 0.17,
@@ -55,9 +64,10 @@ export class QualityScreen extends PIXI.Container {
 
     // set up temp bg for visible positionion
     this.waterParamBG = new PIXI.Graphics();
-    this.waterParamBG.beginFill("rgba(200, 1, 200, 0.4)");
+    this.waterParamBG.beginFill("rgba(200, 1, 200)");
     this.waterParamBG.drawRect(0, 0, this.bg.width, this.bg.height * 0.4);
     this.waterParamBG.endFill();
+    this.waterParamBG.alpha = 0;
     this.waterParamContainer.addChild(this.waterParamBG);
 
     this.qualityIndicatorContainer = new PIXI.Container();
@@ -83,5 +93,16 @@ export class QualityScreen extends PIXI.Container {
 
     // make sure the created screen is visible.
     this.visible = true;
+
+    for (let i = 0; i < this.game.waterParams.length; i++) {
+      const x = 0;
+      const width = this.bg.width - 10;
+      const height =
+        this.waterParamBG.height / (this.game.waterParams.length + 1);
+      const y = 20 + height * i + 10 * i;
+      const paramBar = this.game.waterParams[i];
+      this.waterParamContainer.addChild(paramBar);
+      paramBar.draw(x, y, width, height, this.textStyle);
+    }
   }
 }

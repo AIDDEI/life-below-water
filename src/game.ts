@@ -109,44 +109,20 @@ export class Game {
     this.waterParamC.updateValue(-1);
     console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
 
-    this.waterParamA.draw(
-      500,
-      this.pixi.stage.height - 190,
-      20,
-      this.pixi.stage.width * 0.9
-    );
-    this.waterParamB.draw(
-      500,
-      this.pixi.stage.height - 160,
-      20,
-      this.pixi.stage.width * 0.9
-    );
-    this.waterParamC.draw(
-      500,
-      this.pixi.stage.height - 130,
-      20,
-      this.pixi.stage.width * 0.9
-    );
-    this.pixi.stage.addChild(
-      this.waterParamA,
-      this.waterParamB,
-      this.waterParamC
-    );
-
     this.flag = true; // debug flag
 
     // game delta loop, put updates here.
     this.pixi.ticker.add((delta) => {
       if (this.flag) {
         this.waterParamA.updateValue(0.2);
-        //this.waterParamB.updateValue(0.2);
+        this.waterParamB.updateValue(0.2);
         //this.waterParamC.updateValue(5);
         if (this.waterParamA.value >= this.waterParamA.range.max) {
           this.flag = false;
         }
       } else {
         this.waterParamA.updateValue(-0.2);
-        //this.waterParamB.updateValue(-0.2);
+        this.waterParamB.updateValue(-0.2);
         //this.waterParamC.updateValue(-3);
         if (this.waterParamA.value <= this.waterParamA.range.min) {
           this.flag = true;
