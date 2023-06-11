@@ -19,9 +19,9 @@ export class Game {
 
   //water parameters related
   public waterParams: WaterParam[];
-  private waterParamA: WaterParam;
-  private waterParamB: WaterParam;
-  private waterParamC: WaterParam;
+  public waterParamA: WaterParam;
+  public waterParamB: WaterParam;
+  public waterParamC: WaterParam;
 
   //temp debug =>  to animate bars
   flag: boolean;
@@ -79,8 +79,9 @@ export class Game {
 
     this.mail = new MailScreen(this.mailAssets, this);
     this.qualityScreen = new QualityScreen(this.qualityAssets, this);
+    this.qualityScreen.visible = false;
     this.pixi.stage.addChild(this.mail, this.qualityScreen);
-    this.mail.visible = false;
+    this.mail.visible = true;
 
     this.mail.add(
       "Lob lob lob",
@@ -113,21 +114,21 @@ export class Game {
 
     // game delta loop, put updates here.
     this.pixi.ticker.add((delta) => {
-      if (this.flag) {
-        this.waterParamA.updateValue(0.2);
-        this.waterParamB.updateValue(0.2);
-        //this.waterParamC.updateValue(5);
-        if (this.waterParamA.value >= this.waterParamA.range.max) {
-          this.flag = false;
-        }
-      } else {
-        this.waterParamA.updateValue(-0.2);
-        this.waterParamB.updateValue(-0.2);
-        //this.waterParamC.updateValue(-3);
-        if (this.waterParamA.value <= this.waterParamA.range.min) {
-          this.flag = true;
-        }
-      }
+      // if (this.flag) {
+      //   this.waterParamA.updateValue(0.2);
+      //   this.waterParamB.updateValue(0.2);
+      //   //this.waterParamC.updateValue(5);
+      //   if (this.waterParamA.value >= this.waterParamA.range.max) {
+      //     this.flag = false;
+      //   }
+      // } else {
+      //   this.waterParamA.updateValue(-0.2);
+      //   this.waterParamB.updateValue(-0.2);
+      //   //this.waterParamC.updateValue(-3);
+      //   if (this.waterParamA.value <= this.waterParamA.range.min) {
+      //     this.flag = true;
+      //   }
+      // }
     });
   }
 }
