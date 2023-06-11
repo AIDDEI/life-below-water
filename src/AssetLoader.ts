@@ -1,26 +1,30 @@
+// Import PIXI
 import * as PIXI from "pixi.js";
+
+// Import Game
 import { Game } from "./game";
 
+// Import Images
 import startBackground from "./images/startBackground.png";
-import startStart from "./images/startknop.png";
-import startNew from "./images/nieuwspelknop.png";
-import startSettings from "./images/instellingenknop.png";
+import startBackgroundBlur from "./images/startBackgroundBlur.png";
+import settingsBorder from "./images/settings_border.png";
 
+// Export class
 export class AssetLoader {
-
+    // Globals
     graphics: PIXI.Graphics;
     game: Game;
     textures: any;
 
+    // Constructor
     constructor(game: Game) {
         this.loadAssets();
         this.game = game;
 
         PIXI.Assets.addBundle('StartMenu', {
             'background': startBackground,
-            'startButton': startStart,
-            'newButton': startNew,
-            'settingsButton': startSettings,
+            'backgroundBlur': startBackgroundBlur,
+            'settingsBorder': settingsBorder,
         });
     }
 

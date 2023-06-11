@@ -2,14 +2,39 @@
 import * as PIXI from 'pixi.js';
 
 // Import Classes
+// Images
 import { AssetLoader } from './AssetLoader';
+
+// Screens
+import { HomeScreen } from './HomeScreen';
+import { Settings } from './Settings';
+import { StartScreen } from './StartScreen';
+import { CreditsScreen } from './CreditsScreen';
+import { NewGameWarning } from './NewGameWarning';
+
+// Other
 import { Player } from './Player';
+import { Music } from './Music';
+import { Sfx } from './Sfx';
+
+// Import Audio
+import music from 'url:./music/chill.mp3';
+import buttonClick from 'url:./music/button_click.mp3';
 
 export class Game {
     // Globals
     public pixi: PIXI.Application;
     private loader: AssetLoader;
+
+    public homeScreen : HomeScreen;
+    public settings : Settings;
+    public startScreen : StartScreen;
+    public creditsScreen : CreditsScreen;
+    public newGameWarning : NewGameWarning;
+
     public player: Player;
+    private theme : Music;
+    private buttonClick : Sfx;
 
     constructor() {
         // Create new Pixi Application and add it to the body
@@ -26,67 +51,143 @@ export class Game {
         console.log("Load completed");
         console.log(this.loader.textures);
 
+        // Create function to go to the Homescreen when the button is clicked
+        const goToHomeScreen = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
 
-        // Adding background to the application stage
-        let background = new PIXI.Sprite(this.loader.textures.StartMenu['background']);
-        this.pixi.stage.addChild(background);
+            // Remove the start screen
+            this.pixi.stage.removeChild(this.startScreen);
 
+            // Adding background to the stage
+            let background = new PIXI.Sprite(this.loader.textures.StartMenu['backgroundBlur']);
+            this.pixi.stage.addChild(background);
 
-        // Adding the start button
-        let startButton = new PIXI.Sprite(this.loader.textures.StartMenu['startButton']);
-        // Making the button interactive
-        startButton.eventMode = 'static';
-        // Add a click event and make the cursor go in pointer mode
-        startButton.cursor = 'pointer';
-        startButton.on('pointerdown', this.startGame);
-        // Positioning the button
-        startButton.anchor.set(0.5);
-        startButton.x = 400;
-        startButton.y = 238.37;
-        // Add the button to the stage
-        this.pixi.stage.addChild(startButton);
+            // Add the home screen
+            this.homeScreen = new HomeScreen(goToNewGameWarning, goToSettings); 
+            this.pixi.stage.addChild(this.homeScreen);
 
-        
-        // Adding the new game button
-        let newButton = new PIXI.Sprite(this.loader.textures.StartMenu['newButton']);
-        // Making the button interactive
-        newButton.eventMode = 'static';
-        // Add a click event and make the cursor go in pointer mode
-        newButton.cursor = 'pointer';
-        newButton.on('pointerdown', this.newGame);
-        // Positioning the button
-        newButton.anchor.set(0.5);
-        newButton.x = 400;
-        newButton.y = 356.37;
-        // Add the button to the stage
-        this.pixi.stage.addChild(newButton);
+            // Play Music
+            this.theme = new Music(music);
+            this.theme.playAudio();
+        }
 
+        // Create function to go to the new game warning when the button is clicked
+        const goToNewGameWarning = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
 
-        // Adding the settings button
-        let settingsButton = new PIXI.Sprite(this.loader.textures.StartMenu['settingsButton']);
-        // Making the button interactive
-        settingsButton.eventMode = 'static';
-        // Add a click event and make the cursor go in pointer mode
-        settingsButton.cursor = 'pointer';
-        settingsButton.on('pointerdown', this.settings);
-        // Positioning the button
-        settingsButton.anchor.set(0.5);
-        settingsButton.x = 400;
-        settingsButton.y = 485.37;
-        // Add the button to the stage
-        this.pixi.stage.addChild(settingsButton);
-    }
+            // Remove the Homescreen
+            this.pixi.stage.removeChild(this.homeScreen);
 
-    startGame() {
-        console.log("Start Game!");
-    }
+            // Add the new game warning screen
+            this.newGameWarning = new NewGameWarning(goBackToTheHomeScreen, startNewGame);
+            this.pixi.stage.addChild(this.newGameWarning);
+        }
 
-    newGame() {
-        console.log("Start New Game!");
-    }
+        // Create function to go back to the home screen from the new game warning screen
+        const goBackToTheHomeScreen = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
 
-    settings() {
-        console.log("Go to settings!");
+            // Remove new game warning screen
+            this.pixi.stage.removeChild(this.newGameWarning);
+
+            // Add the home screen
+            this.homeScreen = new HomeScreen(goToNewGameWarning, goToSettings); 
+            this.pixi.stage.addChild(this.homeScreen);
+        }
+
+        // Create funtion to start new game
+        const startNewGame = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
+
+            // Stop the audio
+            this.theme.stopAudio();
+
+            // Start new game
+            console.log("nieuw spel gestart")
+        }
+
+        // Create the function to go to the Settings when the button is clicked
+        const goToSettings = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
+
+            // Remove the Homescreen
+            this.pixi.stage.removeChild(this.homeScreen);
+            // Stop the audio
+            this.theme.stopAudio();
+
+            // Border image
+            let borderImage = this.loader.textures.StartMenu['settingsBorder'];
+
+            // Add the settings screen
+            this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+            this.pixi.stage.addChild(this.settings);
+        }
+
+        // Create the function to go to the Credits when the button is clicked
+        const goToCredits = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
+
+            // Remove the Settings
+            this.pixi.stage.removeChild(this.settings);
+
+            // Border image
+            let borderImage = this.loader.textures.StartMenu['settingsBorder'];
+
+            // Add the credits screen
+            this.creditsScreen = new CreditsScreen(borderImage, goBackToSettings);
+            this.pixi.stage.addChild(this.creditsScreen);
+        }
+
+        // Create the function to go back to the settings from the credits
+        const goBackToSettings = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
+
+            // Remove the Credits
+            this.pixi.stage.removeChild(this.creditsScreen);
+
+            // Border image
+            let borderImage = this.loader.textures.StartMenu['settingsBorder'];
+
+            // Add the settings
+            this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+            this.pixi.stage.addChild(this.settings);
+        }
+
+        // Create the function to go back to the Homescreen from the settings
+        const goBackToHomeScreen = () => {
+            // Play sound
+            this.buttonClick = new Sfx(buttonClick);
+            this.buttonClick.playSFX();
+
+            // Remove the Settings
+            this.pixi.stage.removeChild(this.settings);
+
+            // Add the home screen
+            this.homeScreen = new HomeScreen(goToNewGameWarning, goToSettings); 
+            this.pixi.stage.addChild(this.homeScreen);
+
+            // Play Music
+            this.theme = new Music(music);
+            this.theme.playAudio();
+        }
+
+        // Add the Startscreen
+        this.startScreen = new StartScreen(goToHomeScreen);
+        this.pixi.stage.addChild(this.startScreen);
     }
 }
 
