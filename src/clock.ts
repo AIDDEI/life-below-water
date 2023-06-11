@@ -1,0 +1,69 @@
+import * as PIXI from 'pixi.js';
+import { Game } from './Game';
+
+export class Clock extends PIXI.Container{
+  private halfHourOffset: number;
+  private smallHandOffset: number;
+  private clockContainer: PIXI.Container;
+  private clockGraphics: PIXI.Graphics;
+
+  constructor(game: Game) {
+    super();
+    this.halfHourOffset = 0;
+    this.smallHandOffset = 0;
+
+    this.clockContainer = new PIXI.Container();
+    this.clockGraphics = new PIXI.Graphics();
+
+    this.drawClock(); // Tekenen van de klok bij initialisatie
+  }
+
+  private drawClock() {
+    this.clockGraphics.clear();
+
+    // Klok wijzerplaat
+    this.clockGraphics.beginFill(0xffffff);
+    this.clockGraphics.lineStyle(8, 0x000000);
+    this.clockGraphics.drawCircle(200, 200, 180);
+
+    // Lange wijzer (minuten wijzer)
+    const longHandRotation = (this.halfHourOffset / 180) * Math.PI;
+    this.clockGraphics.lineStyle(6, 0xff0000);
+    this.clockGraphics.moveTo(200, 200);
+    this.clockGraphics.lineTo(200 + 150 * Math.sin(longHandRotation), 200 - 150 * Math.cos(longHandRotation));
+
+    // Kleine wijzer (urenwijzer)
+    const smallHandRotation = (this.smallHandOffset / 180) * Math.PI;
+    this.clockGraphics.lineStyle(4, 0x0000ff); // Blauwe kleur
+    this.clockGraphics.moveTo(200, 200);
+    this.clockGraphics.lineTo(200 + 80 * Math.sin(smallHandRotation), 200 - 80 * Math.cos(smallHandRotation));
+
+    this.clockContainer.removeChildren();
+    this.clockContainer.addChild(this.clockGraphics);
+  }
+
+  private shiftClock() {
+    this.halfHourOffset += 90; // Verschuiving van 90 graden
+
+    if (this.halfHourOffset % 360 === 0) {
+      this.smallHandOffset += 30;
+      this.smallHandOffset %= 360;
+    }
+
+    this.drawClock();
+  }
+
+  public getContainer(): PIXI.Container {
+    return this.clockContainer;
+  }
+
+  public initInteraction() {
+    const appView = document.querySelector('canvas');
+
+    if (appView) {
+      appView.addEventListener('click', () => {
+        this.shiftClock();
+      });
+    }
+  }
+}
