@@ -5,26 +5,26 @@ import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
 import { QualityScreen } from "./QualityScreen";
-// import { WaterModel } from "./WaterModel";
 
 export class Game {
   public pixi: PIXI.Application;
   private loader: AssetLoader;
   public player: Player;
-  private gameTexture: PIXI.Texture; // declared but never read.
+  private gameTexture: PIXI.Texture;
   public mail: MailScreen;
-  private officeAssets: PIXI.Texture; // declared but never read.
+  private officeAssets: PIXI.Texture;
   private mailAssets: PIXI.Texture[];
   private qualityAssets: PIXI.Texture[];
   private qualityScreen: QualityScreen;
 
   //water parameters related
-  public waterParameters: WaterParam[];
+  public waterParams: WaterParam[];
   private waterParamA: WaterParam;
   private waterParamB: WaterParam;
   private waterParamC: WaterParam;
+
+  //temp debug =>  to animate bars
   flag: boolean;
-  // public waterModel: WaterModel;
 
   constructor() {
     PIXI.settings.ROUND_PIXELS = true;
@@ -36,8 +36,8 @@ export class Game {
     });
 
     document.body.appendChild(this.pixi.view as HTMLCanvasElement);
-    // Load images
-    this.loader = new AssetLoader(this);
+
+    // init parameters
 
     this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
     this.waterParamB = new WaterParam(
@@ -47,9 +47,10 @@ export class Game {
       11, // increment
       100, // min
       1000, // max
-      300, // opt min
-      700 // opt max
+      300, // optimal min
+      700 // optimal max
     );
+
     this.waterParamC = new WaterParam(
       "Parameter C", //Name
       "parameter_c", //keyname
@@ -58,6 +59,10 @@ export class Game {
       500, // min
       700 // max
     );
+    this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
+
+    // Load images
+    this.loader = new AssetLoader(this);
   }
 
   loadCompleted() {

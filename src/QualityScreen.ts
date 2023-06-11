@@ -7,16 +7,19 @@ export class QualityScreen extends PIXI.Container {
   private game: Game;
   private assets: AssetType;
   private bg: PIXI.Sprite;
-  private title: PIXI.Text;
+
+  // containers
   private bgContainer: PIXI.Container;
   private contentContainer: PIXI.Container;
   private waterParamContainer: PIXI.Container;
   private qualityIndicatorContainer: PIXI.Container;
+  private barContainer: PIXI.Container;
 
-  //temp fields
+  //Rects to make container width/height static.
   private contentBG: PIXI.Graphics;
   private waterParamBG: PIXI.Graphics;
   private qualityIndicatorBG: PIXI.Graphics;
+  private barBG: PIXI.Graphics;
 
   constructor(assets: AssetType, game: Game) {
     super();
@@ -53,12 +56,7 @@ export class QualityScreen extends PIXI.Container {
     // set up temp bg for visible positionion
     this.waterParamBG = new PIXI.Graphics();
     this.waterParamBG.beginFill("rgba(200, 1, 200, 0.4)");
-    this.waterParamBG.drawRect(
-      this.bg.width * 0.4,
-      0,
-      this.bg.width * 0.6,
-      this.bg.height * 0.4
-    );
+    this.waterParamBG.drawRect(0, 0, this.bg.width, this.bg.height * 0.4);
     this.waterParamBG.endFill();
     this.waterParamContainer.addChild(this.waterParamBG);
 
@@ -74,18 +72,13 @@ export class QualityScreen extends PIXI.Container {
     this.qualityIndicatorBG.endFill();
     this.qualityIndicatorContainer.addChild(this.qualityIndicatorBG);
 
-    // place title in bg's URL bar.
-    this.title = new PIXI.Text("Waterkwaliteit".toUpperCase());
-    this.title.x = this.bg.width * 0.25;
-    this.title.y = this.bg.height * 0.1;
-
     // add all content to the right containers
     this.contentContainer.addChild(
       this.contentBG,
       this.waterParamContainer,
       this.qualityIndicatorContainer
     );
-    this.bgContainer.addChild(this.title, this.contentContainer);
+    this.bgContainer.addChild(this.contentContainer);
     this.addChild(this.bgContainer);
 
     // make sure the created screen is visible.
