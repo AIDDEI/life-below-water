@@ -1,41 +1,37 @@
-import * as PIXI from "pixi.js";
-import { AnimatedSprite, Texture } from "pixi.js";
+import { AnimatedSprite, Sprite, Texture } from "pixi.js";
 
-export class Player extends PIXI.Sprite {
-	public shape: any;
+export class Player extends Sprite {
+	public shape: string;
 	private seconds: number;
-	waterTexture: PIXI.AnimatedSprite;
+	private waterAnimation: AnimatedSprite;
+	private waterTexture: AnimatedSprite;
 
-	constructor(texture: PIXI.Texture, waterTexture: PIXI.AnimatedSprite, posx = 0, posy = 0) {
+	constructor(texture: Texture, waterTexture: AnimatedSprite, posx = 0, posy = 0) {
 		super(texture);
 		this.waterTexture = waterTexture;
-
 		this.anchor.set(0.5);
 		this.scale.set(0.5);
-		// random position from 200 to 2400 - this.width / 2
-
 		this.x = posx;
-		// y value between 200 and 600
 		this.y = posy;
 		console.log(this.x, this.y);
 		this.shape = this._getRandomShape();
-
-		this.seconds = Math.floor(Math.random() * 8) + 12;
+		// seconds to change opacity from 0 to 1, between 8 and 15 seconds
+		this.seconds = Math.floor(Math.random() * 8) + 15;
 		this.alpha = 0;
 	}
 
 	public move(x: number, y: number) {
 		this.alpha = 1;
 		this.texture = Texture.EMPTY;
-		this.test = new AnimatedSprite(this.waterTexture);
-		this.test.anchor.set(0.5);
-		this.test.scale.set(0.5);
-		this.test.animationSpeed = 0.15;
-		this.test.play();
-		this.test.loop = false;
-		this.addChild(this.test);
+		this.waterAnimation = new AnimatedSprite(this.waterTexture);
+		this.waterAnimation.anchor.set(0.5);
+		this.waterAnimation.scale.set(0.5);
+		this.waterAnimation.animationSpeed = 0.15;
+		this.waterAnimation.play();
+		this.waterAnimation.loop = false;
+		this.addChild(this.waterAnimation);
 
-		this.test.onComplete = () => {
+		this.waterAnimation.onComplete = () => {
 			this.destroy();
 		};
 	}

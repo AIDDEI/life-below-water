@@ -56,7 +56,8 @@ export class Game {
 		this.gameTexture = this.loader.textures.Player["flowerTop"];
 		this.officeAssets = this.loader.textures.Office;
 		this.mailAssets = this.loader.textures.MailScreen;
-		this.waterTexture = this.loader.textures.spritesheet.animations["swoosh"];
+		// this.waterTexture = this.loader.textures.spritesheet.animations["swoosh"];
+		this.algaeGameTextures = this.loader.textures.AlgaeGame;
 
 		// this.player = new Player(this.gameTexture)
 		// this.pixi.stage.addChild(this.player)
@@ -75,7 +76,7 @@ export class Game {
 		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
 		this.mail.add("Mail 4", "This is the third mail.", 0);
 
-		this.algaeGame = new AlgaeGame(this, this.gameTexture, this.waterTexture);
+		this.algaeGame = new AlgaeGame(this, this.loader.textures.AlgaeGame);
 		this.pixi.stage.addChild(this.algaeGame);
 
 		this.pixi.ticker.add(this.update);

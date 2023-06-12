@@ -1,4 +1,4 @@
-import { AnimatedSprite, Container, Graphics, Rectangle, Texture } from "pixi.js";
+import { AnimatedSprite, Container, Graphics, Rectangle, Sprite, Texture } from "pixi.js";
 import { DrawableCanvas } from "./DrawableCanvas";
 import { Game } from "./Game";
 import { Minigame } from "./Minigame";
@@ -8,7 +8,7 @@ export class AlgaeGame extends Minigame {
 	playField: any;
 	players: any;
 	game: Game;
-	texture: Texture;
+	textures: Texture[];
 	waterTexture: AnimatedSprite;
 	leftArrow: Graphics;
 	rightArrow: Graphics;
@@ -18,13 +18,12 @@ export class AlgaeGame extends Minigame {
 	cols: number;
 	rows: number;
 
-	constructor(game: Game, texture: Texture, waterTexture: AnimatedSprite) {
+	constructor(game: Game, textures: Texture[]) {
 		super(game);
 		this.game = game;
-		this.waterTexture = waterTexture;
-		this.texture = texture;
+		this.textures = textures;
 		this.players = [];
-		this.init();
+		this.playFieldWidth = 2400;
 		this.cols = 9;
 		this.rows = 3;
 
@@ -33,8 +32,9 @@ export class AlgaeGame extends Minigame {
 		this.matrix = new Array(this.rows).fill(0).map(() => new Array(this.cols).fill(0));
 
 		// set up coords, rows 200 to 600, cols 200 to 2400 evenly spaced
+		this.init();
 		this._setUpCoords();
-		console.log(this.matrix);
+
 		this.initInstructions(() => {
 			this.startGame();
 		}, " ");
@@ -56,22 +56,27 @@ export class AlgaeGame extends Minigame {
 	}
 
 	init() {
+		// this.playField = new Container();
+		// // draw 3 rectangles different colors width 800 height 600
+		// for (let i = 0; i < 3; i++) {
+		// 	const graphics = new Graphics();
+		// 	const color = i === 0 ? 0xff0000 : i === 1 ? 0xc9c9c9 : 0x00ff00;
+		// 	graphics.beginFill(color);
+
+		// 	graphics.drawRect(800 * i, 0, 800, 600);
+		// 	graphics.endFill();
+
+		// 	this.playField.addChild(graphics);
+		// }
 		this.playField = new Container();
-		// draw 3 rectangles different colors width 800 height 600
-		for (let i = 0; i < 3; i++) {
-			const graphics = new Graphics();
-			const color = i === 0 ? 0xff0000 : i === 1 ? 0xc9c9c9 : 0x00ff00;
-			graphics.beginFill(color);
+		this.addChild(this.playField);
+		this.bg = new Sprite(this.textures.lakebg);
 
-			graphics.drawRect(800 * i, 0, 800, 600);
-			graphics.endFill();
-
-			this.playField.addChild(graphics);
-		}
+		this.playField.addChild(this.bg);
+		this.bg.width = 2400;
+		this.bg.height = 600;
 
 		this.playField.pivot.x = 0;
-
-		this.addChild(this.playField);
 	}
 
 	private startGame = () => {
@@ -100,7 +105,7 @@ export class AlgaeGame extends Minigame {
 		this.leftArrow.cursor = "pointer";
 		this.leftArrow.hitArea = new Rectangle(0, 0, 40, 40);
 
-		if (this.playField.pivot.x == 0) {
+		if (this.bg.pivot.x == 0) {
 			this.leftArrow.visible = false;
 		}
 
@@ -147,11 +152,11 @@ export class AlgaeGame extends Minigame {
 	}
 
 	private _startGeneratingPlayers() {
-		for (let i = 0; i < 12; i++) {
+		for (let i = 0; i < 7; i++) {
 			// pick a spot on the matrix thats not taken
 			const pos = this._getRandomPosition();
 
-			const player = new Player(this.texture, this.waterTexture, pos.x, pos.y);
+			const player = new Player(this.textures.player, this.textures.spritesheet.animations["swoosh"], pos.x, pos.y);
 			this.matrix[pos.row][pos.col] = player;
 			this.players.push(player);
 			this.playField.addChild(player);
@@ -163,27 +168,25 @@ export class AlgaeGame extends Minigame {
 		if (obj) {
 			console.log(obj.shape.toLowerCase(), result.toLowerCase());
 			if (obj.shape.toLowerCase() === result.toLowerCase()) {
-				console.log("correct");
-				console.log(this.players);
 				this.players = this.players.filter((player) => player !== obj);
 				this.matrix = this.matrix.map((row: number[]) => row.map((col: number) => (col === obj ? 0 : col)));
+				obj.move();
 
 				// wait 1-3 seconds before generating a new player
 				setTimeout(() => {
 					// pick a spot on the matrix thats not taken
 					const pos = this._getRandomPosition();
-					const player = new Player(this.texture, this.waterTexture, pos.x, pos.y);
+					const player = new Player(this.textures.player, this.textures.spritesheet.animations["swoosh"], pos.x, pos.y);
 					this.matrix[pos.row][pos.col] = player;
 					this.players.push(player);
 					this.playField.addChild(player);
 				}, Math.random() * 2000 + 1000);
-
-				obj.move();
 			} else {
+				const prevTint = obj.tint;
 				obj.tint = 0xff0000;
 
 				setTimeout(() => {
-					obj.tint = 0xffffff;
+					obj.tint = prevTint;
 				}, 1000);
 			}
 		}
