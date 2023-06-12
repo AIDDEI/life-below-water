@@ -1,7 +1,5 @@
 import * as PIXI from "pixi.js";
 import { AssetType, Game } from "./game";
-
-import { ChallengeMail } from "./ChallengeMail";
 import { WaterParam } from "./WaterParam";
 
 export class QualityScreen extends PIXI.Container {
