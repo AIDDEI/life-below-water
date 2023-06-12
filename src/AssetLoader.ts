@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { AssetType, Game } from "./game";
 import sharkImage from "./images/dino.png";
+
 import mailIcon from "./images/mail.png";
 import mailIconUnread from "./images/mailUnread.png";
 import mailHeaderIcon from "./images/mailheaderIcon.png";
@@ -14,6 +15,7 @@ import lobster from "./images/lobster.png";
 import heart from "./images/heart.png";
 import instructions from "./images/instructions.png";
 import browser from "./images/browser.png";
+
 
 export class AssetLoader {
 	graphics: PIXI.Graphics;
