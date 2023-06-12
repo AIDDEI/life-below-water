@@ -44,8 +44,8 @@ export class Game {
     openButton.drawRect(-70, -70, 100, 50);
     openButton.endFill();
     openButton.eventMode = 'static';
-    openButton.x = 100;
-    openButton.y = 100;
+    openButton.x = 750;
+    openButton.y = 86;
     this.pixi.stage.addChild(openButton);
 
     openButton.on("click", () => {
