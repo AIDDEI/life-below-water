@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { ActiveMail } from "./ActiveMail";
 import { Button } from "./Button";
 import { ParamButton } from "./ParamButton";
+import { Game } from './game';
 
 export class ChallengeMail extends ActiveMail {
   private minigame: string;
@@ -9,19 +10,18 @@ export class ChallengeMail extends ActiveMail {
   constructor(
     mail: any,
     mailHeaderIcon: PIXI.Sprite,
-    game: any,
-    minigame: string
+    game: Game
   ) {
     super(mail, mailHeaderIcon, game);
     this.minigame = minigame;
     this.createContent();
   }
 
-  private createContent() {
-    const contentText = new PIXI.Text(this.mail.description, {
-      fill: "blue",
-      fontSize: 15,
-    });
+    private createContent() {
+        const contentText = new PIXI.Text(this.mail.description, { fill: 'blue', fontSize: 15 });
+        contentText.style.wordWrap = true;
+        contentText.style.wordWrapWidth = this.width - 25;
+
     contentText.style.wordWrap = true;
     contentText.style.wordWrapWidth = this.width - 25;
 
@@ -29,8 +29,8 @@ export class ChallengeMail extends ActiveMail {
 
     // Add the content to the content container
     this.addChild(contentText);
+        let button: Button;
 
-    let button;
     switch (this.minigame) {
       case "lob":
         button = new ParamButton(
@@ -64,3 +64,4 @@ export class ChallengeMail extends ActiveMail {
     this.addChild(button);
   }
 }
+

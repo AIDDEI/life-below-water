@@ -1,41 +1,50 @@
-// Import PIXI
 import * as PIXI from "pixi.js";
 import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
 import { QualityScreen } from "./QualityScreen";
+import { Calendar } from "./Calendar";
+import { LobGame } from "./LobGame";
+import { Browser } from "./Browser";
+import { QualityScreen } from "./QualityScreen";
+
+export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
 export class Game {
-  public pixi: PIXI.Application;
-  private loader: AssetLoader;
-  public player: Player;
-  private gameTexture: PIXI.Texture;
-  public mail: MailScreen;
-  private officeAssets: PIXI.Texture;
-  private mailAssets: PIXI.Texture[];
+	public pixi: PIXI.Application;
+	private loader: AssetLoader;
+	public player: Player;
+	private gameTexture: PIXI.Texture;
+	private mailAssets: PIXI.Texture<PIXI.Resource>;
+	public lobGame: LobGame | undefined;
+	private lobAssets: PIXI.Texture<PIXI.Resource>;
+	private officeAssets: PIXI.Texture;
+	private mailAssets: PIXI.Texture[];
+	private dayAssets: any;
+	public calendar: Calendar;
+	//water parameters related
+	public waterParameters: WaterParam[];
+	private waterParamA: WaterParam;
+	private waterParamB: WaterParam;
+	private waterParamC: WaterParam;
+	public browser: Browser;
   private qualityAssets: PIXI.Texture[];
   public qualityScreen: QualityScreen;
 
-  //water parameters related
-  public waterParams: WaterParam[];
-  public waterParamA: WaterParam;
-  public waterParamB: WaterParam;
-  public waterParamC: WaterParam;
+	constructor() {
+		PIXI.settings.ROUND_PIXELS = true;
 
-  //temp debug =>  to animate bars
-  flag: boolean;
+		// init game
+		this.pixi = new PIXI.Application({
+			autoDensity: true,
+			resolution: window.devicePixelRatio,
+			backgroundColor: 0xffffff,
+		});
 
-  constructor() {
-    PIXI.settings.ROUND_PIXELS = true;
-
-    // init game
-    this.pixi = new PIXI.Application({
-      autoDensity: true,
-      resolution: window.devicePixelRatio,
-    });
-
-    document.body.appendChild(this.pixi.view as HTMLCanvasElement);
+		document.body.appendChild(this.pixi.view as HTMLCanvasElement);
+		// Load images
+		this.loader = new AssetLoader(this);
 
     // init parameters
 
@@ -61,60 +70,84 @@ export class Game {
     );
     this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
 
-    // Load images
-    this.loader = new AssetLoader(this);
-  }
+	}
 
-  loadCompleted() {
-    console.log("Load completed");
-    console.log(this.loader.textures);
+	loadCompleted() {
+		console.log("Load completed");
+		console.log(this.loader.textures);
 
-    this.gameTexture = this.loader.textures.Player["flowerTop"];
-    this.officeAssets = this.loader.textures.Office;
-    this.mailAssets = this.loader.textures.MailScreen;
+		this.officeAssets = this.loader.textures.Office;
+		this.mailAssets = this.loader.textures.MailScreen;
+		this.dayAssets = this.loader.textures.DayScreen;
+		this.lobAssets = this.loader.textures.Lobgame;
     this.qualityAssets = this.loader.textures.QualityScreen;
 
-    // this.player = new Player(this.gameTexture)
-    // this.pixi.stage.addChild(this.player)
+		this.calendar = new Calendar(this.dayAssets, this);
+		// this.player = new Player(this.gameTexture)
+		// this.pixi.stage.addChild(this.player)
 
     this.mail = new MailScreen(this.mailAssets, this);
     this.qualityScreen = new QualityScreen(this.qualityAssets, this);
-    this.qualityScreen.turnOn();
     this.pixi.stage.addChild(this.mail, this.qualityScreen);
-    this.mail.visible = true;
+    this.qualityScreen.turnOn();
 
-    this.mail.add(
-      "Lob lob lob",
-      "De zomer is aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
-      0,
-      true,
-      "lob"
-    );
-    this.mail.add(
-      "Mail 1",
-      "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.",
-      0,
-      false,
-      "lob"
-    );
-    this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
-    this.mail.add("Mail 4", "This is the third mail.", 0);
 
-    // Parameter testing
-    this.waterParamA.updateValue(-6); // should display error outside of step range
-    console.log(`${this.waterParamA.keyName}: ${this.waterParamA.value}`); // => parameter_a : 0
+		this.browser = new Browser(this.loader.textures.browser);
 
-    this.waterParamB.updateValue(1);
-    console.log(`${this.waterParamB.keyName}: ${this.waterParamB.value}`);
+		this.browser.addTabs([
+			{ tabName: "Kwaliteit", screen: this.qualityscreen },
+			{ tabName: "E-mail", screen: this.mail },
+			{ tabName: "Kaart", screen: undefined },
+			{ tabName: "Over ons", screen: undefined },
+		]);
 
-    this.waterParamC.updateValue(-1);
-    console.log(`${this.waterParamC.keyName}: ${this.waterParamC.value}`);
+		this.browser.openTab = 1;
+		this.pixi.stage.addChild(this.browser);
 
-    this.flag = true; // debug flag
+		this.mail.add(
+			"Lob lob lob",
+			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
+			0,
+			true,
+			"lob"
+		);
+		this.mail.add("Mail 1", "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.", 0, false, "lob");
+		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
+		this.mail.add("Mail 4", "This is the third mail.", 0);
 
-    // game delta loop, put updates here.
-    this.pixi.ticker.add((delta) => {});
-  }
+		this.pixi.ticker.add((delta) => this.update(delta));
+
+		// ! Keep this last
+		this.pixi.stage.addChild(this.calendar);
+	}
+
+	private update(delta: number) {
+		// this.player.update(delta)
+		// this.mail.update(delta)
+
+		if (this.lobGame?.active) this.lobGame.update(delta);
+	}
+
+	public startLobGame() {
+		this.mail.visible = false;
+		this.lobGame = new LobGame(this.lobAssets, this);
+		this.pixi.stage.addChild(this.lobGame);
+	}
+
+	public endLobGame(score: number, reason: number, description: string): void {
+		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
+		this.lobGame = undefined;
+		this.mail.visible = true;
+		this.mail.addResultsMail(
+			"Salaris Kreeftopdracht",
+			`Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
+			1,
+			true,
+			undefined,
+			score,
+			reason
+		);
+	}
 }
 
 new Game();
