@@ -2,10 +2,10 @@ import * as PIXI from 'pixi.js';
 import { Game } from './Game';
 
 export class Clock extends PIXI.Container{
-  private halfHourOffset: number;
-  private smallHandOffset: number;
-  private clockContainer: PIXI.Container;
-  private clockGraphics: PIXI.Graphics;
+  public halfHourOffset: number;
+  public smallHandOffset: number;
+  public clockContainer: PIXI.Container;
+  public clockGraphics: PIXI.Graphics;
 
   constructor(game: Game) {
     super();
@@ -16,9 +16,14 @@ export class Clock extends PIXI.Container{
     this.clockGraphics = new PIXI.Graphics();
 
     this.drawClock(); // Tekenen van de klok bij initialisatie
+    this.clockContainer.addChild(this.clockGraphics);
+    this.addChild(this.clockContainer);
+    this.clockContainer.position.set(660, 10); // Positie van de klok
+    this.clockContainer.scale.set(0.3); // Formaat van de klok
+    this.initInteraction(); // Initialiseren van interactie
   }
 
-  private drawClock() {
+  public drawClock() {
     this.clockGraphics.clear();
 
     // Klok wijzerplaat
@@ -42,7 +47,7 @@ export class Clock extends PIXI.Container{
     this.clockContainer.addChild(this.clockGraphics);
   }
 
-  private shiftClock() {
+  public shiftClock() {
     this.halfHourOffset += 90; // Verschuiving van 90 graden
 
     if (this.halfHourOffset % 360 === 0) {
@@ -57,13 +62,11 @@ export class Clock extends PIXI.Container{
     return this.clockContainer;
   }
 
-  public initInteraction() {
-    const appView = document.querySelector('canvas');
+  private initInteraction() {
+    this.eventMode = 'static';
 
-    if (appView) {
-      appView.addEventListener('click', () => {
-        this.shiftClock();
-      });
-    }
+    this.on('pointerdown', () => {
+      this.shiftClock();
+    });
   }
 }
