@@ -40,7 +40,7 @@ export class Game {
         // Create new Pixi Application and add it to the body
         this.pixi = new PIXI.Application();
         this.pixi.stage.eventMode = 'static';
-        document.body.appendChild(this.pixi.view as unknown as HTMLElement);
+        document.body.appendChild(this.pixi.view as HTMLElement);
 
         // Load images through the loader
         this.loader = new AssetLoader(this);

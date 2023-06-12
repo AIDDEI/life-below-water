@@ -43,8 +43,11 @@ export class Settings extends PIXI.Container {
         const textStyle = new PIXI.TextStyle({
             fontSize: 20 * fontSizeFactor,
             fill: 'white',
-            stroke: 'black',
-            strokeThickness: 3,
+            dropShadow: true,
+            dropShadowAlpha: 1,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowBlur: 5,
+            dropShadowDistance: 2,
         });
 
         // Create Music Slider Text
@@ -73,7 +76,7 @@ export class Settings extends PIXI.Container {
         this.addChild(fontSizeText);
 
         // Create font size slider and add it to the settings container
-        const fontSizeSlider = new CustomSlider(10, 30, 400, 'FontSize', 250);
+        const fontSizeSlider = new CustomSlider(10, 13, 400, 'FontSize', 250);
         fontSizeSlider.position.set(200, 285);
         this.addChild(fontSizeSlider);
 
@@ -90,7 +93,7 @@ export class Settings extends PIXI.Container {
         // Create credits button
         const creditsButton = new Button(50, 'Credits & Verantwoording', undefined, undefined, credits);
         // Set position
-        creditsButton.position.set(400, 410);
+        creditsButton.position.set(350, 410);
         // Add the button to the setting container
         this.addChild(creditsButton);
 

@@ -14,7 +14,7 @@ export class CreditsScreen extends PIXI.Container {
         let border = new PIXI.Sprite(borderImage);
         // Set position
         border.position.set(0, 0);
-        // Add border to the settings container
+        // Add border to the settings containers
         this.addChild(border);
 
         // Get the Font size factor
@@ -42,8 +42,11 @@ export class CreditsScreen extends PIXI.Container {
         const textStyle = new PIXI.TextStyle({
             fontSize: 20 * fontSizeFactor,
             fill: 'white',
-            stroke: 'black',
-            strokeThickness: 3,
+            dropShadow: true,
+            dropShadowAlpha: 1,
+            dropShadowAngle: Math.PI / 6,
+            dropShadowBlur: 5,
+            dropShadowDistance: 2,
         });
 
         // Create Makers Text
