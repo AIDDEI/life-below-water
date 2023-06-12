@@ -68,7 +68,6 @@ export class ParamButton extends Button {
     // can't seem to use super, or supercharge methods?
     this.onmouseover = () => {
       this.hoverContainer.visible = true;
-      console.log("MOUSEY THERE YOU ARE (o)_(o)");
 
       // recreate Button's onmouseover
       this.button.tint = 0xc9c9c9;
@@ -76,15 +75,18 @@ export class ParamButton extends Button {
     };
     this.onmouseleave = () => {
       this.hoverContainer.visible = false;
-      //recreate Button's onmouseleave
-      console.log("MOUSEY WHERE DID YA GO");
 
+      // recreate Button's onmouseleave
       super.onmouseleave;
       this.button.tint = 0xffffff;
     };
     this.onclick = () => {
       if (this._clickHandler) {
-        // do the parent's onclick
+        for (let change of this.changes) {
+          change.param.updateValue(change.change);
+        }
+
+        // recreate Button's onclick
         this._clickHandler();
       }
     };
