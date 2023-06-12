@@ -26,6 +26,7 @@ export class ChallengeMail extends ActiveMail {
 
 		switch (this.mail.identifier) {
 			case "lob":
+				if (this.mail.played) return;
 				button = new ParamButton(
 					[
 						{ param: this.game.waterParamA, change: 3 },
@@ -38,6 +39,7 @@ export class ChallengeMail extends ActiveMail {
 					undefined,
 					() => {
 						this.game.startLobGame();
+						this.mail.played = true;
 					}
 				);
 				break;

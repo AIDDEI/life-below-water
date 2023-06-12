@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { Texture } from "pixi.js";
 import { AssetType, Game } from "./game";
 
 export class QualityScreen extends PIXI.Container {
@@ -33,12 +34,11 @@ export class QualityScreen extends PIXI.Container {
 		});
 
 		// set up the background page
-		this.bg = new PIXI.Sprite(this.assets.browserWindowBG);
+		this.bg = new PIXI.Sprite(Texture.EMPTY);
 		this.bg.width = this.game.pixi.screen.width;
 		this.bg.height = this.game.pixi.screen.height;
-		this.bgContainer = new PIXI.Container();
-		this.bgContainer.addChild(this.bg);
-		this.bg.alpha = 0;
+		this.addChild(this.bg);
+		this.bg.eventMode = "none";
 
 		// container to place content in
 		this.contentContainer = new PIXI.Container();
