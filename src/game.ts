@@ -53,6 +53,7 @@ export class Game {
 	public startScreen: StartScreen;
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
+	private background : PIXI.Sprite;
 
 	public player: Player;
 	private theme: Music;
@@ -148,11 +149,11 @@ export class Game {
 			this.pixi.stage.removeChild(this.startScreen);
 
 			// Adding background to the stage
-			let background = new PIXI.Sprite(this.loader.textures.StartMenu["backgroundBlur"]);
-			this.pixi.stage.addChild(background);
+			this.background = new PIXI.Sprite(this.loader.textures.StartMenu["backgroundBlur"]);
+			this.pixi.stage.addChild(this.background);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(goToNewGameWarning, goToSettings, this);
+			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
@@ -184,7 +185,7 @@ export class Game {
 			this.pixi.stage.removeChild(this.newGameWarning);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
 			this.pixi.stage.addChild(this.homeScreen);
 		};
 
@@ -194,11 +195,9 @@ export class Game {
 			this.buttonClick = new Sfx(buttonClick);
 			this.buttonClick.playSFX();
 
-			// Stop the audio
-			this.theme.stopAudio();
-
 			// Start new game
-			console.log("nieuw spel gestart");
+			this.pixi.stage.removeChild(this.newGameWarning);
+			this.pixi.stage.removeChild(this.background);
 		};
 
 		// Create the function to go to the Settings when the button is clicked
@@ -264,13 +263,21 @@ export class Game {
 			this.pixi.stage.removeChild(this.settings);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(goToNewGameWarning, goToSettings, this);
+			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
 			this.theme = new Music(music);
 			this.theme.playAudio();
 		};
+
+		const startGame = () => {
+			// Remove the Homescreen
+			this.pixi.stage.removeChild(this.homeScreen);
+
+			// Remove background to the stage
+			this.pixi.stage.removeChild(this.background);
+		}
 
 		// Add the Startscreen
 		this.startScreen = new StartScreen(goToHomeScreen);

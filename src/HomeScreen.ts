@@ -3,25 +3,14 @@ import * as PIXI from "pixi.js";
 
 // Import Classses
 import { Button } from "./Button";
-import { Game } from "./game";
 
 // Export Class
 export class HomeScreen extends PIXI.Container {
-	constructor(newGame: () => void, settings: () => void, game: Game) {
+	constructor(startGame: () => void, newGame: () => void, settings: () => void) {
 		super();
-		this.game = game;
 
 		// Create Start Button
-		const startButton = new Button(
-			50,
-			"Start",
-			undefined,
-			undefined,
-			() => {
-				this.game.pixi.stage.removeChild(this);
-			},
-			350
-		);
+		const startButton = new Button(50, "Start spel", undefined, undefined, startGame, 350);
 		// Position Start Button
 		startButton.position.set((1200 - startButton.width) / 2, (600 - startButton.height) / 2);
 		// Add Start Button to the Homescreen
