@@ -35,6 +35,7 @@ export class Game {
 		this.pixi = new PIXI.Application({
 			autoDensity: true,
 			resolution: window.devicePixelRatio,
+			backgroundColor: 0xffffff,
 		});
 
 		document.body.appendChild(this.pixi.view as HTMLCanvasElement);
