@@ -41,7 +41,7 @@ export class Game {
 
     this.waterParamA = new WaterParam("Zuurtegraad", "ph", -1, 1);
     this.waterParamB = new WaterParam(
-      "Sullfaten", // name
+      "Sulfaten", // name
       "sulfates", //keyName
       100, // value
       11, // increment
@@ -79,7 +79,7 @@ export class Game {
 
     this.mail = new MailScreen(this.mailAssets, this);
     this.qualityScreen = new QualityScreen(this.qualityAssets, this);
-    this.qualityScreen.turnOff();
+    this.qualityScreen.turnOn();
     this.pixi.stage.addChild(this.mail, this.qualityScreen);
     this.mail.visible = true;
 
