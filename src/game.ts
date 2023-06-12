@@ -28,7 +28,6 @@ export class Game {
 	private waterParamC: WaterParam;
 	browser: Browser;
 
-
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
 
@@ -62,6 +61,8 @@ export class Game {
 		// this.pixi.stage.addChild(this.player)
 
 		this.mail = new MailScreen(this.mailAssets, this);
+		this.pixi.stage.addChild(this.mail);
+
 		this.browser = new Browser(this.loader.textures.browser);
 
 		this.browser.addTabs([
@@ -77,7 +78,10 @@ export class Game {
 		this.mail.add(
 			"Lob lob lob",
 			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
-		this.pixi.stage.addChild(this.mail);
+			0,
+			true,
+			"lob"
+		);
 		this.mail.add("Mail 1", "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.", 0, false, "lob");
 		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
 		this.mail.add("Mail 4", "This is the third mail.", 0);
