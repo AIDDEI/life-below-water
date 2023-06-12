@@ -36,6 +36,7 @@ export class Game {
 		this.pixi = new PIXI.Application({
 			autoDensity: true,
 			resolution: window.devicePixelRatio,
+			backgroundColor: 0xffffff,
 		});
 
 		document.body.appendChild(this.pixi.view as HTMLCanvasElement);
@@ -78,8 +79,6 @@ export class Game {
 
 		// ! Keep this last
 		this.pixi.stage.addChild(this.calendar);
-
-		this.pixi.ticker.add((delta) => this.update(delta));
 	}
 
 	private update(delta: number) {
