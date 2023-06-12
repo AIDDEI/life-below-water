@@ -18,7 +18,7 @@ export class Clock extends PIXI.Container {
 		this.drawClock(); // Tekenen van de klok bij initialisatie
 		this.clockContainer.addChild(this.clockGraphics);
 		this.addChild(this.clockContainer);
-		this.clockContainer.position.set(650, 10); // Positie van de klok
+		this.clockContainer.position.set(650, 100); // Positie van de klok
 		this.clockContainer.scale.set(0.32); // Formaat van de klok
 		this.initInteraction(); // Initialiseren van interactie
 	}
