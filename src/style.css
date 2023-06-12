@@ -2,51 +2,20 @@ body {
     background-color: rgb(6, 0, 61);
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 canvas {
     /* for a 800 pixel canvas, place 400 pixels left of center */
     margin: 20px calc(50vw - 400px);
-    background-color: white;
+    border : 1px solid black;
+    border-radius: 5px;
 }
 
-#popup-container {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  #popup-content {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    background-color: #fff;
-    padding: 20px;
-    text-align: center;
-  }
-  
-  #close-button {
+#background {
     position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-  }
-  
-  #tips-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-  }
-  
-  #tips-list li {
-    margin-bottom: 10px;
-  }
-  
+    max-width: 1000px;
+    margin: 0 calc(50vw - 500px);             
+    z-index: -1;  
+}
+
