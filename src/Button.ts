@@ -1,4 +1,4 @@
-import * as PIXI from "pixi.js";
+import * as PIXI from 'pixi.js';
 /**
  * Class for dynamic buttons
  *
@@ -35,10 +35,10 @@ export class Button extends PIXI.Container {
     w?: number
   ) {
     super();
-    this.textStyle = new PIXI.TextStyle({
-      fontSize: 20,
-      fill: "white",
-    });
+        this.textStyle = new PIXI.TextStyle({
+            fontSize: 20 * fontSizeFactor,
+            fill: 'white',
+        })
     this.button = new PIXI.Graphics();
     this._label = new PIXI.Text(text, this.textStyle);
     this.lineColor = lineColor;
@@ -79,6 +79,12 @@ export class Button extends PIXI.Container {
     this.addChild(this._label);
   }
 
+      private getSavedFontSize() : number | null {
+        // Get the saved fontsize value and return it
+        let savedFontSize = localStorage.getItem('FontSize');
+        return savedFontSize ? parseInt(savedFontSize, 10) : null;
+    }
+
   private setupEvents(): void {
     this.onmouseover = () => {
       this.button.tint = 0xc9c9c9;
@@ -96,3 +102,4 @@ export class Button extends PIXI.Container {
     }
   }
 }
+
