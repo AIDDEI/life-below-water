@@ -34,25 +34,17 @@ export class MailScreen extends PIXI.Container {
     constructor(assets: AssetType, game: Game) {
         super();
         this.game = game;
-        this.bg = new PIXI.Sprite(assets.mailbg);
-        // scale background to fit the pixi app and resolution
-        this.bg.width = this.game.pixi.screen.width;
-        this.bg.height = this.game.pixi.screen.height;
         this.mailHeaderIcon = new PIXI.Sprite(assets.mailHeaderIcon);
         this.mailIcon = assets.mailIcon
         this.mailIconUnread = assets.mailIconUnread
-        this.visible = true;
+        this.visible = false;
         this._mails = [];
         this.activeMailIndex = -1;
-        this.bgContainer = new PIXI.Container();
-        this.bgContainer.addChild(this.bg);
         this.mailContainer = new PIXI.Container();
         this.mailContainer.position.set(35, 125);
         this.contentContainer = new PIXI.Container();
         this.contentContainer.position.set(165, 65);
-        this.bgContainer.addChild(this.bgContainer);
-        this.bgContainer.addChild(this.mailContainer);
-        this.bgContainer.addChild(this.contentContainer);
+        this.bgContainer.addChild(this.mailContainer, this.contentContainer);
         this.addChild(this.bgContainer);
     }
 
@@ -90,6 +82,13 @@ export class MailScreen extends PIXI.Container {
         const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, score, reason }
         }
 
+    public open() {
+        this.visible = true;
+    }
+
+    public close() {
+        this.visible = false;
+    }
 
     public get mailCount(): number {
         return this._mails.length;

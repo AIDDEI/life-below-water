@@ -5,6 +5,7 @@ import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
 import { Calendar } from "./Calendar";
 import { LobGame } from "./LobGame";
+import { Browser } from "./Browser";
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
@@ -13,7 +14,7 @@ export class Game {
 	private loader: AssetLoader;
 	public player: Player;
 	private gameTexture: PIXI.Texture;
-	public mail: MailScreen;
+	private mailAssets: PIXI.Texture<PIXI.Resource>;
 	public lobGame: LobGame | undefined;
 	private lobAssets: PIXI.Texture<PIXI.Resource>;
 	private officeAssets: PIXI.Texture;
@@ -25,9 +26,8 @@ export class Game {
 	private waterParamA: WaterParam;
 	private waterParamB: WaterParam;
 	private waterParamC: WaterParam;
-	private mailAssets: PIXI.Texture<PIXI.Resource>;
-	public lobGame: LobGame | undefined;
-	private lobAssets: PIXI.Texture<PIXI.Resource>;
+	browser: Browser;
+
 
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
@@ -62,15 +62,22 @@ export class Game {
 		// this.pixi.stage.addChild(this.player)
 
 		this.mail = new MailScreen(this.mailAssets, this);
-		this.pixi.stage.addChild(this.mail);
+		this.browser = new Browser(this.loader.textures.browser);
+
+		this.browser.addTabs([
+			{ tabName: "Kwaliteit", screen: undefined },
+			{ tabName: "E-mail", screen: this.mail },
+			{ tabName: "Kaart", screen: undefined },
+			{ tabName: "Over ons", screen: undefined },
+		]);
+
+		this.browser.openTab = 1;
+		this.pixi.stage.addChild(this.browser);
 
 		this.mail.add(
 			"Lob lob lob",
-			"De zomer is aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
-			0,
-			true,
-			"lob"
-		);
+			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
+		this.pixi.stage.addChild(this.mail);
 		this.mail.add("Mail 1", "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.", 0, false, "lob");
 		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
 		this.mail.add("Mail 4", "This is the third mail.", 0);
@@ -93,6 +100,7 @@ export class Game {
 		this.lobGame = new LobGame(this.lobAssets, this);
 		this.pixi.stage.addChild(this.lobGame);
 	}
+
 	public endLobGame(score: number, reason: number, description: string): void {
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
