@@ -62,8 +62,5 @@ export class Clock extends PIXI.Container{
   private initInteraction() {
     this.eventMode = 'static';
 
-    this.on('pointerdown', () => {
-      this.shiftClock(2);
-    });
   }
 }
