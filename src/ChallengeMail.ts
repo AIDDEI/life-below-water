@@ -38,7 +38,8 @@ export class ChallengeMail extends ActiveMail {
 				});
 		}
 
-		button.position.set(this.x + 20, this.contentContainer.height + button.height + 10);
+		const y = this.contentContainer.height + button.height > this.maxHeight ? this.contentContainer.height + button.height + 20 : this.height - button.height / 2 - 5;
+		button.position.set(this.x + 20, y);
 		this.contentContainer.addChild(button);
 	}
 }

@@ -13,7 +13,7 @@ type MailType = {
 };
 
 export class ActiveMail extends PIXI.Container {
-	private mail: MailType;
+	protected mail: MailType;
 	private mailHeaderIcon: PIXI.Sprite;
 	public game: Game;
 	protected contentContainer: PIXI.Container<PIXI.DisplayObject>;
@@ -54,6 +54,7 @@ export class ActiveMail extends PIXI.Container {
 
 		const background = new PIXI.Graphics();
 		background.beginFill(0xf0f0f0);
+		background.alpha = 0;
 		background.drawRect(this.x, this.y, 435, 450);
 		background.endFill();
 

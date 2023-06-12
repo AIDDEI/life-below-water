@@ -27,7 +27,7 @@ export class Game {
 	private waterParamB: WaterParam;
 	private waterParamC: WaterParam;
 	public browser: Browser;
-	public mail: MailScreen;
+	private mail: MailScreen;
 
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
@@ -78,7 +78,7 @@ export class Game {
 
 		this.mail.add(
 			"Lob lob lob",
-			"De zomer is in aantochtDe zomers in aantocht het beloofd is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en ves in aantocht het beloofds in aantocht het beloofdilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeterenn\nJouw doel voor de komende week is; de waterkwaliteit verbeteren het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
+			"De zomer is in aantochtDe zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeterenn\nJouw doel voor de komende week is; de waterkwaliteit verbeteren het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
 			0,
 			true,
 			"lob"

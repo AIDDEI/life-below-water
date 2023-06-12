@@ -17,19 +17,14 @@ export class ResultMail extends ActiveMail {
 		salary = this.mail.reason == 0 ? 150 : 75;
 
 		const salaryText = new PIXI.Text(`Je ontvangt: €${salary}`, { fill: "blue", fontSize: 15 });
-		salaryText.position.set(this.x + 20, 180);
+		salaryText.position.set(this.x + 20, 150);
 
 		const reasonText = new PIXI.Text(`Bedankt voor het voltooien van deze opdracht! \n${this.mail.description}.`, { fill: "black", fontSize: 15 });
-		reasonText.position.set(this.x + 20, 210);
+		reasonText.position.set(this.x + 20, salaryText.y + salaryText.height + 20);
 		reasonText.style.wordWrap = true;
 		reasonText.style.wordWrapWidth = this.width - 25;
 
-		const button = new Button(50, "Doorgaan", 0xffbd01, 0x336699, () => {
-			console.log("clicked!");
-		});
-		button.position.set(this.x + 20, this.height - button.height / 2 - 5);
-
 		// Add the content to the content container
-		this.addChild(salaryText, reasonText, button);
+		this.contentContainer.addChild(salaryText, reasonText);
 	}
 }
