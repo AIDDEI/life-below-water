@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { Button } from "./Button";
 import { WaterParam } from "./WaterParam";
 import { ParamChangeInterface } from "./interfaces/ParamChangeInterface";
+import { fadeIn, fadeOut } from "./utils";
 
 export class ParamButton extends Button {
   private changes: ParamChangeInterface[];
@@ -80,14 +81,14 @@ export class ParamButton extends Button {
   private setupEventCalls() {
     // can't seem to use super, or supercharge methods?
     this.onmouseover = () => {
-      this.fadeIn(this.hoverContainer);
+      fadeIn(this.hoverContainer);
 
       // recreate Button's onmouseover
       this.button.tint = 0xc9c9c9;
       super.onmouseover;
     };
     this.onmouseleave = () => {
-      this.fadeOut(this.hoverContainer);
+      fadeOut(this.hoverContainer);
 
       // recreate Button's onmouseleave
       super.onmouseleave;
@@ -103,38 +104,5 @@ export class ParamButton extends Button {
         this._clickHandler();
       }
     };
-  }
-
-  private fadeIn(container: PIXI.Container, ms?: number) {
-    container.visible = true;
-    container.alpha = 0;
-    const ticker = PIXI.Ticker.shared;
-    const change = ms ? (1 / ms) * ticker.elapsedMS : 0.02;
-
-    const onTick = () => {
-      container.alpha += change;
-
-      if (container.alpha > 1) {
-        ticker.remove(onTick);
-      }
-    };
-
-    ticker.add(onTick);
-  }
-
-  private fadeOut(container: PIXI.Container, ms?: number) {
-    const ticker = PIXI.Ticker.shared;
-    const change = ms ? (1 / ms) * ticker.elapsedMS * -1 : -0.03;
-
-    const onTick = () => {
-      container.alpha += change;
-
-      if (container.alpha < 0) {
-        ticker.remove(onTick);
-        container.visible = false;
-      }
-    };
-
-    ticker.add(onTick);
   }
 }

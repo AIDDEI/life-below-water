@@ -15,7 +15,7 @@ export class Game {
   private officeAssets: PIXI.Texture;
   private mailAssets: PIXI.Texture[];
   private qualityAssets: PIXI.Texture[];
-  private qualityScreen: QualityScreen;
+  public qualityScreen: QualityScreen;
 
   //water parameters related
   public waterParams: WaterParam[];
@@ -79,7 +79,7 @@ export class Game {
 
     this.mail = new MailScreen(this.mailAssets, this);
     this.qualityScreen = new QualityScreen(this.qualityAssets, this);
-    this.qualityScreen.visible = false;
+    this.qualityScreen.turnOff();
     this.pixi.stage.addChild(this.mail, this.qualityScreen);
     this.mail.visible = true;
 
@@ -113,23 +113,7 @@ export class Game {
     this.flag = true; // debug flag
 
     // game delta loop, put updates here.
-    this.pixi.ticker.add((delta) => {
-      // if (this.flag) {
-      //   this.waterParamA.updateValue(0.2);
-      //   this.waterParamB.updateValue(0.2);
-      //   //this.waterParamC.updateValue(5);
-      //   if (this.waterParamA.value >= this.waterParamA.range.max) {
-      //     this.flag = false;
-      //   }
-      // } else {
-      //   this.waterParamA.updateValue(-0.2);
-      //   this.waterParamB.updateValue(-0.2);
-      //   //this.waterParamC.updateValue(-3);
-      //   if (this.waterParamA.value <= this.waterParamA.range.min) {
-      //     this.flag = true;
-      //   }
-      // }
-    });
+    this.pixi.ticker.add((delta) => {});
   }
 }
 

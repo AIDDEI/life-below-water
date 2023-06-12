@@ -105,4 +105,14 @@ export class QualityScreen extends PIXI.Container {
       paramBar.draw(x, y, width, height, this.textStyle);
     }
   }
+
+  public turnOff() {
+    this.visible = false;
+    this.game.pixi.stage.removeChild(this);
+  }
+
+  public turnOn() {
+    this.visible = true;
+    this.game.pixi.stage.addChild(this);
+  }
 }
