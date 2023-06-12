@@ -14,7 +14,7 @@ export class ResultMail extends ActiveMail {
 	private createContent() {
 		let salary = 0;
 
-		salary = this.mail.reason == 0 ? 150 : 75;
+		salary = this.mail.reason == 1 ? 150 : 75;
 
 		const salaryText = new PIXI.Text(`Je ontvangt: €${salary}`, { fill: "blue", fontSize: 15 });
 		salaryText.position.set(this.x + 20, 150);

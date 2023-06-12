@@ -42,11 +42,6 @@ export class MailScreen extends PIXI.Container {
 		this.contentContainer = new PIXI.Container();
 		this.contentContainer.position.set(165, 65);
 
-		const background = new PIXI.Graphics();
-		background.beginFill(0xf0f0f0);
-		background.drawRect(325, 135, 445, 450);
-		background.endFill();
-		this.addChild(background);
 		this.addChild(this.mailContainer, this.contentContainer);
 	}
 

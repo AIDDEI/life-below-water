@@ -1,5 +1,5 @@
 import * as PIXI from "pixi.js";
-import { Sprite, Texture } from "pixi.js";
+import { Graphics, Sprite, Texture } from "pixi.js";
 import { Game } from "./game";
 
 type MailType = {
@@ -53,9 +53,11 @@ export class ActiveMail extends PIXI.Container {
 		contentTitle.position.set(this.x + 15 + contentIcon.width + 10, contentIcon.y + 15);
 		emailText.position.set(this.x + 20, contentTitle.y + contentTitle.height + 15);
 
-		const background = new Sprite(Texture.EMPTY);
-		background.width = 435;
-		background.height = 450;
+		const background = new Graphics();
+		background.beginFill(0xf0f0f0);
+		background.drawRect(this.x, this.y, 435, 450);
+		background.endFill();
+		this.addChild(background);
 
 		// Add the content to the content container
 		this.contentContainer.addChild(contentIcon, contentTitle, emailText);
@@ -131,7 +133,7 @@ export class ActiveMail extends PIXI.Container {
 				if (direction == "up") {
 					// if the progress would go out of the top bound including padding, set it to 0
 					if (this._scrollThumb.y - difference <= this._scrollbarPadding) {
-						this.y = 0;
+						this.contentContainer.y = 0;
 					} else {
 						// else, just scroll up
 						this.contentContainer.y += this.scrollJump * difference;
@@ -141,11 +143,11 @@ export class ActiveMail extends PIXI.Container {
 					// if it would go below the bottom bound, set it to the bounds
 					if (this._scrollThumb.y + this._scrollThumb.height - difference > scrollBar.height - this._scrollbarPadding) {
 						const left = scrollBar.height - this._scrollbarPadding - (this._scrollThumb.y + this._scrollThumb.height);
-						this.y -= this.scrollJump * left;
+						this.contentContainer.y -= this.scrollJump * left;
 						this._scrollThumb.y += left;
 					} else {
 						// else, just scroll down
-						this.y += this.scrollJump * difference;
+						this.contentContainer.y += this.scrollJump * difference;
 						this._scrollThumb.y -= difference;
 					}
 				}
@@ -169,7 +171,7 @@ export class ActiveMail extends PIXI.Container {
 			if (direction == "up") {
 				// if the progress would go above the top with padding of 2px
 				if (this._scrollThumb.y - step < this._scrollbarPadding) {
-					this.y = 0;
+					this.contentContainer.y = 0;
 					this._scrollThumb.y -= this._scrollThumb.y - this._scrollbarPadding;
 				} else {
 					// else, just scroll up
@@ -180,11 +182,11 @@ export class ActiveMail extends PIXI.Container {
 				// if the progress would go below the bottom with padding of 2px
 				if (this._scrollThumb.y + this._scrollThumb.height + step > scrollBar.height - this._scrollbarPadding) {
 					const pxLeft = scrollBar.height - this._scrollbarPadding - (this._scrollThumb.y + this._scrollThumb.height);
-					this.y -= this.scrollJump * pxLeft;
+					this.contentContainer.y -= this.scrollJump * pxLeft;
 					this._scrollThumb.y += pxLeft;
 				} else {
 					// else, just scroll down
-					this.y -= this.scrollJump * step;
+					this.contentContainer.y -= this.scrollJump * step;
 					this._scrollThumb.y += step;
 				}
 			}
