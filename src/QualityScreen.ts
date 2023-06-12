@@ -87,12 +87,10 @@ export class QualityScreen extends PIXI.Container {
 
 	public close() {
 		this.visible = false;
-		this.game.pixi.stage.removeChild(this);
 	}
 
 	public open() {
 		this.visible = true;
-		this.game.pixi.stage.addChild(this);
 		this.game.pixi.renderer.background.color = 0x0000ff;
 	}
 }
