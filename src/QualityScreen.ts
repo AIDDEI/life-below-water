@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import { AssetType, Game } from "./game";
-import { WaterParam } from "./WaterParam";
 
 export class QualityScreen extends PIXI.Container {
   private game: Game;
@@ -13,7 +12,6 @@ export class QualityScreen extends PIXI.Container {
   private contentContainer: PIXI.Container;
   private waterParamContainer: PIXI.Container;
   private qualityIndicatorContainer: PIXI.Container;
-  private paramBars: WaterParam[];
 
   //Rects to make container width/height static.
   private contentBG: PIXI.Graphics;
