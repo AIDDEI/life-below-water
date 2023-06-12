@@ -48,7 +48,7 @@ export class QualityScreen extends PIXI.Container {
 		//temporary background fill to check positioning
 		this.contentBG = new PIXI.Graphics();
 		this.contentBG.beginFill("rgba(10,200,20,0)");
-		this.contentBG.drawRect(0, this.bg.height * 0.17, this.bgContainer.width, this.bgContainer.height - this.bg.height * 0.17);
+		this.contentBG.drawRect(0, this.bg.height * 0.17, this.bg.width, this.bg.height - this.bg.height * 0.17);
 		this.contentBG.endFill();
 
 		// set waterparam's container.
@@ -72,8 +72,7 @@ export class QualityScreen extends PIXI.Container {
 
 		// add all content to the right containers
 		this.contentContainer.addChild(this.contentBG, this.waterParamContainer, this.qualityIndicatorContainer);
-		this.bgContainer.addChild(this.contentContainer);
-		this.addChild(this.bgContainer);
+		this.addChild(this.contentContainer);
 
 		for (let i = 0; i < this.game.waterParams.length; i++) {
 			const x = 0;
