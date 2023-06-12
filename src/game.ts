@@ -3,7 +3,8 @@ import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { WaterParam } from "./WaterParam";
 import { LobGame } from "./LobGame";
-
+import { PopUp } from './tip-popUp';
+import { Clock } from './clock';
 // Screens
 import { Browser } from "./Browser";
 import { QualityScreen } from "./QualityScreen";
@@ -47,7 +48,8 @@ export class Game {
 	private qualityAssets: PIXI.Texture[];
 	public qualityScreen: QualityScreen;
 	public mail: MailScreen;
-
+  private popUp: PopUp
+  private clock: Clock;
 	public homeScreen: HomeScreen;
 	public settings: Settings;
 	public startScreen: StartScreen;
@@ -282,6 +284,10 @@ export class Game {
 		// Add the Startscreen
 		this.startScreen = new StartScreen(goToHomeScreen);
 
+        this.popUp = new PopUp(this.pixi);
+    this.clock = new Clock(this);
+    this.pixi.stage.addChild(this.clock)
+    
 		// ! Keep this last
 		this.pixi.stage.addChild(this.calendar);
 		this.pixi.stage.addChild(this.startScreen);

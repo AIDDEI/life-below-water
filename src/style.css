@@ -8,7 +8,6 @@ body {
 canvas {
     /* for a 800 pixel canvas, place 400 pixels left of center */
     margin: 20px calc(50vw - 400px);
- 
     border : 1px solid black;
     border-radius: 5px;
 }
@@ -19,3 +18,4 @@ canvas {
     margin: 0 calc(50vw - 500px);             
     z-index: -1;  
 }
+
