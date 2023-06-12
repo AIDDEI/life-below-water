@@ -1,6 +1,7 @@
 import { Container, Texture, Sprite, Resource, BlurFilter, Text } from "pixi.js";
 import { Button } from "./Button";
 import { Game } from "./game";
+import { fadeIn, fadeOut } from "./utils";
 
 export class Calendar extends Container {
 	private _day: number;
@@ -71,7 +72,7 @@ export class Calendar extends Container {
 		this._goalText.position.set(this._game.pixi.screen.width / 2 - this._goalText.width / 2, this._dayText.y + 70);
 
 		const button = new Button(35, "Start dag", 0x2c5eab, 0x4287f5, () => {
-			this.visible = false;
+			fadeOut(this);
 		});
 
 		// place button in the middle of the border
