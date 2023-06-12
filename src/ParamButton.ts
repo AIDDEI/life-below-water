@@ -80,7 +80,6 @@ export class ParamButton extends Button {
   private setupEventCalls() {
     // can't seem to use super, or supercharge methods?
     this.onmouseover = () => {
-      this.hoverContainer.visible = true;
       this.fadeIn(this.hoverContainer);
 
       // recreate Button's onmouseover
@@ -106,12 +105,14 @@ export class ParamButton extends Button {
     };
   }
 
-  private fadeIn(container: PIXI.Container) {
+  private fadeIn(container: PIXI.Container, ms?: number) {
+    container.visible = true;
     container.alpha = 0;
     const ticker = PIXI.Ticker.shared;
+    const change = ms ? (1 / ms) * ticker.elapsedMS : 0.02;
 
     const onTick = () => {
-      container.alpha += 0.02;
+      container.alpha += change;
 
       if (container.alpha > 1) {
         ticker.remove(onTick);
@@ -121,12 +122,12 @@ export class ParamButton extends Button {
     ticker.add(onTick);
   }
 
-  private fadeOut(container: PIXI.Container) {
-    container.alpha = 1;
+  private fadeOut(container: PIXI.Container, ms?: number) {
     const ticker = PIXI.Ticker.shared;
+    const change = ms ? (1 / ms) * ticker.elapsedMS * -1 : -0.03;
 
     const onTick = () => {
-      container.alpha += -0.03;
+      container.alpha += change;
 
       if (container.alpha < 0) {
         ticker.remove(onTick);
