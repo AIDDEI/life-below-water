@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
+import { Game } from "./Game";
 import { AssetType, Game } from "./game";
-import sharkImage from "./images/dino.png";
 
 import mailIcon from "./images/mail.png";
 import mailIconUnread from "./images/mailUnread.png";
@@ -15,6 +15,7 @@ import lobster from "./images/lobster.png";
 import heart from "./images/heart.png";
 import instructions from "./images/instructions.png";
 import browser from "./images/browser.png";
+import browserWindowBG from "./images/browserWindow.png";
 
 
 export class AssetLoader {
@@ -22,12 +23,13 @@ export class AssetLoader {
 	game: Game;
 	textures: AssetType;
 
-	constructor(game: Game) {
-		this.loadAssets();
-		this.graphics = new PIXI.Graphics();
-		game.pixi.stage.addChild(this.graphics);
+  constructor(game: Game) {
+    this.loadAssets();
+    this.graphics = new PIXI.Graphics();
+    game.pixi.stage.addChild(this.graphics);
 
-		this.game = game;
+    this.game = game;
+
 
 		PIXI.Assets.addBundle("Player", {
 			flowerTop: sharkImage,
@@ -65,31 +67,44 @@ export class AssetLoader {
 		});
 	}
 
-	public async loadAssets() {
-		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen"], (progress) => {
-			this.showProgress(progress);
-		});
+    PIXI.Assets.addBundle("QualityScreen", {
+      browserWindowBG: browserWindowBG,
+    });
+  }
 
-		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser"]);
+  public async loadAssets() {
+    const bundlePromise = await PIXI.Assets.loadBundle(
+      ["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen"],
+      (progress) => {
+        this.showProgress(progress);
+      }
+    );
+    const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser"]);
 
-		// give textures the right index using reduce
-		const textures = [bundlePromise, texturePromise];
+    // give textures the right index using reduce
+    const textures = [bundlePromise, texturePromise];
 
-		this.textures = textures.reduce((acc, val) => {
-			return { ...acc, ...val };
-		}, {});
-		this.graphics.destroy();
-		this.game.loadCompleted();
-	}
+    this.textures = textures.reduce((acc, val) => {
+      return { ...acc, ...val };
+    }, {});
+    this.graphics.destroy();
+    this.game.loadCompleted();
+  }
 
-	private showProgress(progress: number) {
-		console.log(`Loading ${progress * 100}%`);
-		let offset = 50;
-		let barWidth = (this.game.pixi.screen.width - offset * 2) * progress;
 
-		this.graphics.clear();
-		this.graphics.beginFill(0x32de49);
-		this.graphics.drawRect(offset, this.game.pixi.screen.height / 2 - 20, barWidth, 40);
-		this.graphics.endFill();
-	}
+  private showProgress(progress: number) {
+    console.log(`Loading ${progress * 100}%`);
+    let offset = 50;
+    let barWidth = (this.game.pixi.screen.width - offset * 2) * progress;
+
+    this.graphics.clear();
+    this.graphics.beginFill(0x32de49);
+    this.graphics.drawRect(
+      offset,
+      this.game.pixi.screen.height / 2 - 20,
+      barWidth,
+      40
+    );
+    this.graphics.endFill();
+  }
 }

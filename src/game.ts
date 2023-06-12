@@ -3,9 +3,11 @@ import { AssetLoader } from "./AssetLoader";
 import { Player } from "./Player";
 import { MailScreen } from "./MailScreen";
 import { WaterParam } from "./WaterParam";
+import { QualityScreen } from "./QualityScreen";
 import { Calendar } from "./Calendar";
 import { LobGame } from "./LobGame";
 import { Browser } from "./Browser";
+import { QualityScreen } from "./QualityScreen";
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
@@ -26,7 +28,9 @@ export class Game {
 	private waterParamA: WaterParam;
 	private waterParamB: WaterParam;
 	private waterParamC: WaterParam;
-	browser: Browser;
+	public browser: Browser;
+  private qualityAssets: PIXI.Texture[];
+  public qualityScreen: QualityScreen;
 
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
@@ -42,9 +46,30 @@ export class Game {
 		// Load images
 		this.loader = new AssetLoader(this);
 
-		this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
-		this.waterParamB = new WaterParam("Parameter B", "parameter_b", 100, 11);
-		this.waterParamC = new WaterParam("Parameter C", "parameter_c", 624, 20, 500, 700);
+    // init parameters
+
+    this.waterParamA = new WaterParam("Zuurtegraad", "ph", -1, 1);
+    this.waterParamB = new WaterParam(
+      "Sulfaten", // name
+      "sulfates", //keyName
+      100, // value
+      11, // increment
+      100, // min
+      1000, // max
+      300, // optimal min
+      700 // optimal max
+    );
+
+    this.waterParamC = new WaterParam(
+      "Vaste Stoffen", //Name
+      "solids", //keyname
+      624, //value
+      20, // increment
+      500, // min
+      700 // max
+    );
+    this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
+
 	}
 
 	loadCompleted() {
@@ -55,18 +80,22 @@ export class Game {
 		this.mailAssets = this.loader.textures.MailScreen;
 		this.dayAssets = this.loader.textures.DayScreen;
 		this.lobAssets = this.loader.textures.Lobgame;
+    this.qualityAssets = this.loader.textures.QualityScreen;
 
 		this.calendar = new Calendar(this.dayAssets, this);
 		// this.player = new Player(this.gameTexture)
 		// this.pixi.stage.addChild(this.player)
 
-		this.mail = new MailScreen(this.mailAssets, this);
-		this.pixi.stage.addChild(this.mail);
+    this.mail = new MailScreen(this.mailAssets, this);
+    this.qualityScreen = new QualityScreen(this.qualityAssets, this);
+    this.pixi.stage.addChild(this.mail, this.qualityScreen);
+    this.qualityScreen.turnOn();
+
 
 		this.browser = new Browser(this.loader.textures.browser);
 
 		this.browser.addTabs([
-			{ tabName: "Kwaliteit", screen: undefined },
+			{ tabName: "Kwaliteit", screen: this.qualityscreen },
 			{ tabName: "E-mail", screen: this.mail },
 			{ tabName: "Kaart", screen: undefined },
 			{ tabName: "Over ons", screen: undefined },
