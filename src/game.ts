@@ -39,10 +39,10 @@ export class Game {
 
     // init parameters
 
-    this.waterParamA = new WaterParam("Parameter A", "parameter_a", -1, 1);
+    this.waterParamA = new WaterParam("Zuurtegraad", "ph", -1, 1);
     this.waterParamB = new WaterParam(
-      "Parameter B", // name
-      "parameter_b", //keyName
+      "Sullfaten", // name
+      "sulfates", //keyName
       100, // value
       11, // increment
       100, // min
@@ -52,8 +52,8 @@ export class Game {
     );
 
     this.waterParamC = new WaterParam(
-      "Parameter C", //Name
-      "parameter_c", //keyname
+      "Vaste Stoffen", //Name
+      "solids", //keyname
       624, //value
       20, // increment
       500, // min

@@ -20,7 +20,7 @@ export class ParamButton extends Button {
     super(h, text, lineColor, buttonColor, clickHandler, w);
     this.changes = ParamChanges;
     this.hoverContainer = new PIXI.Container();
-    this.hoverContainer.y = -60;
+    this.hoverContainer.y = -65;
     this.hoverContainer.visible = false;
     this.hoverBG = new PIXI.Graphics();
 
@@ -29,21 +29,24 @@ export class ParamButton extends Button {
     this.setupEventCalls();
 
     let i = 0;
-    for (let change of this.changes) {
+
+    for (let change of this.changes.sort((a, b) => a.change + b.change)) {
       const text = new PIXI.Text();
 
       text.style = this.textStyle;
       text.style = {
-        fontSize: 5,
+        fontSize: 10,
       };
-      text.height = 15;
-      text.y = 2 * i + 12 * i;
+      text.height = 20;
+      text.y = 8 * i + 12 * i;
       text.text = "";
       if (change.change < 0) {
         for (let i = change.change; i < 0; i++) {
           text.text += "-";
           text.style = {
             fill: "#ff0000",
+            stroke: "#570000",
+            strokeThickness: 2,
           };
         }
       } else if (change.change > 0) {
@@ -51,6 +54,8 @@ export class ParamButton extends Button {
           text.text += "+";
           text.style = {
             fill: "#00ff00",
+            stroke: "#005700",
+            strokeThickness: 2,
           };
         }
       } else {
@@ -58,23 +63,32 @@ export class ParamButton extends Button {
       }
       text.text += ` ${change.param.name}`;
       this.hoverContainer.addChild(text);
+      text.x = 5;
       i++;
     }
-    this.hoverBG.beginFill("rgba(0,0,255, 0.4)");
-    this.hoverBG.drawRect(0, 0, this.hoverContainer.width + 10, 60);
+    this.hoverBG.beginFill("rgba(0,0,0, 0.4)");
+    this.hoverBG.lineStyle({
+      width: 2,
+      color: "rgba(100,100,100,1)",
+      miterLimit: 1,
+    });
+    this.hoverBG.drawRect(0, 0, this.hoverContainer.width + 10, 62);
     this.hoverBG.endFill();
+    this.hoverContainer.x =
+      (this.hoverContainer.width - this.button.width) / -2;
   }
   private setupEventCalls() {
     // can't seem to use super, or supercharge methods?
     this.onmouseover = () => {
       this.hoverContainer.visible = true;
+      this.fadeIn(this.hoverContainer);
 
       // recreate Button's onmouseover
       this.button.tint = 0xc9c9c9;
       super.onmouseover;
     };
     this.onmouseleave = () => {
-      this.hoverContainer.visible = false;
+      this.fadeOut(this.hoverContainer);
 
       // recreate Button's onmouseleave
       super.onmouseleave;
@@ -90,5 +104,36 @@ export class ParamButton extends Button {
         this._clickHandler();
       }
     };
+  }
+
+  private fadeIn(container: PIXI.Container) {
+    container.alpha = 0;
+    const ticker = PIXI.Ticker.shared;
+
+    const onTick = () => {
+      container.alpha += 0.02;
+
+      if (container.alpha > 1) {
+        ticker.remove(onTick);
+      }
+    };
+
+    ticker.add(onTick);
+  }
+
+  private fadeOut(container: PIXI.Container) {
+    container.alpha = 1;
+    const ticker = PIXI.Ticker.shared;
+
+    const onTick = () => {
+      container.alpha += -0.03;
+
+      if (container.alpha < 0) {
+        ticker.remove(onTick);
+        container.visible = false;
+      }
+    };
+
+    ticker.add(onTick);
   }
 }
