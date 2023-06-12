@@ -7,17 +7,6 @@ import { BaseMail, ResultsMail } from "../globals";
 
 type MailType = BaseMail | ResultsMail<BaseMail>;
 
-type MailType = {
-	index?: number;
-	forceOpen: any;
-	title: string;
-	description: string;
-	type: number;
-	read?: boolean;
-	identifier: string;
-	played: boolean;
-};
-
 export class MailScreen extends PIXI.Container {
 	private _mails: MailType[];
 	private activeMailIndex: number;
@@ -76,10 +65,13 @@ export class MailScreen extends PIXI.Container {
 	 */
 	public addResultsMail(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", score: number = 0, reason: number = 0) {
 		const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, score, reason };
+		this.mails.push(mail);
+		this._renderMails();
 	}
 
 	public open() {
 		this.visible = true;
+		this.game.pixi.renderer.background.color = 0xffffff;
 	}
 
 	public close() {
