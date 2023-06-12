@@ -4,7 +4,8 @@ import { Player } from "./Player";
 import { WaterParam } from "./WaterParam";
 import { LobGame } from "./LobGame";
 import { PopUp } from "./tip-popUp";
-import { Clock } from "./clock";
+import { Clock } from "./Clock";
+import { fadeIn } from "./Utils";
 // Screens
 import { Browser } from "./Browser";
 import { QualityScreen } from "./QualityScreen";
@@ -303,15 +304,16 @@ export class Game {
 	}
 
 	public startLobGame() {
-		this.mail.visible = false;
+		this.browser.visible = false;
 		this.lobGame = new LobGame(this.lobAssets, this);
 		this.pixi.stage.addChild(this.lobGame);
+		fadeIn(this.lobGame);
 	}
 
-	public endLobGame(score: number, reason: number, description: string): void {
+	public endLobGame(score: number, reason: number): void {
+		this.browser.visible = true;
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
-		this.mail.visible = true;
 		this.mail.addResultsMail(
 			"Salaris Kreeftopdracht",
 			`Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
