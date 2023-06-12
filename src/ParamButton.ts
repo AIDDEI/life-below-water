@@ -1,8 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Button } from "./Button";
-import { WaterParam } from "./WaterParam";
 import { ParamChangeInterface } from "./interfaces/ParamChangeInterface";
-import { fadeIn, fadeOut } from "./utils";
+import { fadeIn, fadeOut } from "./Utils";
 
 export class ParamButton extends Button {
   private changes: ParamChangeInterface[];
