@@ -19,7 +19,7 @@ export class Clock extends PIXI.Container{
     this.clockContainer.addChild(this.clockGraphics);
     this.addChild(this.clockContainer);
     this.clockContainer.position.set(20, 10); // Positie van de klok
-    this.clockContainer.scale.set(0.2); // Formaat van de klok
+    this.clockContainer.scale.set(0.32); // Formaat van de klok
     this.initInteraction(); // Initialiseren van interactie
   }
 
@@ -47,13 +47,10 @@ export class Clock extends PIXI.Container{
     this.clockContainer.addChild(this.clockGraphics);
   }
 
-  public shiftClock() {
-    this.halfHourOffset += 180; // Verschuiving van 90 graden
-
-    if (this.halfHourOffset % 360 === 0) {
-      this.smallHandOffset += 30;
-      this.smallHandOffset %= 360;
-    }
+  public shiftClock(hours = number) {
+    const degrees = hours * 45;
+    this.smallHandOffset += degrees;
+    this.smallHandOffset += 360; 
 
     this.drawClock();
   }
@@ -65,8 +62,8 @@ export class Clock extends PIXI.Container{
   private initInteraction() {
     this.eventMode = 'static';
 
-    // this.on('pointerdown', () => {
-    //   this.shiftClock();
-    // });
+    this.on('pointerdown', () => {
+      this.shiftClock(2);
+    });
   }
 }
