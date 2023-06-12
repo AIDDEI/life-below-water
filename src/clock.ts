@@ -48,7 +48,7 @@ export class Clock extends PIXI.Container{
   }
 
   public shiftClock() {
-    this.halfHourOffset += 90; // Verschuiving van 90 graden
+    this.halfHourOffset += 180; // Verschuiving van 90 graden
 
     if (this.halfHourOffset % 360 === 0) {
       this.smallHandOffset += 30;
