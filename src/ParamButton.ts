@@ -34,9 +34,7 @@ export class ParamButton extends Button {
       const text = new PIXI.Text();
 
       text.style = this.textStyle;
-      text.style = {
-        fontSize: 10,
-      };
+
       text.height = 20;
       text.y = 8 * i + 12 * i;
       text.text = "";
