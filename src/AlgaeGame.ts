@@ -1,6 +1,6 @@
 import { AnimatedSprite, Container, Graphics, Rectangle, Sprite, Texture } from "pixi.js";
 import { DrawableCanvas } from "./DrawableCanvas";
-import { Game } from "./Game";
+import { Game } from "./game";
 import { Minigame } from "./Minigame";
 import { Player } from "./Player";
 
@@ -17,6 +17,8 @@ export class AlgaeGame extends Minigame {
 	ycoords: number[];
 	cols: number;
 	rows: number;
+	playFieldWidth: number;
+	bg: Sprite;
 
 	constructor(game: Game, textures: Texture[]) {
 		super(game);
@@ -34,8 +36,9 @@ export class AlgaeGame extends Minigame {
 		// set up coords, rows 200 to 600, cols 200 to 2400 evenly spaced
 		this.init();
 		this._setUpCoords();
+		super.createRulesButton();
 
-		this.initInstructions(() => {
+		super.initInstructions(() => {
 			this.startGame();
 		}, " ");
 	}
@@ -56,18 +59,6 @@ export class AlgaeGame extends Minigame {
 	}
 
 	init() {
-		// this.playField = new Container();
-		// // draw 3 rectangles different colors width 800 height 600
-		// for (let i = 0; i < 3; i++) {
-		// 	const graphics = new Graphics();
-		// 	const color = i === 0 ? 0xff0000 : i === 1 ? 0xc9c9c9 : 0x00ff00;
-		// 	graphics.beginFill(color);
-
-		// 	graphics.drawRect(800 * i, 0, 800, 600);
-		// 	graphics.endFill();
-
-		// 	this.playField.addChild(graphics);
-		// }
 		this.playField = new Container();
 		this.addChild(this.playField);
 		this.bg = new Sprite(this.textures.lakebg);

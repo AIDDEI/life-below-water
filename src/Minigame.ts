@@ -13,7 +13,7 @@ export class Minigame extends PIXI.Container {
 	public active: boolean;
 	public game: Game;
 	private gameRules: GameRules;
-	rules: any;
+	private rules: Button;
 
 	constructor(game: Game) {
 		super();
@@ -21,16 +21,27 @@ export class Minigame extends PIXI.Container {
 		this.active = false;
 		this.game = game;
 
+	}
+
+	/**
+	 * Function to create a button to show the rules
+	 * @param x number x position of the button
+	 * @param y number y position of the button
+	 * @example this.createRulesButton(100, 100);
+	 * @example this.createRulesButton();
+	 * @example this.createRulesButton(100);
+	 */
+	protected createRulesButton(x: number = this.game.pixi.screen.width - 100, y: number = 10): void {
+
 		this.rules = new Button(30, "Uitleg", undefined, undefined, () => {
 			this.showRules();
 		});
-		this.rules.x = this.game.pixi.screen.width - this.rules.width - 10;
-		this.rules.y = 10;
+		this.rules.x = x;
+		this.rules.y = y;
 
 		this.rules.zIndex = 1;
 		this.addChild(this.rules);
 	}
-
 	/**
 	 * Function to initialize gamerules
 	 *
