@@ -26,6 +26,7 @@ export class Game {
 	private waterParamC: WaterParam;
 	private algaeGame: AlgaeGame;
 	waterTexture: AnimatedSprite;
+	algaeGameTextures: any;
 	// public waterModel: WaterModel;
 
 	constructor() {
@@ -39,7 +40,7 @@ export class Game {
 			height: 600,
 			backgroundColor: 0xffffff,
 		});
-		this.players = [];
+
 		document.body.appendChild(this.pixi.view as HTMLCanvasElement);
 		// Load images
 		this.loader = new AssetLoader(this);
@@ -56,11 +57,7 @@ export class Game {
 		this.gameTexture = this.loader.textures.Player["flowerTop"];
 		this.officeAssets = this.loader.textures.Office;
 		this.mailAssets = this.loader.textures.MailScreen;
-		// this.waterTexture = this.loader.textures.spritesheet.animations["swoosh"];
 		this.algaeGameTextures = this.loader.textures.AlgaeGame;
-
-		// this.player = new Player(this.gameTexture)
-		// this.pixi.stage.addChild(this.player)
 
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.pixi.stage.addChild(this.mail);

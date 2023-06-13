@@ -19,13 +19,14 @@ export class GameRules extends PIXI.Container {
 	private button: Button;
 	private instructions: string;
 
-	constructor(game: Game, cb: () => void, instructions: string) {
+	constructor(game: Game, cb: () => void, instructions: string, open: boolean = true) {
 		super();
 		this.x = 0;
 		this.y = 0;
 		this.cb = cb;
 		this.bg = new PIXI.Graphics();
 		this.game = game;
+		this.visible = open;
 		this.instructions = instructions;
 		this.eventMode = "static";
 		this._setupUI();

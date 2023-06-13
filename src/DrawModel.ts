@@ -3,7 +3,7 @@ export class DrawModel {
 
 	constructor() {
 		// @ts-expect-error
-		this.nn = ml5.imageClassifier("http://localhost:5500/model/model.json", this.modelLoaded);
+		this.nn = ml5.imageClassifier("/model/model.json", this.modelLoaded);
 	}
 
 	modelLoaded() {

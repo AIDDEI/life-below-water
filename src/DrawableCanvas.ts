@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { FederatedPointerEvent } from "pixi.js";
 import { AlgaeGame } from "./AlgaeGame";
 import { DrawModel } from "./DrawModel";
 import { Game } from "./game";
@@ -36,15 +37,15 @@ export class DrawableCanvas extends PIXI.Container {
 		this.on("pointerupoutside", this.onPointerUp, this);
 	}
 
-	private onPointerDown(event: PIXI.InteractionEvent): void {
+	private onPointerDown(event: FederatedPointerEvent): void {
 		this._isDrawing = true;
-		this._lastPosition.copyFrom(event.data.global);
+		this._lastPosition.copyFrom(event.global);
 	}
 
-	private onPointerMove(event: PIXI.InteractionEvent): void {
+	private onPointerMove(event: FederatedPointerEvent): void {
 		if (this._isDrawing) {
 			// new smooth rounded line will be drawn
-			const newPosition = event.data.global;
+			const newPosition = event.global;
 			this.graphics.lineTextureStyle({ width: 10, color: 0x000000, alpha: 1, alignment: 0.5, cap: PIXI.LINE_CAP.ROUND, join: PIXI.LINE_JOIN.ROUND });
 			this.graphics.moveTo(this._lastPosition.x, this._lastPosition.y);
 			this.graphics.lineTo(newPosition.x, newPosition.y);
@@ -67,7 +68,7 @@ export class DrawableCanvas extends PIXI.Container {
 	private async _checkDrawing(): Promise<Object | undefined> {
 		for await (const object of this.minigame.players) {
 			const objectPos = object.getBounds();
-			if (this._objectInside(objectPos)) {
+			if (!object.missed && this._objectInside(objectPos)) {
 				let image = await this.game.pixi.renderer.extract.image(this.graphics);
 
 				// create canvas to make it compatible for the model

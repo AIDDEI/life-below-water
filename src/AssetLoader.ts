@@ -7,6 +7,7 @@ import mailIcon from "./images/mail.png";
 import mailIconUnread from "./images/mailUnread.png";
 import mailHeaderIcon from "./images/mailheaderIcon.png";
 import lakebg from "./images/lakebg.png";
+import heart from "./images/heart.png";
 
 export class AssetLoader {
 	graphics: PIXI.Graphics;
@@ -42,9 +43,11 @@ export class AssetLoader {
 		});
 
 		PIXI.Assets.addBundle("AlgaeGame", {
-			spritesheet: "http://127.0.0.1:5500/spritesheets/waterSheet.json",
+			spritesheet: "waterSheet.json",
+			algaeSpritesheet: "algen.json",
 			lakebg: lakebg,
 			player: sharkImage,
+			heart: heart,
 		});
 	}
 
