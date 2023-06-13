@@ -307,7 +307,7 @@ export class Game {
 		this.browser.visible = false;
 		this.lobGame = new LobGame(this.lobAssets, this);
 		this.pixi.stage.addChild(this.lobGame);
-		fadeIn(this.lobGame);
+		this.lobGame.visible = true;
 	}
 
 	public endLobGame(score: number, reason: number): void {

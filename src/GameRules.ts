@@ -61,7 +61,7 @@ export class GameRules extends PIXI.Container {
 		// button
 		this.button = new Button(50, "Begin minigame", 0xffbd01, 0x336699, () => {
 			this.cb();
-			fadeOut(this);
+			fadeOut(this, 150);
 		});
 
 		this.button.position.set(this.x + this.button.width / 2, this.height - this.button.height - 75);
@@ -76,7 +76,7 @@ export class GameRules extends PIXI.Container {
 	public show(cb: () => void) {
 		this.button.label = "Verder gaan";
 		this.button.clickHandler = () => {
-			fadeOut(this);
+			fadeOut(this, 150);
 			cb();
 		};
 
