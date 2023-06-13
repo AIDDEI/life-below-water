@@ -1,4 +1,8 @@
 import * as PIXI from "pixi.js";
+
+// Import Music, Audio and SFX
+import { Sfx } from "./Sfx";
+import buttonClick from "url:./music/button_click.mp3";
 /**
  * Class for dynamic buttons
  *
@@ -25,6 +29,7 @@ export class Button extends PIXI.Container {
 	private lineColor: number;
 	private buttonColor: number;
 	protected _clickHandler: (() => void) | undefined;
+	private buttonClick: Sfx;
 
 	constructor(h: number, text: string, lineColor: number = 0xffbd01, buttonColor: number = 0x336699, clickHandler?: () => void, w?: number) {
 		super();
@@ -93,6 +98,10 @@ export class Button extends PIXI.Container {
 
 		if (this._clickHandler) {
 			this.onclick = () => {
+				// Play sound
+				this.buttonClick = new Sfx(buttonClick);
+				this.buttonClick.playSFX();
+
 				// @ts-expect-error Check if clickHandler is defined is above
 				this._clickHandler();
 			};

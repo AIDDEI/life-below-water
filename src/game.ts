@@ -1,10 +1,12 @@
+// Import PIXI
 import * as PIXI from "pixi.js";
+
+// Import Sprites via Assetloader
 import { AssetLoader } from "./AssetLoader";
-import { Player } from "./Player";
-import { WaterParam } from "./WaterParam";
+
+// Minigames
 import { LobGame } from "./LobGame";
-import { PopUp } from "./tip-popUp";
-import { Clock } from "./clock";
+
 // Screens
 import { Browser } from "./Browser";
 import { QualityScreen } from "./QualityScreen";
@@ -16,40 +18,48 @@ import { CreditsScreen } from "./CreditsScreen";
 import { NewGameWarning } from "./NewGameWarning";
 import { MailScreen } from "./MailScreen";
 
-// Other
-import { Player } from "./Player";
+// Import Music, Audio and SFX
 import { Music } from "./Music";
-import { Sfx } from "./Sfx";
-
-// Import Audio
 import music from "url:./music/chill.mp3";
-import buttonClick from "url:./music/button_click.mp3";
 
+// Import Other Classes
+import { Player } from "./Player";
+import { PopUp } from "./tip-popUp";
+import { Clock } from "./clock";
+import { WaterParam } from "./WaterParam";
+
+// Export Asset Type
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
+// Export the Game Class
 export class Game {
+	// Globals
 	public pixi: PIXI.Application;
 	private loader: AssetLoader;
+
+	// // Minigames
 	public player: Player;
-	private gameTexture: PIXI.Texture;
-	private mailAssets: PIXI.Texture<PIXI.Resource>;
 	public lobGame: LobGame | undefined;
 	private lobAssets: PIXI.Texture<PIXI.Resource>;
-	private officeAssets: PIXI.Texture;
-	private mailAssets: PIXI.Texture[];
+
+	// // Office
+	private mailAssets: PIXI.Texture<PIXI.Resource>;
 	private dayAssets: any;
+	private qualityAssets : PIXI.Texture<PIXI.Resource>;
 	public calendar: Calendar;
-	//water parameters related
-	public waterParameters: WaterParam[];
+	public qualityScreen: QualityScreen;
+	public mail: MailScreen;
+	private clock: Clock;
+	private popUp: PopUp;
+
+	// // Water Parameters
+	public waterParams: WaterParam[];
 	private waterParamA: WaterParam;
 	private waterParamB: WaterParam;
 	private waterParamC: WaterParam;
+
+	// Screens
 	public browser: Browser;
-	private qualityAssets: PIXI.Texture[];
-	public qualityScreen: QualityScreen;
-	public mail: MailScreen;
-	private popUp: PopUp;
-	private clock: Clock;
 	public homeScreen: HomeScreen;
 	public settings: Settings;
 	public startScreen: StartScreen;
@@ -57,10 +67,12 @@ export class Game {
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
 
-	public player: Player;
+	// Music and Audio
 	private theme: Music;
-	private buttonClick: Sfx;
+	
+	// Constructor
 	constructor() {
+		// PIXI Settings
 		PIXI.settings.ROUND_PIXELS = true;
 
 		// init game
@@ -69,13 +81,14 @@ export class Game {
 			resolution: window.devicePixelRatio,
 			backgroundColor: 0xffffff,
 		});
+
 		this.pixi.stage.eventMode = "static";
 		document.body.appendChild(this.pixi.view as HTMLCanvasElement);
+
 		// Load images
 		this.loader = new AssetLoader(this);
 
 		// init parameters
-
 		this.waterParamA = new WaterParam("Zuurtegraad", "ph", -1, 1);
 		this.waterParamB = new WaterParam(
 			"Sulfaten", // name
@@ -87,7 +100,6 @@ export class Game {
 			300, // optimal min
 			700 // optimal max
 		);
-
 		this.waterParamC = new WaterParam(
 			"Vaste Stoffen", //Name
 			"solids", //keyname
@@ -99,27 +111,32 @@ export class Game {
 		this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
 	}
 
+	// Do this when the load is completed
 	loadCompleted() {
+		// Console logs
 		console.log("Load completed");
 		console.log(this.loader.textures);
 
-		this.officeAssets = this.loader.textures.Office;
+		// Load Textures
 		this.mailAssets = this.loader.textures.MailScreen;
 		this.dayAssets = this.loader.textures.DayScreen;
 		this.lobAssets = this.loader.textures.Lobgame;
 		this.qualityAssets = this.loader.textures.QualityScreen;
 
+		// Create calendar
 		this.calendar = new Calendar(this.dayAssets, this);
-		// this.player = new Player(this.gameTexture)
-		// this.pixi.stage.addChild(this.player)
 
+		// Create MailScreen and QualityScreen
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
 
+		// Add the screens to the stage
 		this.pixi.stage.addChild(this.mail, this.qualityScreen);
 
+		// Create the Browser screen
 		this.browser = new Browser(this.loader.textures.browser);
 
+		// Add the browser tabs
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
 			{ tabName: "E-mail", screen: this.mail },
@@ -127,9 +144,11 @@ export class Game {
 			{ tabName: "Over ons", screen: undefined },
 		]);
 
+		// Select open tab
 		this.browser.openTab = 1;
 		this.pixi.stage.addChild(this.browser);
 
+		// Add mails to the tab
 		this.mail.add(
 			"Lob lob lob",
 			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
@@ -143,10 +162,6 @@ export class Game {
 
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the start screen
 			this.pixi.stage.removeChild(this.startScreen);
 
@@ -165,10 +180,6 @@ export class Game {
 
 		// Create function to go to the new game warning when the button is clicked
 		const goToNewGameWarning = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Homescreen
 			this.pixi.stage.removeChild(this.homeScreen);
 
@@ -179,10 +190,6 @@ export class Game {
 
 		// Create function to go back to the home screen from the new game warning screen
 		const goBackToTheHomeScreen = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove new game warning screen
 			this.pixi.stage.removeChild(this.newGameWarning);
 
@@ -193,10 +200,6 @@ export class Game {
 
 		// Create funtion to start new game
 		const startNewGame = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Start new game
 			this.pixi.stage.removeChild(this.newGameWarning);
 			this.pixi.stage.removeChild(this.background);
@@ -204,10 +207,6 @@ export class Game {
 
 		// Create the function to go to the Settings when the button is clicked
 		const goToSettings = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Homescreen
 			this.pixi.stage.removeChild(this.homeScreen);
 			// Stop the audio
@@ -223,10 +222,6 @@ export class Game {
 
 		// Create the function to go to the Credits when the button is clicked
 		const goToCredits = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Settings
 			this.pixi.stage.removeChild(this.settings);
 
@@ -240,10 +235,6 @@ export class Game {
 
 		// Create the function to go back to the settings from the credits
 		const goBackToSettings = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Credits
 			this.pixi.stage.removeChild(this.creditsScreen);
 
@@ -257,10 +248,6 @@ export class Game {
 
 		// Create the function to go back to the Homescreen from the settings
 		const goBackToHomeScreen = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Settings
 			this.pixi.stage.removeChild(this.settings);
 
@@ -281,37 +268,52 @@ export class Game {
 			this.pixi.stage.removeChild(this.background);
 		};
 
-		// Add the Startscreen
+		// Create the Start Screen
 		this.startScreen = new StartScreen(goToHomeScreen);
 
+		// Create the pop-up and the clock
 		this.popUp = new PopUp(this.pixi);
 		this.clock = new Clock(this);
+
+		// Add the clock at the stage
 		this.pixi.stage.addChild(this.clock);
 
 		// ! Keep this last
+		// Add the calendar and the start screen to the stage
 		this.pixi.stage.addChild(this.calendar);
 		this.pixi.stage.addChild(this.startScreen);
 
+		// Add a ticker
 		this.pixi.ticker.add((delta) => this.update(delta));
 	}
 
+	// Update
 	private update(delta: number) {
 		// this.player.update(delta)
 		// this.mail.update(delta)
-
 		if (this.lobGame?.active) this.lobGame.update(delta);
 	}
 
+	// Start Lob Game
 	public startLobGame() {
+		// Disable the mail screen
 		this.mail.visible = false;
+
+		// Create Lob game
 		this.lobGame = new LobGame(this.lobAssets, this);
+
+		// Add Lob game to the stage
 		this.pixi.stage.addChild(this.lobGame);
 	}
 
+	// End Lob Game
 	public endLobGame(score: number, reason: number, description: string): void {
+		// Check if the Lob game is there and remove it
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
+		// Enable the Mail screen
 		this.mail.visible = true;
+		// Create new mail and add result
 		this.mail.addResultsMail(
 			"Salaris Kreeftopdracht",
 			`Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
@@ -322,8 +324,10 @@ export class Game {
 			reason
 		);
 
+		// Clock goes forward
 		this.clock.shiftClock(1);
 	}
 }
 
+// Execute the game
 new Game();
