@@ -12,9 +12,7 @@ export class ResultMail extends ActiveMail {
 	}
 
 	private createContent() {
-		let salary = 0;
-
-		salary = this.mail.reason == 1 ? 150 : 75;
+		const salary = this.mail.reason == 1 ? 150 : 75;
 
 		const salaryText = new PIXI.Text(`Je ontvangt: €${salary}`, { fill: "blue", fontSize: 15 });
 		salaryText.position.set(this.x + 20, 150);
@@ -26,5 +24,16 @@ export class ResultMail extends ActiveMail {
 
 		// Add the content to the content container
 		this.contentContainer.addChild(salaryText, reasonText);
+
+		const button = new Button(50, "Doorgaan", 0xffbd01, 0x336699, () => {
+			 this.game.browser.openTab = 0;
+		});
+    
+		const y = this.contentContainer.height + button.height > this.maxHeight ? this.contentContainer.height + button.height + 20 : this.height - button.height / 2 - 5;
+		button.position.set(this.x + 20, y);
+		this.contentContainer.addChild(button);
+    
+		// Add the content to the content container
+		this.contentContainer.addChild(salaryText, reasonText, button);
 	}
 }

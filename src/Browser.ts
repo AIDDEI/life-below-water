@@ -111,7 +111,7 @@ export class Browser extends Container {
 
 		const tabBackground = new Graphics();
 		// if the tab is open, fill it with white, otherwise fill it with grey
-		const fill = index === this._openTab ? 0xffffff : 0x929292;
+		const fill = index === this._openTab ? 0xffffff : 0xacacac;
 		tabBackground.beginFill(fill);
 		tabBackground.drawRoundedRect(tabContainer.x, 10, 140, 30, 3);
 

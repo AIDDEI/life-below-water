@@ -9,9 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pixi/sound": "^5.2.0",
+    "@pixi/ui": "^0.7.1",
     "pixi.js": "^7.2.4"
   },
   "devDependencies": {
+    "@types/pixi.js": "^5.0.0",
     "parcel": "^2.8.3",
     "punycode": "^1.4.1",
     "querystring-es3": "^0.2.1",

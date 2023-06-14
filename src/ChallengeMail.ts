@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { ActiveMail } from "./ActiveMail";
 import { Button } from "./Button";
+import { ParamButton } from "./ParamButton";
 import { Game } from "./game";
 
 export class ChallengeMail extends ActiveMail {
@@ -27,10 +28,21 @@ export class ChallengeMail extends ActiveMail {
 		switch (this.mail.identifier) {
 			case "lob":
 				if (this.mail.played) return;
-				button = new Button(50, "Accepteer missie", undefined, undefined, () => {
-					this.game.startLobGame();
-					this.game.mail.mails[this.mail.index].played = true;
-				});
+				button = new ParamButton(
+					[
+						{ param: this.game.waterParamA, change: 3 },
+						{ param: this.game.waterParamB, change: -2 },
+						{ param: this.game.waterParamC, change: 1 },
+					],
+					50,
+					"Accepteer missie",
+					undefined,
+					undefined,
+					() => {
+						this.game.startLobGame();
+						this.mail.played = true;
+					}
+				);
 				break;
 			default:
 				button = new Button(50, "Dit hoort niet..", undefined, undefined, () => {

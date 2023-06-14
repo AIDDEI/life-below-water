@@ -1,7 +1,10 @@
+// Import PIXI
 import * as PIXI from "pixi.js";
-import { AssetType, Game } from "./game";
-import sharkImage from "./images/dino.png";
 
+// Import Game
+import { AssetType, Game } from "./game";
+
+// Import Images
 import mailIcon from "./images/mail.png";
 import mailIconUnread from "./images/mailUnread.png";
 import mailHeaderIcon from "./images/mailheaderIcon.png";
@@ -12,11 +15,17 @@ import lobBg from "./images/grass.png";
 import water from "./images/water.jpg";
 import displacement from "./images/displacement.jpg";
 import lobster from "./images/lobster.png";
+import sharkImage from "./images/dino.png";
 import heart from "./images/heart.png";
 import instructions from "./images/instructions.png";
 import browser from "./images/browser.png";
+import browserWindowBG from "./images/browserWindow.png";
+import startBackground from "./images/startBackground.png";
+import startBackgroundBlur from "./images/startBackgroundBlur.png";
+import settingsBorder from "./images/settings_border.png";
 
 
+// Export class
 export class AssetLoader {
 	graphics: PIXI.Graphics;
 	game: Game;
@@ -63,13 +72,23 @@ export class AssetLoader {
 			heart: heart,
 			instructions: instructions,
 		});
+
+		PIXI.Assets.addBundle("QualityScreen", {
+			browserWindowBG: browserWindowBG,
+		});
+    
+    
+        PIXI.Assets.addBundle('StartMenu', {
+            'background': startBackground,
+            'backgroundBlur': startBackgroundBlur,
+            'settingsBorder': settingsBorder,
+        });
 	}
 
 	public async loadAssets() {
-		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen"], (progress) => {
+		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu"], (progress) => {
 			this.showProgress(progress);
 		});
-
 		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser"]);
 
 		// give textures the right index using reduce
@@ -93,3 +112,4 @@ export class AssetLoader {
 		this.graphics.endFill();
 	}
 }
+
