@@ -25,6 +25,7 @@ import { Sfx } from "./Sfx";
 // Import Audio
 import music from "url:./music/chill.mp3";
 import buttonClick from "url:./music/button_click.mp3";
+import { AlgaeGame } from "./AlgaeGame";
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
@@ -42,9 +43,9 @@ export class Game {
 	public calendar: Calendar;
 	//water parameters related
 	public waterParameters: WaterParam[];
-	private waterParamA: WaterParam;
-	private waterParamB: WaterParam;
-	private waterParamC: WaterParam;
+	public waterParamA: WaterParam;
+	public waterParamB: WaterParam;
+	public waterParamC: WaterParam;
 	public browser: Browser;
 	private qualityAssets: PIXI.Texture[];
 	public qualityScreen: QualityScreen;
@@ -57,7 +58,7 @@ export class Game {
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
-	public player: Player;
+	public algaeGame: AlgaeGame | undefined;
 	private theme: Music;
 	private buttonClick: Sfx;
 	constructor() {
@@ -95,8 +96,8 @@ export class Game {
 			20, // increment
 			500, // min
 			700, // max
-      575, // optimal min
-      650 // optiman max
+			575, // optimal min
+			650 // optiman max
 		);
 		this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
 	}
@@ -126,7 +127,6 @@ export class Game {
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
 			{ tabName: "E-mail", screen: this.mail },
 			{ tabName: "Kaart", screen: undefined },
-			{ tabName: "Over ons", screen: undefined },
 		]);
 
 		this.browser.openTab = 1;
@@ -136,12 +136,10 @@ export class Game {
 			"Lob lob lob",
 			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren",
 			0,
-			true,
+			false,
 			"lob"
 		);
-		this.mail.add("Mail 1", "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.", 0, false, "lob");
-		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
-		this.mail.add("Mail 4", "This is the third mail.", 0);
+		this.mail.add("Mail 4", "This is the third mail.", 0, true, "alg");
 
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {
@@ -300,7 +298,7 @@ export class Game {
 	private update(delta: number) {
 		// this.player.update(delta)
 		// this.mail.update(delta)
-
+		if (this.algaeGame?.active) this.algaeGame.update(delta);
 		if (this.lobGame?.active) this.lobGame.update(delta);
 	}
 
@@ -311,7 +309,7 @@ export class Game {
 		this.lobGame.visible = true;
 	}
 
-	public endLobGame(score: number, reason: number): void {
+	public endLobGame(reason: number): void {
 		this.browser.visible = true;
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
@@ -321,7 +319,29 @@ export class Game {
 			1,
 			true,
 			undefined,
-			score,
+			reason
+		);
+
+		this.clock.shiftClock(1);
+	}
+
+	public startAlgaeGame() {
+		this.browser.visible = false;
+		this.algaeGame = new AlgaeGame(this.loader.textures.AlgaeGame, this);
+		this.pixi.stage.addChild(this.algaeGame);
+		this.algaeGame.visible = true;
+	}
+
+	public endAlgaeGame(reason: number): void {
+		this.browser.visible = true;
+		if (this.algaeGame) this.pixi.stage.removeChild(this.algaeGame);
+		this.algaeGame = undefined;
+		this.mail.addResultsMail(
+			"Salaris Kreeftopdracht",
+			`Door het vangen van alle kleine kor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbereeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
+			1,
+			true,
+			undefined,
 			reason
 		);
 

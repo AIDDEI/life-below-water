@@ -44,6 +44,24 @@ export class ChallengeMail extends ActiveMail {
 					}
 				);
 				break;
+			case "alg":
+				if (this.mail.played) return;
+				button = new ParamButton(
+					[
+						{ param: this.game.waterParamA, change: 3 },
+						{ param: this.game.waterParamB, change: -2 },
+						{ param: this.game.waterParamC, change: 1 },
+					],
+					50,
+					"Accepteer missie",
+					undefined,
+					undefined,
+					() => {
+						this.game.startAlgaeGame();
+						this.mail.played = true;
+					}
+				);
+				break;
 			default:
 				button = new Button(50, "Dit hoort niet..", undefined, undefined, () => {
 					console.log("This should not happen");

@@ -13,6 +13,7 @@ import border from "./images/border.png";
 import rod from "./images/rod.png";
 import lobBg from "./images/grass.png";
 import water from "./images/water.jpg";
+import lakebg from "./images/lakebg.png";
 import displacement from "./images/displacement.jpg";
 import lobster from "./images/lobster.png";
 import sharkImage from "./images/dino.png";
@@ -23,8 +24,8 @@ import browserWindowBG from "./images/browserWindow.png";
 import startBackground from "./images/startBackground.png";
 import startBackgroundBlur from "./images/startBackgroundBlur.png";
 import settingsBorder from "./images/settings_border.png";
-
-
+import algenExplenation from "./images/Algen-Uitleg.png";
+import algaes from "./images/algaes.png";
 // Export class
 export class AssetLoader {
 	graphics: PIXI.Graphics;
@@ -76,17 +77,25 @@ export class AssetLoader {
 		PIXI.Assets.addBundle("QualityScreen", {
 			browserWindowBG: browserWindowBG,
 		});
-    
-    
-        PIXI.Assets.addBundle('StartMenu', {
-            'background': startBackground,
-            'backgroundBlur': startBackgroundBlur,
-            'settingsBorder': settingsBorder,
-        });
+
+		PIXI.Assets.addBundle("StartMenu", {
+			background: startBackground,
+			backgroundBlur: startBackgroundBlur,
+			settingsBorder: settingsBorder,
+		});
+
+		PIXI.Assets.addBundle("AlgaeGame", {
+			spritesheet: "waterSheet.json",
+			algaeSpritesheet: "algen.json",
+			lakebg: lakebg,
+			heart: heart,
+			algenExplenation: algenExplenation,
+			algaes: algaes,
+		});
 	}
 
 	public async loadAssets() {
-		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu"], (progress) => {
+		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu", "AlgaeGame"], (progress) => {
 			this.showProgress(progress);
 		});
 		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser"]);
@@ -112,4 +121,3 @@ export class AssetLoader {
 		this.graphics.endFill();
 	}
 }
-
