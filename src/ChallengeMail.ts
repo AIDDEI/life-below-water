@@ -8,6 +8,9 @@ export class ChallengeMail extends ActiveMail {
 	constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: Game) {
 		super(mail, mailHeaderIcon, game);
 		this.createContent();
+
+		// after creating the content, check if the content is too big for the mail
+		this.checkScroll();
 	}
 
 	private createContent() {
@@ -15,13 +18,11 @@ export class ChallengeMail extends ActiveMail {
 		contentText.style.wordWrap = true;
 		contentText.style.wordWrapWidth = this.width - 25;
 
-		contentText.style.wordWrap = true;
-		contentText.style.wordWrapWidth = this.width - 25;
-
 		contentText.position.set(this.x + 20, 150);
 
 		// Add the content to the content container
-		this.addChild(contentText);
+		this.contentContainer.addChild(contentText);
+
 		let button: Button;
 
 		switch (this.mail.identifier) {
@@ -49,7 +50,8 @@ export class ChallengeMail extends ActiveMail {
 				});
 		}
 
-		button.position.set(this.x + 20, this.height - button.height / 2 - 5);
-		this.addChild(button);
+		const y = this.contentContainer.height + button.height > this.maxHeight ? this.contentContainer.height + button.height + 20 : this.height - button.height / 2 - 5;
+		button.position.set(this.x + 20, y);
+		this.contentContainer.addChild(button);
 	}
 }

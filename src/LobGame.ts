@@ -49,7 +49,6 @@ export class LobGame extends Minigame {
 		this.assets = assets;
 		this.game = game;
 		this.y = 0;
-		this.active = false;
 		this.visible = false;
 		this.hitArea = new PIXI.Rectangle(0, 0, window.innerWidth, window.innerHeight);
 		this.eventMode = "auto";
@@ -141,8 +140,9 @@ export class LobGame extends Minigame {
 	}
 
 	private _setupSideButtons(): void {
-		const ruleButton = super.createRulesButton();
 
+		const ruleButton = super.createRulesButton();
+    
 		this.toggle = new PIXI.Graphics();
 		this.addChild(this.toggle);
 		this.toggle.eventMode = "static";
@@ -158,10 +158,9 @@ export class LobGame extends Minigame {
 			fill: "white",
 			align: "center",
 		});
-
+    
 		text.anchor.set(0.5);
 		text.position.set(this.toggle.x - this.toggle.width - 15, 10);
-
 		this.toggle.hitArea = this.toggle.getBounds();
 
 		const cross = new PIXI.Graphics();
@@ -171,8 +170,13 @@ export class LobGame extends Minigame {
 		cross.moveTo(25, 0);
 		cross.lineTo(0, 25);
 
+		this.toggle.addChild(cross);
+		this.toggle.x = this.game.pixi.screen.width - 30;
+		this.toggle.y = 10;
+
 		this.toggle.addChild(text, cross);
 		this.toggle.position.set(this.game.pixi.screen.width - this.toggle.width / 2, ruleButton.y + ruleButton.height + 10);
+
 	}
 
 	private onKeyDown(e: KeyboardEvent): void {
@@ -191,7 +195,6 @@ export class LobGame extends Minigame {
 	public takeLive(): void {
 		this.lives--;
 		this.updateLivesContainer();
-
 		this.badCollectSound.playSFX();
 		this.catcher.tint = "rgba(255, 0, 0, 0.5)";
 
@@ -205,7 +208,6 @@ export class LobGame extends Minigame {
 		this.takeLive();
 
 		// white pill red text "gemist"
-
 		const missedLobContainer = new Graphics();
 		missedLobContainer.beginFill(0xffffff);
 		missedLobContainer.lineStyle(2, 0xff0000);

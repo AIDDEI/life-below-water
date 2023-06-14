@@ -30,6 +30,7 @@ export class MailScreen extends PIXI.Container {
 		this.mailContainer.position.set(35, 125);
 		this.contentContainer = new PIXI.Container();
 		this.contentContainer.position.set(165, 65);
+
 		this.addChild(this.mailContainer, this.contentContainer);
 	}
 
