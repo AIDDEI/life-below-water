@@ -5,6 +5,14 @@ import { Lobster } from "./Lobster";
 import { Minigame } from "./Minigame";
 import { collision } from "./Utils";
 
+// import sounds
+import { Sfx } from "./Sfx";
+import collectSound from "url:./music/collect.mp3";
+import lossSound from "url:./music/gameloss.mp3";
+import winSound from "url:./music/gamewin.mp3";
+import badCollectSound from "url:./music/badCatch.mp3";
+import { Graphics } from "pixi.js";
+
 /**
  * Class for Lob game. Expects a game object and assets object. After game is finished, it will call the callback function in the game class.
  *
@@ -31,6 +39,10 @@ export class LobGame extends Minigame {
 	private bg: PIXI.Sprite;
 	private instructions: PIXI.Sprite;
 	private rules: Button;
+	private collectSound: Sfx;
+	private lossSound: Sfx;
+	private winSound: Sfx;
+	private badCollectSound: Sfx;
 
 	constructor(assets: AssetType, game: Game) {
 		super(game);
@@ -44,6 +56,7 @@ export class LobGame extends Minigame {
 
 		// Set up UI
 		this._setupBackground();
+		this._initSounds();
 		this._setupWater();
 		this._setupItems();
 		this._setupSideButtons();
@@ -56,6 +69,13 @@ export class LobGame extends Minigame {
 		this.initInstructions(() => {
 			this.startGame();
 		}, "Vang de KLEINE kreeftjes door de muis te bewegen of door de \n<- pijltjestoetsen -> te gebruiken. \n\nJe hebt 3 levens. Je verliest een leven als je een verkeerde kreeft raakt of er een mist. \n\nSucces!");
+	}
+
+	private _initSounds(): void {
+		this.collectSound = new Sfx(collectSound);
+		this.lossSound = new Sfx(lossSound);
+		this.winSound = new Sfx(winSound);
+		this.badCollectSound = new Sfx(badCollectSound);
 	}
 
 	private startGame(): void {
@@ -121,6 +141,8 @@ export class LobGame extends Minigame {
 	}
 
 	private _setupSideButtons(): void {
+		const ruleButton = super.createRulesButton();
+
 		this.toggle = new PIXI.Graphics();
 		this.addChild(this.toggle);
 		this.toggle.eventMode = "static";
@@ -136,11 +158,9 @@ export class LobGame extends Minigame {
 			fill: "white",
 			align: "center",
 		});
-		text.anchor.set(0.5);
 
-		text.x = this.toggle.x - this.toggle.width - 15;
-		text.y = 10;
-		this.toggle.addChild(text);
+		text.anchor.set(0.5);
+		text.position.set(this.toggle.x - this.toggle.width - 15, 10);
 
 		this.toggle.hitArea = this.toggle.getBounds();
 
@@ -151,16 +171,8 @@ export class LobGame extends Minigame {
 		cross.moveTo(25, 0);
 		cross.lineTo(0, 25);
 
-		this.toggle.addChild(cross);
-		this.toggle.x = this.game.pixi.screen.width - 30;
-		this.toggle.y = 10;
-
-		this.rules = new Button(30, "Uitleg", undefined, undefined, () => {
-			this.showRules();
-		});
-		this.rules.x = this.toggle.x - this.rules.width + 25;
-		this.rules.y = this.toggle.y + this.toggle.height + 10;
-		this.addChild(this.rules);
+		this.toggle.addChild(text, cross);
+		this.toggle.position.set(this.game.pixi.screen.width - this.toggle.width / 2, ruleButton.y + ruleButton.height + 10);
 	}
 
 	private onKeyDown(e: KeyboardEvent): void {
@@ -179,6 +191,86 @@ export class LobGame extends Minigame {
 	public takeLive(): void {
 		this.lives--;
 		this.updateLivesContainer();
+
+		this.badCollectSound.playSFX();
+		this.catcher.tint = "rgba(255, 0, 0, 0.5)";
+
+		setTimeout(() => {
+			if (this.catcher.tint == "rgba(0, 255, 0, 0.5)") return;
+			this.catcher.tint = 0xffffff;
+		}, 1000);
+	}
+
+	private _onMissedLob(): void {
+		this.takeLive();
+
+		// white pill red text "gemist"
+
+		const missedLobContainer = new Graphics();
+		missedLobContainer.beginFill(0xffffff);
+		missedLobContainer.lineStyle(2, 0xff0000);
+		missedLobContainer.drawRect(0, 0, 100, 35);
+		missedLobContainer.endFill();
+		missedLobContainer.position.set(this.game.pixi.screen.width / 2 - missedLobContainer.width / 2, this.waterContainer.hitArea.y - 50);
+
+		const missedLobText = new PIXI.Text("Gemist!", {
+			fontFamily: "Arial",
+			fontSize: 24,
+			fill: "red",
+			align: "center",
+		});
+
+		missedLobText.anchor.set(0.5);
+		missedLobText.position.set(missedLobContainer.width / 2, missedLobContainer.height / 2);
+
+		missedLobContainer.addChild(missedLobText);
+		this.addChild(missedLobContainer);
+
+		setTimeout(() => {
+			this.removeChild(missedLobContainer);
+		}, 1500);
+	}
+	private _endGame(): void {
+		const reason = this.lives < 1 ? 0 : 1;
+
+		if (reason == 0) {
+			this.lossSound.playSFX();
+		} else {
+			this.winSound.playSFX();
+		}
+
+		this.active = false;
+
+		const gameOverContainer = new Graphics();
+		// blue rectangle with yellow outline
+		gameOverContainer.beginFill(0xffffff);
+		gameOverContainer.lineStyle(4, `0x${reason == 0 ? "ff0000" : "20A34F"}`);
+		gameOverContainer.drawRect(0, 0, 400, 200);
+		gameOverContainer.endFill();
+
+		gameOverContainer.x = this.game.pixi.screen.width / 2 - gameOverContainer.width / 2;
+		// put container a bit higher than the middle
+		gameOverContainer.y = this.game.pixi.screen.height / 2 - gameOverContainer.height;
+		this.addChild(gameOverContainer);
+
+		const gameOverText = new PIXI.Text(reason == 0 ? "Game over" : "Gewonnen!", {
+			fontFamily: "Arial",
+			fontSize: 48,
+			fill: `0x${reason == 0 ? "ff0000" : "20A34F"}`,
+			align: "center",
+		});
+
+		gameOverText.anchor.set(0.5);
+		gameOverText.x = gameOverContainer.width / 2;
+		gameOverText.y = gameOverContainer.height / 2;
+
+		gameOverContainer.addChild(gameOverText);
+		this.addChild(gameOverContainer);
+
+		// wait 1.5 seconds before ending the game
+		setTimeout(() => {
+			this.game.endLobGame(this.score, reason);
+		}, 1500);
 	}
 
 	public update(delta: number) {
@@ -187,8 +279,7 @@ export class LobGame extends Minigame {
 		this.displacement.y -= 1 * delta;
 
 		if (this.lives < 1 || this.score >= this.SCOREGOAL) {
-			const reason = this.lives < 1 ? 0 : 1;
-			this.game.endLobGame(this.score, reason);
+			this._endGame();
 		}
 
 		for (let lobster of this.lobsters) {
@@ -197,6 +288,13 @@ export class LobGame extends Minigame {
 			if (collision(this.netbox, lobster)) {
 				if (lobster.isLob) {
 					this.score++;
+					this.collectSound.playSFX();
+					this.catcher.tint = "rgba(0, 255, 0, 0.5)";
+
+					setTimeout(() => {
+						if (this.catcher.tint == "rgba(255, 0, 0, 0.5)") return;
+						this.catcher.tint = 0xffffff;
+					}, 1000);
 				} else {
 					this.takeLive();
 				}
@@ -269,10 +367,6 @@ export class LobGame extends Minigame {
 			this.toggleFilter();
 		};
 
-		this.rules.onclick = () => {
-			this.showRules();
-		};
-
 		window.addEventListener("keydown", (e: KeyboardEvent) => this.onKeyDown(e));
 		window.addEventListener("keyup", (e: KeyboardEvent) => this.onKeyUp(e));
 	}
@@ -314,7 +408,7 @@ export class LobGame extends Minigame {
 	}
 
 	private spawnLobster(isLob: boolean, i: number): void {
-		const lobster = new Lobster(this.water.position.x + 25, this.water.position.x + this.water.width - 25, this.assets.lobster, isLob, this.takeLive.bind(this), this.game.pixi.screen.height, i);
+		const lobster = new Lobster(this.water.position.x + 25, this.water.position.x + this.water.width - 25, this.assets.lobster, isLob, this._onMissedLob.bind(this), this.game.pixi.screen.height, i);
 		this.lobsters.push(lobster);
 		this.waterContainer.addChild(lobster);
 	}
