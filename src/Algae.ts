@@ -2,8 +2,10 @@ import { AnimatedSprite, Sprite, Texture } from "pixi.js";
 
 // import sound
 import waterSound from "url:./music/water.mp3";
+import missedShapeSound from "url:./music/badCatch.mp3";
 import { AlgaeGame } from "./AlgaeGame";
 import { Sfx } from "./Sfx";
+
 export class Player extends Sprite {
 	public shape: string;
 	private seconds: number;
@@ -12,11 +14,13 @@ export class Player extends Sprite {
 	public missed: boolean;
 	private waterSound: Sfx;
 	private minigame: AlgaeGame;
+	private missedShapeSound: Sfx;
 
 	constructor(textures: Texture, waterTexture: AnimatedSprite, minigame: AlgaeGame, posx = 0, posy = 0) {
 		super();
 		this.waterTexture = waterTexture;
 		this.anchor.set(0.5);
+		this.missedShapeSound = new Sfx(missedShapeSound, 0.75);
 		this.waterSound = new Sfx(waterSound, 0.75);
 		this.minigame = minigame;
 		this.missed = false;
@@ -82,6 +86,7 @@ export class Player extends Sprite {
 			this.alpha = 0.5;
 			this.missed = true;
 			this.minigame.lives--;
+			this.missedShapeSound.playSFX();
 		}
 	}
 }

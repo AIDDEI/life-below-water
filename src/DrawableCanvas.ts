@@ -1,7 +1,6 @@
 import * as PIXI from "pixi.js";
 import { FederatedPointerEvent } from "pixi.js";
 import { AlgaeGame } from "./AlgaeGame";
-import { DrawModel } from "./DrawModel";
 import { Game } from "./game";
 
 export class DrawableCanvas extends PIXI.Container {
@@ -9,17 +8,16 @@ export class DrawableCanvas extends PIXI.Container {
 	private _isDrawing: boolean;
 	private _lastPosition: PIXI.Point;
 	private game: any;
-	private _model: DrawModel;
 	private w: number;
 	private h: number;
-	minigame: AlgaeGame;
-	cb: any;
-	constructor(game: Game, minigame: any, cb: any, width: number = 2400, height: number = 600) {
+	private cb: any;
+
+	constructor(game: Game, cb: any, width: number = 2400, height: number = 600) {
 		super();
 		this.game = game;
-		this.minigame = minigame;
+
 		this.cb = cb;
-		this._model = new DrawModel();
+
 		this.graphics = new PIXI.Graphics();
 		this.addChild(this.graphics);
 
@@ -56,47 +54,36 @@ export class DrawableCanvas extends PIXI.Container {
 		}
 	}
 
-	public async onPointerUp(): Promise<Object | undefined> {
+	public async onPointerUp(cb): Promise<Object | undefined> {
 		this._isDrawing = false;
-		const result = await this._checkDrawing();
 
-		if (!result) return;
-
-		this.cb(result);
-	}
-
-	private async _checkDrawing(): Promise<Object | undefined> {
-		for await (const object of this.minigame.players) {
-			const objectPos = object.getBounds();
-			if (!object.missed && this._objectInside(objectPos)) {
-				let image = await this.game.pixi.renderer.extract.image(this.graphics);
-
-				// create canvas to make it compatible for the model
-				let canvas = document.createElement("canvas");
-				canvas.width = 60;
-				canvas.height = 60;
-				let ctx = canvas.getContext("2d");
-
-				if (!ctx) return;
-				ctx.fillStyle = "#FFFFFF";
-				ctx.fillRect(0, 0, canvas.width, canvas.height);
-				ctx.drawImage(image, 0, 0, 60, 60);
-
-				const result = await this._model.predict(canvas);
-
-				// Remove canvas, move player and break loop (we only care about the first)
-				canvas.remove();
-				this.graphics.clear();
-
-				return { result, object };
-			}
-		}
-
-		// clear the drawing
+		this.cb();
 		this.graphics.clear();
 	}
 
-	private _objectInside(objectPos: PIXI.Rectangle): boolean {
+	public async getDrawing(): Promise<HTMLCanvasElement | undefined> {
+		// for await (const object of this.minigame.players) {
+		let image = await this.game.pixi.renderer.extract.image(this.graphics);
+
+		// create canvas to make it compatible for the model
+		let canvas = document.createElement("canvas");
+		canvas.width = 60;
+		canvas.height = 60;
+		let ctx = canvas.getContext("2d");
+
+		if (!ctx) return;
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+		ctx.drawImage(image, 0, 0, 60, 60);
+
+		canvas.remove();
+
+		return canvas;
+	}
+
+	public objectInsideDrawing(objectPos: PIXI.Rectangle): boolean {
+		if (!objectPos) return false;
+
 		return this._lastPosition.x > objectPos.x && this._lastPosition.x < objectPos.x + objectPos.width && this._lastPosition.y > objectPos.y && this._lastPosition.y < objectPos.y + objectPos.height;
 	}
 }

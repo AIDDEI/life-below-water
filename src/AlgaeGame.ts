@@ -2,10 +2,12 @@ import { AnimatedSprite, Container, Graphics, Rectangle, Sprite, Text, Texture }
 import { DrawableCanvas } from "./DrawableCanvas";
 import { Game } from "./game";
 import { Minigame } from "./Minigame";
-import { Player } from "./Player";
+import { Player } from "./Algae";
 import { Sfx } from "./Sfx";
 
 import wrongShapeSound from "url:./music/wrongShape.mp3";
+
+import { DrawModel } from "./DrawModel";
 export class AlgaeGame extends Minigame {
 	playField: any;
 	players: any;
@@ -27,17 +29,20 @@ export class AlgaeGame extends Minigame {
 	livesContainer: any;
 	lives: number;
 	wrongShapeSound: any;
+	private _model: DrawModel;
+	drawableCanvas: DrawableCanvas;
+	missedShapeSound: Sfx;
 
-	constructor(game: Game, textures: Texture[]) {
+	constructor(textures: Texture[], game: Game) {
 		super(game, textures);
 		this.game = game;
 		this.textures = textures;
+		this._model = new DrawModel();
 		this.players = [];
 		this.playFieldWidth = 1600;
 		this.visibleWidth = this.game.pixi.screen.width;
 		this.cols = 6;
 		this.rows = 3;
-
 		this.wrongShapeSound = new Sfx(wrongShapeSound, 0.75);
 		this.xcoords = [];
 		this.ycoords = [];
@@ -99,9 +104,9 @@ export class AlgaeGame extends Minigame {
 	};
 
 	private _setupCanvas() {
-		const draw = new DrawableCanvas(this.game, this, this.onDrawingMade);
+		this.drawableCanvas = new DrawableCanvas(this.game, this.onDrawingMade.bind(this));
 
-		this.addChild(draw);
+		this.addChild(this.drawableCanvas);
 	}
 
 	private _setupArrowKeys() {
@@ -189,31 +194,35 @@ export class AlgaeGame extends Minigame {
 		this.playField.addChild(player);
 	}
 
-	private onDrawingMade = ({ result, object }: { result: string; object: Player }) => {
-		const obj = this.players.find((player: Player) => player === object);
-		if (obj) {
-			console.log(obj.shape.toLowerCase(), result.toLowerCase());
-			if (obj.shape.toLowerCase() === result.toLowerCase()) {
-				this.players = this.players.filter((player: Player) => player !== obj);
-				this.matrix = this.matrix.map((row: number[]) => row.map((col: number) => (col === obj ? 0 : col)));
-				super.score++;
-				obj.move();
+	private async onDrawingMade() {
+		for (const obj of this.players) {
+			const objPos = obj.getBounds();
+			if (this.drawableCanvas.objectInsideDrawing(objPos)) {
+				const canvas = await this.drawableCanvas.getDrawing();
+				const result = await this._model.predict(canvas);
 
-				// wait 1-3 seconds before generating a new player
-				setTimeout(() => {
-					this._addPlayer();
-				}, Math.random() * 2000 + 1000);
-			} else {
-				this.wrongShapeSound.playSFX();
-				const prevTint = obj.tint;
-				obj.tint = 0xff0000;
+				if (obj.shape.toLowerCase() === result.toLowerCase()) {
+					this.players = this.players.filter((player: Player) => player !== obj);
+					this.matrix = this.matrix.map((row: number[]) => row.map((col: number) => (col === obj ? 0 : col)));
+					super.score++;
+					obj.move();
 
-				setTimeout(() => {
-					obj.tint = prevTint;
-				}, 1000);
+					// wait 1-3 seconds before generating a new player
+					setTimeout(() => {
+						this._addPlayer();
+					}, Math.random() * 2000 + 1000);
+				} else {
+					this.wrongShapeSound.playSFX();
+					const prevTint = obj.tint;
+					obj.tint = 0xff0000;
+
+					setTimeout(() => {
+						obj.tint = prevTint;
+					}, 1000);
+				}
 			}
 		}
-	};
+	}
 
 	private _getRandomPosition() {
 		let row = Math.floor(Math.random() * 3);
