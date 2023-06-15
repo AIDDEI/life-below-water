@@ -12,7 +12,7 @@ export class Sfx extends PIXI.Container {
 		super();
 		// Give the audio the correct source
 		this.audio = new Audio(url);
-		this.volume = volume ? volume : 100;
+		this.volume = volume ? volume : 1;
 	}
 
 	public playSFX() {
