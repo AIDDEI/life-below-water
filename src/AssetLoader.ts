@@ -23,6 +23,9 @@ import browserWindowBG from "./images/browserWindow.png";
 import startBackground from "./images/startBackground.png";
 import startBackgroundBlur from "./images/startBackgroundBlur.png";
 import settingsBorder from "./images/settings_border.png";
+import mapBg from "./images/map.png";
+import farmerIcon from "./images/farmerIcon.png";
+import lobIcon from "./images/lobIcon.png";
 
 
 // Export class
@@ -83,10 +86,17 @@ export class AssetLoader {
             'backgroundBlur': startBackgroundBlur,
             'settingsBorder': settingsBorder,
         });
+
+		PIXI.Assets.addBundle('Map', {
+			map: mapBg,
+			farmerIcon: farmerIcon,
+			lobIcon: lobIcon,
+
+		});
 	}
 
 	public async loadAssets() {
-		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu"], (progress) => {
+		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu", "Map"], (progress) => {
 			this.showProgress(progress);
 		});
 		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser"]);

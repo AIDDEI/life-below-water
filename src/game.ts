@@ -16,6 +16,8 @@ import { StartScreen } from "./StartScreen";
 import { CreditsScreen } from "./CreditsScreen";
 import { NewGameWarning } from "./NewGameWarning";
 import { MailScreen } from "./MailScreen";
+import { Map } from "./Map";
+
 
 // Other
 import { Player } from "./Player";
@@ -57,6 +59,8 @@ export class Game {
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
+	public map: Map;
+	private mapAssets: PIXI.Texture[];
 
 	public player: Player;
 	private theme: Music;
@@ -111,6 +115,7 @@ export class Game {
 		this.dayAssets = this.loader.textures.DayScreen;
 		this.lobAssets = this.loader.textures.Lobgame;
 		this.qualityAssets = this.loader.textures.QualityScreen;
+		this.mapAssets = this.loader.textures.Map;
 
 		this.calendar = new Calendar(this.dayAssets, this);
 		// this.player = new Player(this.gameTexture)
@@ -118,15 +123,16 @@ export class Game {
 
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
+		this.map = new Map(this.mapAssets, this);
 
-		this.pixi.stage.addChild(this.mail, this.qualityScreen);
+		this.pixi.stage.addChild(this.mail, this.qualityScreen, this.map);
 
 		this.browser = new Browser(this.loader.textures.browser);
 
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
 			{ tabName: "E-mail", screen: this.mail },
-			{ tabName: "Kaart", screen: undefined },
+			{ tabName: "Kaart", screen: this.map },
 			{ tabName: "Over ons", screen: undefined },
 		]);
 
