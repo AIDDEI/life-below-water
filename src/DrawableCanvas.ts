@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { FederatedPointerEvent } from "pixi.js";
-import { AlgaeGame } from "./AlgaeGame";
+import { DrawModel } from "./DrawModel";
 import { Game } from "./game";
 
 export class DrawableCanvas extends PIXI.Container {
@@ -10,25 +10,22 @@ export class DrawableCanvas extends PIXI.Container {
 	private game: any;
 	private w: number;
 	private h: number;
+	private model: DrawModel;
 	private cb: any;
 
-	constructor(game: Game, cb: any, width: number = 2400, height: number = 600) {
+	constructor(game: Game, cb: any, model: DrawModel, width: number = 2400, height: number = 600) {
 		super();
 		this.game = game;
-
+		this.model = model;
 		this.cb = cb;
-
 		this.graphics = new PIXI.Graphics();
 		this.addChild(this.graphics);
-
 		this.w = width;
 		this.h = height;
 		this.graphics.hitArea = new PIXI.Rectangle(0, 0, this.w, this.h);
-
 		this._isDrawing = false;
 		this._lastPosition = new PIXI.Point();
 		this.eventMode = "static";
-
 		this.on("pointerdown", this.onPointerDown, this);
 		this.on("pointermove", this.onPointerMove, this);
 		this.on("pointerup", this.onPointerUp, this);
@@ -56,11 +53,27 @@ export class DrawableCanvas extends PIXI.Container {
 		}
 	}
 
-	public async onPointerUp(cb): Promise<Object | undefined> {
+	public onPointerUp(): void {
 		this._isDrawing = false;
 
 		this.cb();
 		this.graphics.clear();
+	}
+
+	public async predictDrawing(): Promise<string> {
+		if (!this.model) {
+			console.error("No model to predict from!");
+			return "";
+		}
+
+		const canvas = await this.getDrawing();
+		if (!canvas) {
+			console.error("No canvas found, please alert the developers!");
+			return "";
+		}
+
+		const result = await this.model.predict(canvas);
+		return result;
 	}
 
 	public async getDrawing(): Promise<HTMLCanvasElement | undefined> {

@@ -14,7 +14,7 @@ export class DrawModel {
 		const results = await this.nn.classify(image, (err: string, results: Object) => {
 			if (err) {
 				console.log(err);
-				return;
+				return "";
 			}
 		});
 		return results[0].label;

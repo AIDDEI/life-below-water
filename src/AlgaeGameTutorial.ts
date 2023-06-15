@@ -4,12 +4,28 @@ import { DrawableCanvas } from "./DrawableCanvas";
 import { DrawModel } from "./DrawModel";
 import { Game } from "./game";
 
+// import sounds
+import wrongShapeSound from "url:./music/wrongShape.mp3";
+import collectSound from "url:./music/collect.mp3";
+import { Sfx } from "./Sfx";
+
 export class AlgaeGameTutorial extends Container {
 	private cb: () => void;
 	private game: Game;
 	private bg: Graphics;
 	private button: Button;
 	private instructions: string;
+	private content: any;
+	private model: DrawModel;
+	private assets: any;
+	private drawableCanvas: DrawableCanvas;
+	private canvasContainer: any;
+	private _objectives: { label: string; value: string }[];
+	private _currentStep: number;
+	private _objectiveText: Text;
+	private predictionText: Text;
+	private correctShapeSound: Sfx;
+	private wrongShapeSound: Sfx;
 
 	constructor(game: Game, cb: () => void, assets: any, model: DrawModel, instructions: string) {
 		super();
@@ -17,6 +33,8 @@ export class AlgaeGameTutorial extends Container {
 		this.y = 0;
 		this.cb = cb;
 		this.assets = assets;
+		this.wrongShapeSound = new Sfx(wrongShapeSound, 0.75);
+		this.correctShapeSound = new Sfx(collectSound, 0.75);
 		this.instructions = instructions;
 		this.model = model;
 		this.bg = new Graphics();
@@ -24,7 +42,12 @@ export class AlgaeGameTutorial extends Container {
 		this.zIndex = 3;
 		this.eventMode = "static";
 		this._setupUI();
-		this.steps = ["Triangle", "Circle", "Square"];
+		this._objectives = [
+			{ label: "Cirkel", value: "circle" },
+			{ label: "Vierkant", value: "square" },
+			{ label: "Driehoek", value: "triangle" },
+		];
+		this._currentStep = 0;
 	}
 
 	private _setupUI() {
@@ -43,9 +66,13 @@ export class AlgaeGameTutorial extends Container {
 		this.content.position.set(50, 50);
 		this.addChild(this.content);
 
+		this._firstStep();
+	}
+
+	private _firstStep() {
 		// text
 		const text = new Text(this.instructions, {
-			fontSize: 20,
+			fontSize: 18,
 			fill: "black",
 			wordWrap: true,
 			wordWrapWidth: this.game.pixi.screen.width - 200,
@@ -61,69 +88,143 @@ export class AlgaeGameTutorial extends Container {
 		// button
 		this.button = new Button(50, "Start oefening", 0xffbd01, 0x336699, () => {
 			this.content.removeChildren();
-			this.nextStep();
+			this._secondStep();
 		});
 
 		this.button.position.set(this.x + 30, this.content.height - this.button.height - 25);
 		this.content.addChild(this.button);
 	}
 
-	private nextStep() {
-		// button
-		this.button = new Button(50, "Begin minigame", 0xffbd01, 0x336699, () => {
-			this.cb();
-			this.visible = false;
+	private _previousStep() {
+		this.content.removeChildren();
+		this.canvasContainer.removeChildren();
+
+		this._firstStep();
+	}
+
+	private _secondStep() {
+		const prevButton = new Button(50, "Vorige stap", 0xffbd01, 0x336699, () => {
+			this._previousStep();
 		});
+		prevButton.position.set(this.x + 30, this.content.height - prevButton.height - 25);
 
-		this.button.position.set(this.x + 30, this.content.height - this.button.height - 25);
-		this.content.addChild(this.button);
+		this.content.addChild(prevButton);
 
+		const uitleg = new Sprite(this.assets.algenExplenation);
+		uitleg.scale.set(0.2);
+		uitleg.position.set(this.content.width - uitleg.width - 20, 10);
+
+		const tips = ["TIP 1: Zorg dat je de algen markeert. Je hoeft het figuur er niet helemaal omheen te tekenen.", "TIP 2: Zorg dat je scherpe hoeken tekent, zodat de vorm goed herkend wordt."];
+
+		for (const tip of tips) {
+			const text = new Text(tip, {
+				fontSize: 15,
+				wordWrap: true,
+				wordWrapWidth: 350,
+				fill: "black",
+			});
+
+			// y is 50 apart
+			text.position.set(15, tips.indexOf(tip) * 75 + 30);
+			this.content.addChild(text);
+		}
+
+		this.content.addChild(uitleg);
+
+		// init drawable canvas
+		this.canvasContainer = new Container();
 		this.drawableCanvas = new DrawableCanvas(
 			this.game,
 			() => {
-				this.test();
+				this._predict();
 			},
-			250,
+			this.model,
+			400,
 			250
 		);
 
-		this.drawableCanvas.position.set(75, 75);
+		this.drawableCanvas.position.set(this.x + this.content.width - 375, this.content.height - 225);
+
+		// set background so it's clear where the player can draw
 		const drawableCanvasBg = new Graphics();
 		drawableCanvasBg.beginFill(0xc9c9c9);
 
 		// dynamic doesnt work so hardcoded to match the canvas size and position
-		drawableCanvasBg.drawRect(75, 75, 250, 250);
+		drawableCanvasBg.drawRect(this.x + this.content.width - 375, this.content.height - 225, 400, 250);
 		drawableCanvasBg.endFill();
 
-		this.addChild(drawableCanvasBg, this.drawableCanvas);
+		this.canvasContainer.addChild(drawableCanvasBg, this.drawableCanvas);
 
-		const uitleg = new Sprite(this.assets.algenExplenation);
-		uitleg.scale.set(0.25);
-		uitleg.position.set(this.content.width - uitleg.width - 20, 10);
-		this.content.addChild(uitleg);
+		this.predictionText = new Text("De eerste keer kan iets langer duren", {
+			fontSize: 15,
+			fill: "black",
+		});
+
+		// set in the middle of drawableCanvasBg
+		this.predictionText.position.set(this.x + this.content.width - 375 + 200 - this.predictionText.width / 2, this.content.height - 245);
+
+		this.canvasContainer.addChild(this.predictionText);
+
+		this.addChild(this.canvasContainer);
+
+		// init objective text
+		const objectiveDescription = new Text("Teken nu een:", {
+			fontSize: 36,
+			fill: "black",
+		});
+
+		objectiveDescription.position.set(30, this.drawableCanvas.y + this.drawableCanvas.height / 2 - objectiveDescription.height / 2);
+
+		this._objectiveText = new Text(this._objectives[this._currentStep].label, {
+			fontSize: 48,
+			fill: "black",
+			fontWeight: "bold",
+		});
+
+		this._objectiveText.position.set(30, objectiveDescription.y + objectiveDescription.height + 10);
+
+		this.content.addChild(objectiveDescription, this._objectiveText);
 	}
 
-	private async test() {
-		console.log("test");
+	private async _predict() {
+		const result = await this.drawableCanvas.predictDrawing();
 
-		const canvas = await this.drawableCanvas.getDrawing();
-		const result = await this.model.predict(canvas);
-		console.log(result);
-	}
-	/**
-	 * Show the rules
-	 *
-	 * @param cb - callback function to run when player clicks the button (used to continue the game)
-	 */
-	public show(cb: () => void) {
-		this.button.label = "Verder gaan";
-		this.button.clickHandler = () => {
-			this.visible = false;
-			cb();
-		};
+		if (result.toLowerCase() === this._objectives[this._currentStep].value) {
+			this.correctShapeSound.playSFX();
 
-		this.button.position.set(this.x + this.button.width / 2, this.height - this.button.height - 75);
+			// if last step, destroy and start game
+			if (this._currentStep === this._objectives.length - 1) {
+				this.destroy();
+				this.cb();
+				return;
+			}
 
-		this.visible = true;
+			this._currentStep++;
+			this._objectiveText.text = this._objectives[this._currentStep].label;
+		} else {
+			this.wrongShapeSound.playSFX();
+		}
+
+		// translate result to dutch
+		let label;
+		switch (result.toLowerCase()) {
+			case "circle":
+				label = "Cirkel";
+				break;
+			case "square":
+				label = "Vierkant";
+				break;
+			case "triangle":
+				label = "Driehoek";
+				break;
+			default:
+				label = "Onbekend";
+				break;
+		}
+
+		this.predictionText.text = `Voorspelling: ${label}`;
+
+		// set in the middle of drawableCanvasBg
+		this.predictionText.position.set(this.x + this.content.width - 375 + 200 - this.predictionText.width / 2, this.content.height - 245);
 	}
 }

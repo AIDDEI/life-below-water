@@ -11,8 +11,8 @@ import { DrawModel } from "./DrawModel";
 import { AlgaeGameTutorial } from "./AlgaeGameTutorial";
 
 export class AlgaeGame extends Minigame {
-	private playField: any;
-	public algaes: any;
+	private playField: Container;
+	public algaes: Algae[];
 	private leftArrow: Graphics;
 	private rightArrow: Graphics;
 	private matrix: any;
@@ -22,17 +22,16 @@ export class AlgaeGame extends Minigame {
 	private rows: number;
 	private playFieldWidth: number;
 	private bg: Sprite;
-	private visibleWidth: any;
-
-	private wrongShapeSound: any;
-	private _model: DrawModel;
+	private visibleWidth: number;
+	private wrongShapeSound: Sfx;
+	public model: DrawModel;
 	private drawableCanvas: DrawableCanvas;
 
 	constructor(textures: Texture[], game: Game) {
 		super(game, textures);
 		this.game = game;
 		this.textures = textures;
-		this._model = new DrawModel();
+		this.model = new DrawModel();
 		this.algaes = [];
 		this.playFieldWidth = 1600;
 		this.visibleWidth = this.game.pixi.screen.width;
@@ -42,7 +41,40 @@ export class AlgaeGame extends Minigame {
 		this.xcoords = [];
 		this.ycoords = [];
 		this.matrix = new Array(this.rows).fill(0).map(() => new Array(this.cols).fill(0));
-		// set up coords, rows 200 to 600, cols 200 to 2400 evenly spaced
+		this._setUpField();
+		this._setUpCoords();
+		this._setupEvents();
+		super.addScore();
+		super.addLives();
+		super.createRulesButton();
+
+		// init instructions, don't show
+		super.initInstructions(
+			() => {},
+			"Teken het figuur dat op de alg staat op het canvas. \n\nTekenen doe je met de muis in te drukken. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\nKlik op de pijltjes links en rechts, of gebruik de toetsen, om van meer te veranderen. \n\n\nTIP! Zorg dat je duidelijke figuren tekent met scherpe hoeken, zodat het systeem het beste jouw figuur kan herkennen.",
+			false
+		);
+
+		// start interactive tutorial
+		const tutorial = new AlgaeGameTutorial(
+			this.game,
+			this._startGame.bind(this),
+			this.textures,
+			this.model,
+			"Doel: Teken het juiste figuur dat bij het type alg hoort door met je muis ingedrukt een figuur in het water te tekenen. Dit hoeft niet perfect. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\nJe kan van wateren veranderen door op de pijltjes <- -> links en rechts te klikken, of de toetsen te gebruiken. \n\nLaten we oefenen!"
+		);
+		this.addChild(tutorial);
+	}
+
+	private _startGame = () => {
+		super.active = true;
+		this._startGeneratingAlgaes();
+		this._setupCanvas();
+		this._setupArrowKeys();
+	};
+
+	private _setUpField() {
+		// set up playfield bg
 		this.playField = new Container();
 		this.addChild(this.playField);
 		this.bg = new Sprite(this.textures.lakebg);
@@ -50,26 +82,6 @@ export class AlgaeGame extends Minigame {
 		this.bg.width = this.playFieldWidth;
 		this.bg.height = 600;
 		this.playField.pivot.x = 0;
-		this._setUpCoords();
-		this._setupEvents();
-		super.addScore();
-		super.addLives();
-		super.createRulesButton();
-
-		super.initInstructions(
-			() => {},
-			"Teken het figuur dat op de alg staat op het canvas. \n\nTekenen doe je met de muis. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\n\nTIP! Zorg dat je duidelijke figuren tekent met scherpe hoeken, zodat het systeem het beste jouw figuur kan herkennen.",
-			false
-		);
-
-		const tutorial = new AlgaeGameTutorial(
-			this.game,
-			this._startGame.bind(this),
-			this.textures,
-			this._model,
-			"Algen groeien door warmte. Waar algen niet van houden, is doorstromend water. Het is aan jouw de taak het water te laten stromen voordat de alg te groot wordt. \n\nDit doe je door het juiste figuur te tekenen die bij het type alg hoort. \n\nTekenen doe je met de muis in één beweging. Geen zorgen! Dit hoeft niet perfect. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. Laten we oefenen!"
-		);
-		this.addChild(tutorial);
 	}
 
 	private _setupEvents() {
@@ -97,15 +109,9 @@ export class AlgaeGame extends Minigame {
 		}
 	}
 
-	private _startGame = () => {
-		this.active = true;
-		this._startGeneratingAlgaes();
-		this._setupCanvas();
-		this._setupArrowKeys();
-	};
-
 	private _setupCanvas() {
-		this.drawableCanvas = new DrawableCanvas(this.game, this.onDrawingMade.bind(this));
+		// init canvas, pass on model
+		this.drawableCanvas = new DrawableCanvas(this.game, this.onDrawingMade.bind(this), this.model);
 		this.addChild(this.drawableCanvas);
 	}
 
@@ -122,6 +128,7 @@ export class AlgaeGame extends Minigame {
 		this.leftArrow.cursor = "pointer";
 		this.leftArrow.hitArea = new Rectangle(0, 0, 40, 40);
 
+		// hide left arrow if we're at the leftmost edge
 		if (this.bg.pivot.x == 0) {
 			this.leftArrow.visible = false;
 		}
@@ -141,6 +148,7 @@ export class AlgaeGame extends Minigame {
 		this.rightArrow.cursor = "pointer";
 		this.rightArrow.hitArea = new Rectangle(0, 0, 40, 40);
 
+		// hide right arrow if we're at the rightmost edge
 		if (this.playField.pivot.x == this.playFieldWidth - this.visibleWidth) {
 			this.rightArrow.visible = false;
 		}
@@ -195,11 +203,14 @@ export class AlgaeGame extends Minigame {
 	}
 
 	private async onDrawingMade() {
+		// loop through all the algaes and check if the drawing is inside an algae
 		for (const obj of this.algaes) {
+			// get the bounds of the algae
 			const objPos = obj.getBounds();
-			if (this.drawableCanvas.objectInsideDrawing(objPos)) {
-				const canvas = await this.drawableCanvas.getDrawing();
-				const result = await this._model.predict(canvas);
+
+			// check if the drawing is inside the algae
+			if (!obj.missed && this.drawableCanvas.objectInsideDrawing(objPos)) {
+				const result = await this.drawableCanvas.predictDrawing();
 
 				if (obj.shape.toLowerCase() === result.toLowerCase()) {
 					this.algaes = this.algaes.filter((player: Algae) => player !== obj);
