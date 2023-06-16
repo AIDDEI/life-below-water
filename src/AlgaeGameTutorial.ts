@@ -32,26 +32,31 @@ export class AlgaeGameTutorial extends Container {
 		this.x = 0;
 		this.y = 0;
 		this.cb = cb;
-		this.assets = assets;
-		this.wrongShapeSound = new Sfx(wrongShapeSound, 0.75);
-		this.correctShapeSound = new Sfx(collectSound, 0.75);
 		this.instructions = instructions;
 		this.model = model;
-		this.bg = new Graphics();
 		this.game = game;
 		this.zIndex = 3;
 		this.eventMode = "static";
-		this._setupUI();
+
+		// init sounds and assets
+		this.assets = assets;
+		this.wrongShapeSound = new Sfx(wrongShapeSound, 0.75);
+		this.correctShapeSound = new Sfx(collectSound, 0.75);
+
+		this._currentStep = 0;
 		this._objectives = [
 			{ label: "Cirkel", value: "circle" },
 			{ label: "Vierkant", value: "square" },
 			{ label: "Driehoek", value: "triangle" },
 		];
-		this._currentStep = 0;
+
+		this._setupUI();
 	}
 
 	private _setupUI() {
 		// black bg
+
+		this.bg = new Graphics();
 		this.bg.beginFill(0x000000);
 		this.bg.drawRect(0, 0, this.game.pixi.screen.width, this.game.pixi.screen.height);
 		this.bg.endFill();
@@ -114,7 +119,7 @@ export class AlgaeGameTutorial extends Container {
 		uitleg.scale.set(0.2);
 		uitleg.position.set(this.content.width - uitleg.width - 20, 10);
 
-		const tips = ["TIP 1: Zorg dat je de algen markeert. Je hoeft het figuur er niet helemaal omheen te tekenen.", "TIP 2: Zorg dat je scherpe hoeken tekent, zodat de vorm goed herkend wordt."];
+		const tips = ["TIP 1: Zorg dat je het figuur binnen de alg tekent, en niet eromheen.", "TIP 2: Zorg dat je scherpe hoeken tekent, zodat de vorm goed herkend wordt door het algoritme."];
 
 		for (const tip of tips) {
 			const text = new Text(tip, {
@@ -155,7 +160,7 @@ export class AlgaeGameTutorial extends Container {
 
 		this.canvasContainer.addChild(drawableCanvasBg, this.drawableCanvas);
 
-		this.predictionText = new Text("De eerste keer kan iets langer duren", {
+		this.predictionText = new Text("De eerste voorspelling duurt een paar secondes!", {
 			fontSize: 15,
 			fill: "black",
 		});

@@ -33,11 +33,14 @@ export class AlgaeGame extends Minigame {
 		this.textures = textures;
 		this.model = new DrawModel();
 		this.algaes = [];
+		this.wrongShapeSound = new Sfx(wrongShapeSound, 0.75);
+		// game options
 		this.playFieldWidth = 1600;
 		this.visibleWidth = this.game.pixi.screen.width;
 		this.cols = 6;
 		this.rows = 3;
-		this.wrongShapeSound = new Sfx(wrongShapeSound, 0.75);
+
+		// init playfield
 		this.xcoords = [];
 		this.ycoords = [];
 		this.matrix = new Array(this.rows).fill(0).map(() => new Array(this.cols).fill(0));
@@ -54,14 +57,13 @@ export class AlgaeGame extends Minigame {
 			"Teken het figuur dat op de alg staat op het canvas. \n\nTekenen doe je met de muis in te drukken. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\nKlik op de pijltjes links en rechts, of gebruik de toetsen, om van meer te veranderen. \n\n\nTIP! Zorg dat je duidelijke figuren tekent met scherpe hoeken, zodat het systeem het beste jouw figuur kan herkennen.",
 			false
 		);
-
-		// start interactive tutorial
+		//start interactive tutorial
 		const tutorial = new AlgaeGameTutorial(
 			this.game,
 			this._startGame.bind(this),
 			this.textures,
 			this.model,
-			"Doel: Teken het juiste figuur dat bij het type alg hoort door met je muis ingedrukt een figuur in het water te tekenen. Dit hoeft niet perfect. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\nJe kan van wateren veranderen door op de pijltjes <- -> links en rechts te klikken, of de toetsen te gebruiken. \n\nLaten we oefenen!"
+			"Doel: Teken het juiste figuur dat bij het type alg hoort door met je muis ingedrukt een figuur in het water te tekenen. Machine learning zal een voorspelling doen van het figuur. Je hoeft niet precies te zijn. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\nJe kan van wateren veranderen door op de pijltjes <-  -> links en rechts te klikken, of de toetsen te gebruiken. \n\nLaten we oefenen!"
 		);
 		this.addChild(tutorial);
 	}
@@ -214,9 +216,9 @@ export class AlgaeGame extends Minigame {
 
 				if (obj.shape.toLowerCase() === result.toLowerCase()) {
 					this.algaes = this.algaes.filter((player: Algae) => player !== obj);
-					this.matrix = this.matrix.map((row: number[]) => row.map((col: number) => (col === obj ? 0 : col)));
+					this.matrix = this.matrix.map((row: number[]) => row.map((col: Algae | number) => (col === obj ? 0 : col)));
 					super.score++;
-					obj.move();
+					obj.onCorrectShape();
 
 					// wait 1-3 seconds before generating a new player
 					setTimeout(() => {
