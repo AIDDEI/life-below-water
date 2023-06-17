@@ -100,8 +100,8 @@ export class Game {
 			20, // increment
 			500, // min
 			700, // max
-      575, // optimal min
-      650 // optiman max
+			575, // optimal min
+			650 // optiman max
 		);
 		this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
 	}

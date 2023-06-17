@@ -41,33 +41,34 @@ export class Map extends PIXI.Container {
     this.lob.on("mouseout", this.onlobMouseOut.bind(this));
 
     this.addChild(this.map, this.farmer, this.lob);
+    this.close();
   }
 
-// events for farmer icon
+  // events for farmer icon
   private onFarmerClick() {
     console.log("Open farmer scenario");
   }
 
   private onFarmerMouseOver() {
-	this.farmer.scale.set(0.6);
-}
+    this.farmer.scale.set(0.6);
+  }
 
-private onFarmerMouseOut() {
-	this.farmer.scale.set(0.5);
-}
+  private onFarmerMouseOut() {
+    this.farmer.scale.set(0.5);
+  }
 
-// events for lobster icon
-private onlobClick() {
+  // events for lobster icon
+  private onlobClick() {
     console.log("Open lob minigame");
   }
 
   private onlobMouseOver() {
-	this.lob.scale.set(0.4);
-}
+    this.lob.scale.set(0.4);
+  }
 
-private onlobMouseOut() {
-	this.lob.scale.set(0.3);
-}
+  private onlobMouseOut() {
+    this.lob.scale.set(0.3);
+  }
 
   public close() {
     this.visible = false;
