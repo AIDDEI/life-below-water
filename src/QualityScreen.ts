@@ -27,7 +27,7 @@ export class QualityScreen extends PIXI.Container {
 		this.textStyle = new PIXI.TextStyle({
 			fill: "#ffffff",
 			fontFamily: "Arial Black",
-			fontSize: 28,
+			fontSize: 20,
 			fontVariant: "small-caps",
 			fontWeight: "bold",
 			lineJoin: "bevel",
@@ -48,7 +48,12 @@ export class QualityScreen extends PIXI.Container {
 		//temporary background fill to check positioning
 		this.contentBG = new PIXI.Graphics();
 		this.contentBG.beginFill("rgba(10,200,20,0)");
-		this.contentBG.drawRect(0, this.bg.height * 0.17, this.bg.width, this.bg.height - this.bg.height * 0.17);
+		this.contentBG.drawRect(
+			0,
+			this.bg.height * 0.17,
+			this.bg.width,
+			this.bg.height - this.bg.height * 0.17
+		);
 		this.contentBG.endFill();
 
 		// set waterparam's container.
@@ -66,20 +71,30 @@ export class QualityScreen extends PIXI.Container {
 		this.qualityIndicatorContainer = new PIXI.Container();
 		this.qualityIndicatorBG = new PIXI.Graphics();
 		this.qualityIndicatorBG.beginFill("rgba(2, 100, 200, 0.4)");
-		this.qualityIndicatorBG.drawRect(0, this.waterParamContainer.getBounds().y + this.waterParamContainer.height, this.bg.width, this.bg.height * 0.45);
+		this.qualityIndicatorBG.drawRect(
+			0,
+			this.waterParamContainer.getBounds().y + this.waterParamContainer.height,
+			this.bg.width,
+			this.bg.height * 0.45
+		);
 		this.qualityIndicatorBG.endFill();
 		this.qualityIndicatorContainer.addChild(this.qualityIndicatorBG);
 
 		// add all content to the right containers
-		this.contentContainer.addChild(this.contentBG, this.waterParamContainer, this.qualityIndicatorContainer);
+		this.contentContainer.addChild(
+			this.contentBG,
+			this.waterParamContainer,
+			this.qualityIndicatorContainer
+		);
 		this.addChild(this.contentContainer);
 
-		for (let i = 0; i < this.game.waterParams.length; i++) {
+		for (let i = 0; i < this.game.waterParameters.length; i++) {
 			const x = 0;
 			const width = this.bg.width - 10;
-			const height = this.waterParamBG.height / (this.game.waterParams.length + 1);
-			const y = 20 + height * i + 10 * i;
-			const paramBar = this.game.waterParams[i];
+			const height =
+				this.waterParamBG.height / (this.game.waterParameters.length + 2);
+			const y = 20 + height * i + 30 * i;
+			const paramBar = this.game.waterParameters[i];
 			this.waterParamContainer.addChild(paramBar);
 			paramBar.draw(x, y, width, height, this.textStyle);
 		}

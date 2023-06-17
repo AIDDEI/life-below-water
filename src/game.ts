@@ -95,10 +95,14 @@ export class Game {
 			20, // increment
 			500, // min
 			700, // max
-      575, // optimal min
-      650 // optiman max
+			575, // optimal min
+			650 // optiman max
 		);
-		this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
+		this.waterParameters = [
+			this.waterParamA,
+			this.waterParamB,
+			this.waterParamC,
+		];
 	}
 
 	loadCompleted() {
@@ -139,7 +143,13 @@ export class Game {
 			true,
 			"lob"
 		);
-		this.mail.add("Mail 1", "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.", 0, false, "lob");
+		this.mail.add(
+			"Mail 1",
+			"This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.",
+			0,
+			false,
+			"lob"
+		);
 		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
 		this.mail.add("Mail 4", "This is the third mail.", 0);
 
@@ -153,11 +163,17 @@ export class Game {
 			this.pixi.stage.removeChild(this.startScreen);
 
 			// Adding background to the stage
-			this.background = new PIXI.Sprite(this.loader.textures.StartMenu["backgroundBlur"]);
+			this.background = new PIXI.Sprite(
+				this.loader.textures.StartMenu["backgroundBlur"]
+			);
 			this.pixi.stage.addChild(this.background);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
@@ -175,7 +191,10 @@ export class Game {
 			this.pixi.stage.removeChild(this.homeScreen);
 
 			// Add the new game warning screen
-			this.newGameWarning = new NewGameWarning(goBackToTheHomeScreen, startNewGame);
+			this.newGameWarning = new NewGameWarning(
+				goBackToTheHomeScreen,
+				startNewGame
+			);
 			this.pixi.stage.addChild(this.newGameWarning);
 		};
 
@@ -189,7 +208,11 @@ export class Game {
 			this.pixi.stage.removeChild(this.newGameWarning);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 		};
 
@@ -219,7 +242,12 @@ export class Game {
 			let borderImage = this.loader.textures.StartMenu["settingsBorder"];
 
 			// Add the settings screen
-			this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+			this.settings = new Settings(
+				borderImage,
+				this.pixi,
+				goBackToHomeScreen,
+				goToCredits
+			);
 			this.pixi.stage.addChild(this.settings);
 		};
 
@@ -253,7 +281,12 @@ export class Game {
 			let borderImage = this.loader.textures.StartMenu["settingsBorder"];
 
 			// Add the settings
-			this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+			this.settings = new Settings(
+				borderImage,
+				this.pixi,
+				goBackToHomeScreen,
+				goToCredits
+			);
 			this.pixi.stage.addChild(this.settings);
 		};
 
@@ -267,7 +300,11 @@ export class Game {
 			this.pixi.stage.removeChild(this.settings);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
