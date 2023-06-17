@@ -33,17 +33,6 @@ export class Money extends PIXI.Container {
     this.textStyle = textStyle;
     this.iconTexture = iconTexture;
     this.draw();
-
-    // debug events
-    this.eventMode = "dynamic";
-    this.onmouseenter = () => {
-      console.log("enter");
-      this.updateValue(100);
-    };
-    this.onmouseout = () => {
-      console.log("out");
-      this.updateValue(-100);
-    };
   }
 
   // *100 change to not deal with floats for cents.
@@ -51,7 +40,7 @@ export class Money extends PIXI.Container {
     this._value = change * 100;
   }
 
-  // divide value by 100, to get back to deciaml cents
+  // divide value by 100, to get back to decimal cents
   get value() {
     return this._value / 100;
   }
