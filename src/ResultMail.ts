@@ -44,11 +44,10 @@ export class ResultMail extends ActiveMail {
     // Add the content to the content container
     this.contentContainer.addChild(salaryText, reasonText, button);
 
-    // TODO: Make mail pay out only once.
-    // Where can i save a salaryPaid bool, that stays 'loaded' rather than getting reset on becoming (in)active?
-    if (!this.salaryPaid) {
+    // check if salary has already been paid for this result
+    if (!this.mail.salaryPaid) {
       this.game.money.updateValue(salary);
-      this.salaryPaid = true;
+      this.mail.salaryPaid = true;
     }
   }
 }
