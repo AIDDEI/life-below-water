@@ -47,7 +47,7 @@ export class QualityScreen extends PIXI.Container {
 
 		//temporary background fill to check positioning
 		this.contentBG = new PIXI.Graphics();
-		this.contentBG.beginFill("rgba(10,200,20,0)");
+		this.contentBG.beginFill("rgba(255,255,255,0)");
 		this.contentBG.drawRect(
 			0,
 			this.bg.height * 0.17,
@@ -62,7 +62,7 @@ export class QualityScreen extends PIXI.Container {
 
 		// set up temp bg for visible positionion
 		this.waterParamBG = new PIXI.Graphics();
-		this.waterParamBG.beginFill("rgba(200, 1, 200)");
+		this.waterParamBG.beginFill("rgba(255,255,255)");
 		this.waterParamBG.drawRect(0, 0, this.bg.width, this.bg.height * 0.4);
 		this.waterParamBG.endFill();
 		this.waterParamBG.alpha = 0;
@@ -70,7 +70,7 @@ export class QualityScreen extends PIXI.Container {
 
 		this.qualityIndicatorContainer = new PIXI.Container();
 		this.qualityIndicatorBG = new PIXI.Graphics();
-		this.qualityIndicatorBG.beginFill("rgba(2, 100, 200, 0.4)");
+		this.qualityIndicatorBG.beginFill("rgba(2, 100, 200, 0)");
 		this.qualityIndicatorBG.drawRect(
 			0,
 			this.waterParamContainer.getBounds().y + this.waterParamContainer.height,

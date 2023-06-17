@@ -76,24 +76,33 @@ export class Game {
 
 		// init parameters
 
-		this.waterParamA = new WaterParam("Zuurtegraad", "ph", 10, 10);
+		this.waterParamA = new WaterParam(
+			"Zuurtegraad", // name
+			"ph", // keyName
+			50, //value
+			10, // increment
+			0, // min
+			100, // max
+			40, // optimal min
+			60 // optimal max
+		);
 		this.waterParamB = new WaterParam(
 			"Sulfaten", // name
 			"sulfates", //keyName
-			500, // value
+			950, // value
 			10, // increment
-			100, // min
+			900, // min
 			1000, // max
-			300, // optimal min
-			700 // optimal max
+			940, // optimal min
+			960 // optimal max
 		);
 
 		this.waterParamC = new WaterParam(
 			"Vaste Stoffen", //Name
 			"solids", //keyname
-			620, //value
+			400, //value
 			20, // increment
-			500, // min
+			100, // min
 			700, // max
 			575, // optimal min
 			650 // optiman max
