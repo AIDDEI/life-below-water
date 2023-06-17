@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pixi/filter-drop-shadow": "^5.2.0",
     "@pixi/sound": "^5.2.0",
     "@pixi/ui": "^0.7.1",
     "pixi.js": "^7.2.4"
