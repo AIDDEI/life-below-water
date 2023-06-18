@@ -23,7 +23,7 @@ import browserWindowBG from "./images/browserWindow.png";
 import startBackground from "./images/startBackground.png";
 import startBackgroundBlur from "./images/startBackgroundBlur.png";
 import settingsBorder from "./images/settings_border.png";
-
+import settingsIcon from "./images/settings.png";
 
 // Export class
 export class AssetLoader {
@@ -82,6 +82,7 @@ export class AssetLoader {
             'background': startBackground,
             'backgroundBlur': startBackgroundBlur,
             'settingsBorder': settingsBorder,
+			'settingsIcon': settingsIcon,
         });
 	}
 

@@ -5,17 +5,23 @@ import * as PIXI from 'pixi.js';
 export class Music extends PIXI.Container {
     // Globals
     private audio : HTMLAudioElement;
+    private isAudioPlaying: boolean;
     
     // Constructor
     constructor(url: string) {
         super();
         // Give audio the right source
         this.audio = new Audio(url);
+
+        // The audio is not playing
+        this.isAudioPlaying = false;
     }
 
     public playAudio() {
         // Play audio
         this.audio.play();
+        this.isAudioPlaying = true;
+
         // Get the volume value
         let volume = this.getSavedVolumeValue() ?? 100;
         // Divide by 100 to get the right value
@@ -51,5 +57,10 @@ export class Music extends PIXI.Container {
         // Stop the audio
         this.audio.pause();
         this.audio.currentTime = 0;
+        this.isAudioPlaying = false;
+    }
+
+    public isPlaying() : boolean {
+        return this.isAudioPlaying;
     }
 }

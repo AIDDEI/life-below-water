@@ -17,6 +17,7 @@ import { StartScreen } from "./StartScreen";
 import { CreditsScreen } from "./CreditsScreen";
 import { NewGameWarning } from "./NewGameWarning";
 import { MailScreen } from "./MailScreen";
+import { SettingsScreen } from "./SettingsScreen";
 
 // Import Music, Audio and SFX
 import { Music } from "./Music";
@@ -66,9 +67,13 @@ export class Game {
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
+	public settingsScreen: SettingsScreen;
 
 	// Music and Audio
 	private theme: Music;
+
+	// Icon
+	private settingsIcon: PIXI.Texture;
 	
 	// Constructor
 	constructor() {
@@ -123,6 +128,9 @@ export class Game {
 		this.lobAssets = this.loader.textures.Lobgame;
 		this.qualityAssets = this.loader.textures.QualityScreen;
 
+		// Background music
+		this.theme = new Music(music);
+
 		// Create calendar
 		this.calendar = new Calendar(this.dayAssets, this);
 
@@ -133,15 +141,17 @@ export class Game {
 		// Add the screens to the stage
 		this.pixi.stage.addChild(this.mail, this.qualityScreen);
 
+		// Retrieve the settingsIcon
+		this.settingsIcon = new PIXI.Texture(this.loader.textures.StartMenu["settingsIcon"]);
+
 		// Create the Browser screen
-		this.browser = new Browser(this.loader.textures.browser);
+		this.browser = new Browser(this.loader.textures.browser, this.settingsIcon, this.theme);
 
 		// Add the browser tabs
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
 			{ tabName: "E-mail", screen: this.mail },
 			{ tabName: "Kaart", screen: undefined },
-			{ tabName: "Over ons", screen: undefined },
 		]);
 
 		// Select open tab
@@ -174,7 +184,6 @@ export class Game {
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
-			this.theme = new Music(music);
 			this.theme.playAudio();
 		};
 
@@ -256,7 +265,6 @@ export class Game {
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
-			this.theme = new Music(music);
 			this.theme.playAudio();
 		};
 
@@ -266,6 +274,10 @@ export class Game {
 
 			// Remove background to the stage
 			this.pixi.stage.removeChild(this.background);
+
+			this.settingsScreen = new SettingsScreen(this.pixi, this);
+			this.pixi.stage.addChild(this.settingsScreen);
+			this.browser.addTabs([{ tabName: "Instellingen", screen: this.settingsScreen }]);
 		};
 
 		// Create the Start Screen

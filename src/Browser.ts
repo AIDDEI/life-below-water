@@ -1,5 +1,7 @@
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 
+import { Music } from "./Music";
+
 type TabType = {
 	tabName: string;
 	screen: any;
@@ -21,8 +23,10 @@ export class Browser extends Container {
 	private bgContainer: any;
 	private _tabs: any;
 	private _searchBarText: Text;
+	private settingsIcon: Sprite;
+	private backgroundMusic: Music;
 
-	constructor(texture: Texture) {
+	constructor(texture: Texture, icon: Texture, backgroundMusic: Music) {
 		super();
 		this.x = 0;
 		this.y = 0;
@@ -43,6 +47,8 @@ export class Browser extends Container {
 		this._tabs = [];
 		this._setUpBackground(texture);
 		this.addChild(this._searchBarText, this.tabContainer);
+		this.settingsIcon = new Sprite(icon);
+		this.backgroundMusic = backgroundMusic;
 	}
 
 	private _setUpBackground(texture: Texture) {
@@ -110,39 +116,55 @@ export class Browser extends Container {
 		tabContainer.eventMode = "static";
 
 		const tabBackground = new Graphics();
-		// if the tab is open, fill it with white, otherwise fill it with grey
-		const fill = index === this._openTab ? 0xffffff : 0x929292;
+		// if the tab is open, fill it with white, otherwise fill it with grey (or blue based on the tab)
+		const isTabOpen = index === this._openTab;
+		const fill = isTabOpen ? 0xffffff : (tab.tabName === "Instellingen" ? 0x68BCEB : 0x929292);
+
+		const tabWidth = tab.tabName === "Instellingen" ? 45 : 140;
+		const borderRadius = tab.tabName === "Instellingen" ? 5 : 3;
+
 		tabBackground.beginFill(fill);
-		tabBackground.drawRoundedRect(tabContainer.x, 10, 140, 30, 3);
+		tabBackground.drawRoundedRect(tabContainer.x, 10, tabWidth, 30, borderRadius);
 
 		tabBackground.endFill();
 		tabContainer.addChild(tabBackground);
 
-		const tabText = new Text(tab.tabName, {
-			fontFamily: "Arial",
-			fontSize: 16,
-			fill: 0x000000,
-			align: "center",
-		});
+		if (tab.tabName === "Instellingen") {
+			const icon = this.settingsIcon;
+			icon.anchor.set(0.5);
+			icon.position.set(tabContainer.x + tabWidth / 2, 25);
 
-		tabText.x = tabContainer.x + 10;
-		tabText.y = 10 + 30 / 2 - tabText.height / 2;
+			icon.scale.set(0.08);
 
-		// x to the right of the tab
-		const x = new Text("x", {
-			fontFamily: "Arial",
-			fontSize: 15,
-			fill: 0x000000,
-			align: "center",
-		});
+			tabContainer.addChild(icon);
+		} else {
+			const tabText = new Text(tab.tabName, {
+				fontFamily: "Arial",
+				fontSize: 16,
+				fill: 0x000000,
+				align: "center",
+			});
 
-		x.x = tabContainer.x + tabContainer.width - 20;
-		x.y = 10 + 30 / 2 - x.height / 2;
+			tabText.x = tabContainer.x + 10;
+			tabText.y = 10 + 30 / 2 - tabText.height / 2;
 
-		tabBackground.addChild(tabText, x);
+			// x to the right of the tab
+			const x = new Text("x", {
+				fontFamily: "Arial",
+				fontSize: 15,
+				fill: 0x000000,
+				align: "center",
+			});
+			
+			x.x = tabContainer.x + tabContainer.width - 20;
+			x.y = 10 + 30 / 2 - x.height / 2;
+			
+			tabBackground.addChild(tabText, x);
+		}
+
 		this.tabContainer.addChild(tabContainer);
 
-		// if placehlder, don't add event listeners
+		// if placeholder, don't add event listeners
 		if (!tab.screen) return;
 
 		tabContainer.cursor = "pointer";
@@ -201,5 +223,16 @@ export class Browser extends Container {
 		this._renderTabs();
 		this._renderSearchBar();
 		this._renderWindow();
+
+		const currentTab = this._tabs[this._openTab];
+		
+		// Pause or play the background music based on the tab name and current state
+		const isMusicPlaying = this.backgroundMusic.isPlaying();
+		
+		if (currentTab.tabName === "Instellingen" && isMusicPlaying) {
+			this.backgroundMusic.stopAudio(); // Stop playing background music when Settings tab is opened
+		} else if (currentTab.tabName !== "Instellingen" && !isMusicPlaying) {
+			this.backgroundMusic.playAudio(); // Resume playing background music when Settings tab is closed and music isn't already playing
+		}
 	}
 }
