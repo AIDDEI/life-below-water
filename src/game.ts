@@ -40,11 +40,10 @@ export class Game {
 	private mailAssets: PIXI.Texture[];
 	private dayAssets: any;
 	public calendar: Calendar;
-	//water parameters related
 	public waterParameters: WaterParam[];
-	private waterParamA: WaterParam;
-	private waterParamB: WaterParam;
-	private waterParamC: WaterParam;
+	public waterParamA: WaterParam;
+	public waterParamB: WaterParam;
+	public waterParamC: WaterParam;
 	public browser: Browser;
 	private qualityAssets: PIXI.Texture[];
 	public qualityScreen: QualityScreen;
@@ -125,8 +124,6 @@ export class Game {
 		this.qualityAssets = this.loader.textures.QualityScreen;
 
 		this.calendar = new Calendar(this.dayAssets, this);
-		// this.player = new Player(this.gameTexture)
-		// this.pixi.stage.addChild(this.player)
 
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
