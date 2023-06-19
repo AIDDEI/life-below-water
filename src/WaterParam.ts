@@ -70,10 +70,6 @@ export class WaterParam extends PIXI.Container {
 		this.optimalRect = new PIXI.Graphics();
 		this.nameText = new PIXI.Text();
 		this.addChild(this.bgRect, this.optimalRect, this.nameText);
-
-		console.log(
-			`WaterParam created: ${this.name} (${this.keyName}), value: ${this.value}, increment: ${this.increment}`
-		);
 	}
 
 	// getters and setters
@@ -109,14 +105,13 @@ export class WaterParam extends PIXI.Container {
 			);
 			if (newValue < range.min) {
 				this._value = range.min;
-				console.log(`set to minimum instead : ${range.min} | ${this.value}`);
+				console.log(`set to minimum instead : ${range.min}`);
 			} else {
 				this._value = range.max;
-				console.log(`set to maximum instead : ${range.max} | ${this.value}`);
+				console.log(`set to maximum instead : ${range.max}`);
 			}
 		} else {
 			this._value = newValue;
-			// console.log(`changed ${this.name}'s value. ${newValue} | ${this.value}`); // spams console
 		}
 	}
 
@@ -247,7 +242,6 @@ export class WaterParam extends PIXI.Container {
 	 */
 	public updateValue(step: number) {
 		if (step != null && step >= -5 && step <= 5) {
-			//console.log(`old: ${this.value} | step: ${step}`); // spams console
 			const tempValue = this.value + this.increment * step;
 			this.value = tempValue;
 			this.updateDraw(step);
@@ -363,10 +357,8 @@ export class WaterParam extends PIXI.Container {
 		);
 		this.valueIndicator.endFill();
 		this.valueIndicator.width = this.calculateValueWidth();
-		console.log(this.valueIndicator.width);
 		const maskObj = this.bgRect.clone();
 		maskObj.position.set(this.bgRect.x, this.bgRect.y);
-		maskObj.alpha = 1;
 		this.valueIndicator.mask = maskObj;
 		this.addChild(this.valueIndicator, maskObj, this.bgRect);
 	}
@@ -393,7 +385,6 @@ export class WaterParam extends PIXI.Container {
 		this.changeIndicator.x =
 			newX > this.widthText + 30 ? newX : this.widthText + 30;
 		this.changeIndicator.y = this.nameText.y;
-		console.log(`Indicator width: ${this.changeIndicator.width}`);
 		this.addChild(this.changeIndicator);
 	}
 
