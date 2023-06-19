@@ -1,0 +1,64 @@
+name: Deploy Application
+
+# Trigger the workflow on push and
+# pull request events on the production branch
+on:
+  push:
+    branches:
+      - isis/actions
+
+# Authenticate to the the server via ssh
+# and run our deployment script
+jobs:
+  deploy:
+    name: Create deployment artifacts
+    runs-on: ubuntu-latest
+    outputs:
+      deployment-matrix: ${{ steps.export-deployment-matrix.outputs.deployment-matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Compile CSS and Javascript
+        run: |
+          npm install
+          npm run build
+
+      - name: Create deployman artifact
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: tar -czf "${GITHUB_SHA}".tar.gz --exclude=*.git --exclude=node_modules docs
+
+      - name: Store artifact for distribution
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-build
+          path: ${{ github.sha }}.tar.gz
+
+  prepare-release-on-servers:
+    name: "${{ matrix.server.name }}: Prepare release"
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: app-build
+      - name: Upload
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.ADDRESS }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          source: ${{ github.sha }}.tar.gz
+
+      - name: Extract archive and create directories
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        with:
+          host: ${{ secrets.ADDRESS }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          envs: GITHUB_SHA
+          script: |
+            rm -rf "public.www/test"
+            mkdir -p "public.www/test"
+            tar xzf "${GITHUB_SHA}".tar.gz -C "public.www/test"
