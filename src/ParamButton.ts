@@ -20,7 +20,6 @@ export class ParamButton extends Button {
 		super(h, text, lineColor, buttonColor, clickHandler, w);
 		this.changes = ParamChanges.sort((a, b) => a.change + b.change);
 		this.hoverContainer = new PIXI.Container();
-		this.hoverContainer.y = -65;
 		this.hoverContainer.visible = false;
 		this.hoverBG = new PIXI.Graphics();
 
@@ -29,6 +28,7 @@ export class ParamButton extends Button {
 		this.setupEventCalls();
 
 		let i = 0;
+		let firstNegative = true;
 
 		for (let change of this.changes) {
 			const text = new PIXI.Text();
@@ -40,6 +40,9 @@ export class ParamButton extends Button {
 			text.text = "";
 			if (change.change < 0) {
 				for (let i = change.change; i < 0; i++) {
+					const negativeSpacing = firstNegative ? 5 : 0;
+					text.y += negativeSpacing;
+					firstNegative = false;
 					text.text += "-";
 					text.style = {
 						fill: "#ff0000",
@@ -57,7 +60,7 @@ export class ParamButton extends Button {
 					};
 				}
 			} else {
-				break;
+				continue;
 			}
 			text.text += ` ${change.param.name}`;
 			this.hoverContainer.addChild(text);
@@ -70,10 +73,16 @@ export class ParamButton extends Button {
 			color: "rgba(100,100,100,1)",
 			miterLimit: 1,
 		});
-		this.hoverBG.drawRect(0, 0, this.hoverContainer.width + 10, 62);
+		this.hoverBG.drawRect(
+			0,
+			0,
+			this.hoverContainer.width + 10,
+			this.hoverContainer.height + 3
+		);
 		this.hoverBG.endFill();
 		this.hoverContainer.x =
 			(this.hoverContainer.width - this.button.width) / -2;
+		this.hoverContainer.y = (this.hoverBG.height + 2) * -1;
 	}
 	private setupEventCalls() {
 		// can't seem to use super, or supercharge methods?

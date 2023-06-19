@@ -376,7 +376,7 @@ export class WaterParam extends PIXI.Container {
 			this.changeIndicator.destroy();
 		}
 		this.changeIndicator = new PIXI.Text(
-			step > 0 ? `+` : `-`,
+			step > 0 ? `+` : step < 0 ? "-" : " ",
 			this.textStyle.clone()
 		);
 		this.changeIndicator.style.fill = step > 0 ? "#00ff00" : "#ff0000";
