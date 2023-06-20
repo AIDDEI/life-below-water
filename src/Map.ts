@@ -4,6 +4,7 @@ import { AssetType, Game } from "./game";
 export class Map extends PIXI.Container {
   private game: Game;
   private assets: AssetType;
+  private mapContainer: PIXI.Container;
   private map: PIXI.Sprite;
   private farmer: PIXI.Sprite;
   private lob: PIXI.Sprite;
@@ -13,10 +14,30 @@ export class Map extends PIXI.Container {
     this.assets = assets;
     this.game = game;
 
+    this.mapContainer = new PIXI.Container();
+    this.addChild(this.mapContainer);
+
     this.map = new PIXI.Sprite(this.assets.map);
-    this.map.width = 500;
-    this.map.height = this.game.pixi.screen.height;
-    this.map.x = this.game.pixi.screen.width / 2 - this.map.width / 2;
+    this.map.width = 800;
+    this.map.height = 600;
+
+    const mapWidth = this.game.pixi.screen.width;
+    const mapHeight = this.game.pixi.screen.height;
+
+    this.mapContainer.width = this.game.pixi.screen.width;
+    this.mapContainer.height = this.game.pixi.screen.height;
+
+    const maskGraphics = new PIXI.Graphics();
+    maskGraphics.beginFill(0x000000);
+    maskGraphics.drawRect(0, 0, mapWidth, mapHeight);
+    maskGraphics.endFill();
+
+    this.mapContainer.mask = maskGraphics;
+
+    this.mapContainer.addChild(this.map);
+
+    this.mapContainer.x = (this.game.pixi.screen.width - mapWidth) / 2;
+    this.mapContainer.y = (this.game.pixi.screen.height - mapHeight + 200) / 2;
 
     this.farmer = new PIXI.Sprite(this.assets.farmerIcon);
     this.farmer.scale.set(0.5);
@@ -32,7 +53,7 @@ export class Map extends PIXI.Container {
     this.lob = new PIXI.Sprite(this.assets.lobIcon);
     this.lob.scale.set(0.3);
     this.lob.x = 300;
-    this.lob.y = 350;
+    this.lob.y = 450;
 
     this.lob.interactive = true;
     this.lob.cursor = "pointer";
@@ -40,7 +61,7 @@ export class Map extends PIXI.Container {
     this.lob.on("mouseover", this.onlobMouseOver.bind(this));
     this.lob.on("mouseout", this.onlobMouseOut.bind(this));
 
-    this.addChild(this.map, this.farmer, this.lob);
+    this.addChild(this.farmer, this.lob);
     this.close();
   }
 
