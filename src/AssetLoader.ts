@@ -24,6 +24,7 @@ import browserWindowBG from "./images/browserWindow.png";
 import startBackground from "./images/startBackground.png";
 import startBackgroundBlur from "./images/startBackgroundBlur.png";
 import settingsBorder from "./images/settings_border.png";
+import moneyIcon from "./images/cash.png";
 import mapBg from "./images/map.png";
 import farmerIcon from "./images/farmerIcon.png";
 import lobIcon from "./images/lobIcon.png";
@@ -54,9 +55,8 @@ export class AssetLoader {
 			eggHead2: sharkImage,
 		});
 
-		PIXI.Assets.add("Crab", sharkImage);
-		PIXI.Assets.add("Crab2", sharkImage);
 		PIXI.Assets.add("browser", browser);
+    PIXI.Assets.add("moneyIcon", moneyIcon);
 
 		PIXI.Assets.addBundle("MailScreen", {
 			mailIcon: mailIcon,
@@ -113,7 +113,7 @@ export class AssetLoader {
 
 			this.showProgress(progress);
 		});
-		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser"]);
+		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser", "moneyIcon"]);
 
 		// give textures the right index using reduce
 		const textures = [bundlePromise, texturePromise];
@@ -135,4 +135,5 @@ export class AssetLoader {
 		this.graphics.drawRect(offset, this.game.pixi.screen.height / 2 - 20, barWidth, 40);
 		this.graphics.endFill();
 	}
+
 }

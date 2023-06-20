@@ -26,6 +26,9 @@ import { Sfx } from "./Sfx";
 // Import Audio
 import music from "url:./music/chill.mp3";
 import buttonClick from "url:./music/button_click.mp3";
+
+
+import { Money } from "./Money";
 import { AlgaeGame } from "./AlgaeGame";
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
@@ -63,6 +66,8 @@ export class Game {
 	public algaeGame: AlgaeGame | undefined;
 	private theme: Music;
 	private buttonClick: Sfx;
+  public money: Money;
+  private moneyIcon: PIXI.Texture;
 
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
@@ -130,7 +135,6 @@ export class Game {
 		this.mapAssets = this.loader.textures.Map;
 
 		this.calendar = new Calendar(this.dayAssets, this);
-
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
 		this.map = new Map(this.mapAssets, this);
@@ -162,6 +166,22 @@ export class Game {
 			true,
 			"alg"
 		);
+    
+        this.money = new Money(
+      this.moneyIcon,
+      new PIXI.TextStyle({
+        dropShadow: true,
+        dropShadowAlpha: 0.9,
+        dropShadowBlur: 4,
+        fill: "#ffffff",
+        fontFamily: '"Arial Black", Gadget, sans-serif',
+        fontVariant: "small-caps",
+        fontWeight: "bolder",
+      }),
+      100
+    );
+
+     this.pixi.stage.addChild(this.money);
 
 
 		// Create function to go to the Homescreen when the button is clicked
