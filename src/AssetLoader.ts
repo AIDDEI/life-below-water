@@ -24,8 +24,12 @@ import browserWindowBG from "./images/browserWindow.png";
 import startBackground from "./images/startBackground.png";
 import startBackgroundBlur from "./images/startBackgroundBlur.png";
 import settingsBorder from "./images/settings_border.png";
+import mapBg from "./images/map.png";
+import farmerIcon from "./images/farmerIcon.png";
+import lobIcon from "./images/lobIcon.png";
 import algenExplenation from "./images/Algen-Uitleg.png";
 import algaes from "./images/algaes.png";
+
 // Export class
 export class AssetLoader {
 	graphics: PIXI.Graphics;
@@ -77,6 +81,13 @@ export class AssetLoader {
 		PIXI.Assets.addBundle("QualityScreen", {
 			browserWindowBG: browserWindowBG,
 		});
+ 
+
+		PIXI.Assets.addBundle('Map', {
+			map: mapBg,
+			farmerIcon: farmerIcon,
+			lobIcon: lobIcon,
+ 
 
 		PIXI.Assets.addBundle("StartMenu", {
 			background: startBackground,
@@ -91,11 +102,14 @@ export class AssetLoader {
 			heart: heart,
 			algenExplenation: algenExplenation,
 			algaes: algaes,
+ 
 		});
 	}
 
 	public async loadAssets() {
-		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu", "AlgaeGame"], (progress) => {
+
+		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu", "AlgaeGame", "Map"], (progress) => {
+
 			this.showProgress(progress);
 		});
 		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser"]);
