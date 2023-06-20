@@ -30,6 +30,7 @@ export class MailScreen extends PIXI.Container {
 		this.mailContainer.position.set(35, 125);
 		this.contentContainer = new PIXI.Container();
 		this.contentContainer.position.set(165, 65);
+
 		this.addChild(this.mailContainer, this.contentContainer);
 	}
 
@@ -63,8 +64,8 @@ export class MailScreen extends PIXI.Container {
 	 * Renders the mail screen after adding a new mail
 	 *
 	 */
-	public addResultsMail(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", score: number = 0, reason: number = 0) {
-		const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, score, reason };
+	public addResultsMail(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", reason: number = 0) {
+		const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, reason };
 		this.mails.push(mail);
 		this._renderMails();
 	}

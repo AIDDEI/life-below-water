@@ -20,9 +20,13 @@ import { MailScreen } from "./MailScreen";
 import { SettingsScreen } from "./SettingsScreen";
 
 // Import Music, Audio and SFX
+import { Map } from "./Map";
+
+
+// Other 
 import { Music } from "./Music";
 import music from "url:./music/chill.mp3";
-
+ 
 // Import Other Classes
 import { Player } from "./Player";
 import { PopUp } from "./tip-popUp";
@@ -30,6 +34,10 @@ import { Clock } from "./clock";
 import { WaterParam } from "./WaterParam";
 
 // Export Asset Type
+
+import { Money } from "./Money";
+import { AlgaeGame } from "./AlgaeGame";
+
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
 // Export the Game Class
@@ -45,6 +53,8 @@ export class Game {
 
 	// // Office
 	private mailAssets: PIXI.Texture<PIXI.Resource>;
+	public lobGame: LobGame | undefined;
+	private lobAssets: PIXI.Texture<PIXI.Resource>;
 	private dayAssets: any;
 	private qualityAssets : PIXI.Texture<PIXI.Resource>;
 	public calendar: Calendar;
@@ -61,12 +71,23 @@ export class Game {
 
 	// Screens
 	public browser: Browser;
+	public waterParameters: WaterParam[];
+	public waterParamA: WaterParam;
+	public waterParamB: WaterParam;
+	public waterParamC: WaterParam;
+	public browser: Browser;
+	private qualityAssets: PIXI.Texture<PIXI.Resource>;
+	public qualityScreen: QualityScreen;
+	public mail: MailScreen;
+	private popUp: PopUp;
+	private clock: Clock;
 	public homeScreen: HomeScreen;
 	public settings: Settings;
 	public startScreen: StartScreen;
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
+
 	public settingsScreen: SettingsScreen;
 
 	// Music and Audio
@@ -76,6 +97,14 @@ export class Game {
 	private settingsIcon: PIXI.Texture;
 	
 	// Constructor
+	public map: Map;
+	private mapAssets: PIXI.Texture<PIXI.Resource>;
+	public algaeGame: AlgaeGame | undefined;
+	private theme: Music;
+	private buttonClick: Sfx;
+	public money: Money;
+	private moneyIcon: PIXI.Texture;
+
 	constructor() {
 		// PIXI Settings
 		PIXI.settings.ROUND_PIXELS = true;
@@ -94,39 +123,56 @@ export class Game {
 		this.loader = new AssetLoader(this);
 
 		// init parameters
-		this.waterParamA = new WaterParam("Zuurtegraad", "ph", -1, 1);
 		this.waterParamB = new WaterParam(
 			"Sulfaten", // name
 			"sulfates", //keyName
-			100, // value
-			11, // increment
-			100, // min
+			950, // value
+			10, // increment
+			900, // min
 			1000, // max
-			300, // optimal min
-			700 // optimal max
+			940, // optimal min
+			960 // optimal max
 		);
 		this.waterParamC = new WaterParam(
 			"Vaste Stoffen", //Name
 			"solids", //keyname
-			624, //value
+			400, //value
 			20, // increment
-			500, // min
-			700 // max
+			100, // min
+			700, // max
+			575, // optimal min
+			650 // optiman max
 		);
-		this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
+		this.waterParameters = [
+			this.waterParamA,
+			this.waterParamB,
+			this.waterParamC,
+		];
 	}
 
 	// Do this when the load is completed
 	loadCompleted() {
-		// Console logs
-		console.log("Load completed");
-		console.log(this.loader.textures);
-
 		// Load Textures
 		this.mailAssets = this.loader.textures.MailScreen;
 		this.dayAssets = this.loader.textures.DayScreen;
 		this.lobAssets = this.loader.textures.Lobgame;
 		this.qualityAssets = this.loader.textures.QualityScreen;
+		this.mapAssets = this.loader.textures.Map;
+		this.moneyIcon = this.loader.textures.moneyIcon;
+
+		this.money = new Money(
+			this.moneyIcon,
+			new PIXI.TextStyle({
+				dropShadow: true,
+				dropShadowAlpha: 0.9,
+				dropShadowBlur: 4,
+				fill: "#ffffff",
+				fontFamily: '"Arial Black", Gadget, sans-serif',
+				fontVariant: "small-caps",
+				fontWeight: "bolder",
+			}),
+			100
+		);
 
 		// Background music
 		this.theme = new Music(music);
@@ -135,23 +181,26 @@ export class Game {
 		this.calendar = new Calendar(this.dayAssets, this);
 
 		// Create MailScreen and QualityScreen
+
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
-
+		this.map = new Map(this.mapAssets, this);
+ 
 		// Add the screens to the stage
-		this.pixi.stage.addChild(this.mail, this.qualityScreen);
-
+		this.pixi.stage.addChild(this.mail, this.qualityScreen, this.map);
+    
 		// Retrieve the settingsIcon
 		this.settingsIcon = new PIXI.Texture(this.loader.textures.StartMenu["settingsIcon"]);
 
 		// Create the Browser screen
 		this.browser = new Browser(this.loader.textures.browser, this.settingsIcon, this.theme);
 
+ 
 		// Add the browser tabs
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
 			{ tabName: "E-mail", screen: this.mail },
-			{ tabName: "Kaart", screen: undefined },
+			{ tabName: "Kaart", screen: this.map },
 		]);
 
 		// Select open tab
@@ -161,14 +210,22 @@ export class Game {
 		// Add mails to the tab
 		this.mail.add(
 			"Lob lob lob",
-			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren.",
+			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren",
 			0,
-			true,
+			false,
 			"lob"
 		);
-		this.mail.add("Mail 1", "This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.", 0, false, "lob");
-		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
-		this.mail.add("Mail 4", "This is the third mail.", 0);
+		this.mail.add(
+			"Algenoverlast",
+			"Vandaag nemen we een kijkje bij verschillende meren om te kijken of er algen zijn. Algen groeien door warmte. Waar algen niet van houden, is doorstromend water. Het is aan jouw de taak het water te laten stromen voordat de alg te groot wordt.",
+			0,
+			true,
+			"alg"
+		);
+
+
+		this.pixi.stage.addChild(this.money);
+
 
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {
@@ -176,11 +233,17 @@ export class Game {
 			this.pixi.stage.removeChild(this.startScreen);
 
 			// Adding background to the stage
-			this.background = new PIXI.Sprite(this.loader.textures.StartMenu["backgroundBlur"]);
+			this.background = new PIXI.Sprite(
+				this.loader.textures.StartMenu["backgroundBlur"]
+			);
 			this.pixi.stage.addChild(this.background);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
@@ -193,7 +256,10 @@ export class Game {
 			this.pixi.stage.removeChild(this.homeScreen);
 
 			// Add the new game warning screen
-			this.newGameWarning = new NewGameWarning(goBackToTheHomeScreen, startNewGame);
+			this.newGameWarning = new NewGameWarning(
+				goBackToTheHomeScreen,
+				startNewGame
+			);
 			this.pixi.stage.addChild(this.newGameWarning);
 		};
 
@@ -203,7 +269,11 @@ export class Game {
 			this.pixi.stage.removeChild(this.newGameWarning);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 		};
 
@@ -225,7 +295,12 @@ export class Game {
 			let borderImage = this.loader.textures.StartMenu["settingsBorder"];
 
 			// Add the settings screen
-			this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+			this.settings = new Settings(
+				borderImage,
+				this.pixi,
+				goBackToHomeScreen,
+				goToCredits
+			);
 			this.pixi.stage.addChild(this.settings);
 		};
 
@@ -251,7 +326,12 @@ export class Game {
 			let borderImage = this.loader.textures.StartMenu["settingsBorder"];
 
 			// Add the settings
-			this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+			this.settings = new Settings(
+				borderImage,
+				this.pixi,
+				goBackToHomeScreen,
+				goToCredits
+			);
 			this.pixi.stage.addChild(this.settings);
 		};
 
@@ -261,7 +341,11 @@ export class Game {
 			this.pixi.stage.removeChild(this.settings);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
@@ -301,38 +385,57 @@ export class Game {
 
 	// Update
 	private update(delta: number) {
-		// this.player.update(delta)
-		// this.mail.update(delta)
 		if (this.lobGame?.active) this.lobGame.update(delta);
 	}
 
 	// Start Lob Game
 	public startLobGame() {
 		// Disable the mail screen
-		this.mail.visible = false;
+		this.browser.visible = false;
 
-		// Create Lob game
 		this.lobGame = new LobGame(this.lobAssets, this);
 
 		// Add Lob game to the stage
 		this.pixi.stage.addChild(this.lobGame);
+		this.lobGame.visible = true;
 	}
 
-	// End Lob Game
-	public endLobGame(score: number, reason: number, description: string): void {
-		// Check if the Lob game is there and remove it
+ 
+ 
+	public endLobGame(reason: number): void {
+		this.browser.visible = true;
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
-		// Enable the Mail screen
-		this.mail.visible = true;
-		// Create new mail and add result
+ 
 		this.mail.addResultsMail(
 			"Salaris Kreeftopdracht",
-			`Door het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
+			`Door het vangen van alle kleine kor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbereeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
 			1,
 			true,
 			undefined,
-			score,
+			reason
+		);
+
+		this.clock.shiftClock(1);
+	}
+
+	public startAlgaeGame() {
+		this.browser.visible = false;
+		this.algaeGame = new AlgaeGame(this.loader.textures.AlgaeGame, this);
+		this.pixi.stage.addChild(this.algaeGame);
+		this.algaeGame.visible = true;
+	}
+
+	public endAlgaeGame(reason: number): void {
+		this.browser.visible = true;
+		if (this.algaeGame) this.pixi.stage.removeChild(this.algaeGame);
+		this.algaeGame = undefined;
+		this.mail.addResultsMail(
+			"Salaris Algenoverlast",
+			`Door de waterdoorstroming te verbeteren is de overlast van algen verminderd en hebben we ervoor gezorgd dat mensen veilig kunnen zwemmen. Ook is de waterkwaliteit verbeterd en is de kans op vissterfte verminderd. \n\n\nSoms zijn algen moeilijk te bestrijden en te zien. Wil je zeker weten dat je veilig kunt zwemmen? Kijk dan op zwemwater.nl of het water schoon is.`,
+			1,
+			true,
+			undefined,
 			reason
 		);
 

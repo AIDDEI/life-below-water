@@ -1,21 +1,33 @@
 body {
-    background-color: rgb(6, 0, 61);
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+	background-color: rgb(6, 0, 61);
+	margin: 0;
+	padding: 0;
+
+	overflow: hidden;
 }
 
 canvas {
-    /* for a 800 pixel canvas, place 400 pixels left of center */
-    margin: 20px calc(50vw - 400px);
-    border : 1px solid black;
-    border-radius: 5px;
+	/* for a 800 pixel canvas, place 400 pixels left of center */
+	margin: 20px calc(50vw - 400px);
+	border: 1px solid black;
+	border-radius: 5px;
 }
 
 #background {
-    position: absolute;
-    max-width: 1000px;
-    margin: 0 calc(50vw - 500px);             
-    z-index: -1;  
+	user-select: none;
+	position: absolute;
+	max-width: 1000px;
+	margin: 0 calc(50vw - 500px);
+	z-index: -1;
+}
+#credits {
+	position: absolute;
+	top: 750px;
+	width: 100%;
+	text-align: center;
+	color: rgb(135, 143, 143);
 }
 
+a {
+	color: rgb(157, 193, 233);
+}

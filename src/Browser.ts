@@ -1,10 +1,11 @@
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
+import { Game } from "./game";
 
 import { Music } from "./Music";
 
 type TabType = {
-	tabName: string;
-	screen: any;
+  tabName: string;
+  screen: any;
 };
 
 /**

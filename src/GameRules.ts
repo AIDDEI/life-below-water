@@ -1,7 +1,6 @@
 import { Game } from "./game";
 import * as PIXI from "pixi.js";
 import { Button } from "./Button";
-import { fadeIn, fadeOut } from "./utils";
 /**
  * Class for the container that holds the game rules
  *
@@ -20,13 +19,14 @@ export class GameRules extends PIXI.Container {
 	private button: Button;
 	private instructions: string;
 
-	constructor(game: Game, cb: () => void, instructions: string) {
+	constructor(game: Game, cb: () => void, instructions: string, open: boolean = true) {
 		super();
 		this.x = 0;
 		this.y = 0;
 		this.cb = cb;
 		this.bg = new PIXI.Graphics();
 		this.game = game;
+		this.visible = open;
 		this.instructions = instructions;
 		this.eventMode = "static";
 		this._setupUI();
@@ -61,7 +61,7 @@ export class GameRules extends PIXI.Container {
 		// button
 		this.button = new Button(50, "Begin minigame", 0xffbd01, 0x336699, () => {
 			this.cb();
-			fadeOut(this);
+			this.visible = false;
 		});
 
 		this.button.position.set(this.x + this.button.width / 2, this.height - this.button.height - 75);
@@ -76,12 +76,12 @@ export class GameRules extends PIXI.Container {
 	public show(cb: () => void) {
 		this.button.label = "Verder gaan";
 		this.button.clickHandler = () => {
-			fadeOut(this);
+			this.visible = false;
 			cb();
 		};
 
 		this.button.position.set(this.x + this.button.width / 2, this.height - this.button.height - 75);
 
-		fadeIn(this, 150);
+		this.visible = true;
 	}
 }
