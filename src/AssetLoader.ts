@@ -56,7 +56,7 @@ export class AssetLoader {
 		});
 
 		PIXI.Assets.add("browser", browser);
-    PIXI.Assets.add("moneyIcon", moneyIcon);
+		PIXI.Assets.add("moneyIcon", moneyIcon);
 
 		PIXI.Assets.addBundle("MailScreen", {
 			mailIcon: mailIcon,

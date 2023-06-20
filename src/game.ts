@@ -4,8 +4,7 @@ import { Player } from "./Player";
 import { WaterParam } from "./WaterParam";
 import { LobGame } from "./LobGame";
 import { PopUp } from "./tip-popUp";
-import { Clock } from "./Clock";
-import { fadeIn } from "./Utils";
+import { Clock } from "./clock";
 // Screens
 import { Browser } from "./Browser";
 import { QualityScreen } from "./QualityScreen";
@@ -37,12 +36,9 @@ export class Game {
 	public pixi: PIXI.Application;
 	private loader: AssetLoader;
 	public player: Player;
-	private gameTexture: PIXI.Texture;
 	private mailAssets: PIXI.Texture<PIXI.Resource>;
 	public lobGame: LobGame | undefined;
 	private lobAssets: PIXI.Texture<PIXI.Resource>;
-	private officeAssets: PIXI.Texture;
-	private mailAssets: PIXI.Texture[];
 	private dayAssets: any;
 	public calendar: Calendar;
 	public waterParameters: WaterParam[];
@@ -50,7 +46,7 @@ export class Game {
 	public waterParamB: WaterParam;
 	public waterParamC: WaterParam;
 	public browser: Browser;
-	private qualityAssets: PIXI.Texture[];
+	private qualityAssets: PIXI.Texture<PIXI.Resource>;
 	public qualityScreen: QualityScreen;
 	public mail: MailScreen;
 	private popUp: PopUp;
@@ -62,12 +58,12 @@ export class Game {
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
 	public map: Map;
-	private mapAssets: PIXI.Texture[];
+	private mapAssets: PIXI.Texture<PIXI.Resource>;
 	public algaeGame: AlgaeGame | undefined;
 	private theme: Music;
 	private buttonClick: Sfx;
-  public money: Money;
-  private moneyIcon: PIXI.Texture;
+	public money: Money;
+	private moneyIcon: PIXI.Texture;
 
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
@@ -127,12 +123,26 @@ export class Game {
 		console.log("Load completed");
 		console.log(this.loader.textures);
 
-		this.officeAssets = this.loader.textures.Office;
 		this.mailAssets = this.loader.textures.MailScreen;
 		this.dayAssets = this.loader.textures.DayScreen;
 		this.lobAssets = this.loader.textures.Lobgame;
 		this.qualityAssets = this.loader.textures.QualityScreen;
 		this.mapAssets = this.loader.textures.Map;
+		this.moneyIcon = this.loader.textures.moneyIcon;
+
+		this.money = new Money(
+			this.moneyIcon,
+			new PIXI.TextStyle({
+				dropShadow: true,
+				dropShadowAlpha: 0.9,
+				dropShadowBlur: 4,
+				fill: "#ffffff",
+				fontFamily: '"Arial Black", Gadget, sans-serif',
+				fontVariant: "small-caps",
+				fontWeight: "bolder",
+			}),
+			100
+		);
 
 		this.calendar = new Calendar(this.dayAssets, this);
 		this.mail = new MailScreen(this.mailAssets, this);
@@ -141,7 +151,7 @@ export class Game {
 
 		this.pixi.stage.addChild(this.mail, this.qualityScreen, this.map);
 
-		this.browser = new Browser(this.loader.textures.browser);
+		this.browser = new Browser(this.loader.textures.browser, this);
 
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
@@ -166,22 +176,9 @@ export class Game {
 			true,
 			"alg"
 		);
-    
-        this.money = new Money(
-      this.moneyIcon,
-      new PIXI.TextStyle({
-        dropShadow: true,
-        dropShadowAlpha: 0.9,
-        dropShadowBlur: 4,
-        fill: "#ffffff",
-        fontFamily: '"Arial Black", Gadget, sans-serif',
-        fontVariant: "small-caps",
-        fontWeight: "bolder",
-      }),
-      100
-    );
 
-     this.pixi.stage.addChild(this.money);
+
+		this.pixi.stage.addChild(this.money);
 
 
 		// Create function to go to the Homescreen when the button is clicked
