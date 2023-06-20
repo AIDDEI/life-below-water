@@ -42,7 +42,6 @@ export class Game {
 	private mailAssets: PIXI.Texture[];
 	private dayAssets: any;
 	public calendar: Calendar;
-	//water parameters related
 	public waterParameters: WaterParam[];
 	public waterParamA: WaterParam;
 	public waterParamB: WaterParam;
@@ -81,29 +80,42 @@ export class Game {
 
 		// init parameters
 
-		this.waterParamA = new WaterParam("Zuurtegraad", "ph", 10, 10);
+		this.waterParamA = new WaterParam(
+			"Zuurtegraad", // name
+			"ph", // keyName
+			50, //value
+			10, // increment
+			0, // min
+			100, // max
+			40, // optimal min
+			60 // optimal max
+		);
 		this.waterParamB = new WaterParam(
 			"Sulfaten", // name
 			"sulfates", //keyName
-			500, // value
+			950, // value
 			10, // increment
-			100, // min
+			900, // min
 			1000, // max
-			300, // optimal min
-			700 // optimal max
+			940, // optimal min
+			960 // optimal max
 		);
 
 		this.waterParamC = new WaterParam(
 			"Vaste Stoffen", //Name
 			"solids", //keyname
-			620, //value
+			400, //value
 			20, // increment
-			500, // min
+			100, // min
 			700, // max
 			575, // optimal min
 			650 // optiman max
 		);
-		this.waterParams = [this.waterParamA, this.waterParamB, this.waterParamC];
+		this.waterParameters = [
+			this.waterParamA,
+			this.waterParamB,
+			this.waterParamC,
+		];
 	}
 
 	loadCompleted() {
@@ -118,8 +130,6 @@ export class Game {
 		this.mapAssets = this.loader.textures.Map;
 
 		this.calendar = new Calendar(this.dayAssets, this);
-		// this.player = new Player(this.gameTexture)
-		// this.pixi.stage.addChild(this.player)
 
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
@@ -153,6 +163,7 @@ export class Game {
 			"alg"
 		);
 
+
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {
 			// Play sound
@@ -163,11 +174,17 @@ export class Game {
 			this.pixi.stage.removeChild(this.startScreen);
 
 			// Adding background to the stage
-			this.background = new PIXI.Sprite(this.loader.textures.StartMenu["backgroundBlur"]);
+			this.background = new PIXI.Sprite(
+				this.loader.textures.StartMenu["backgroundBlur"]
+			);
 			this.pixi.stage.addChild(this.background);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
@@ -185,7 +202,10 @@ export class Game {
 			this.pixi.stage.removeChild(this.homeScreen);
 
 			// Add the new game warning screen
-			this.newGameWarning = new NewGameWarning(goBackToTheHomeScreen, startNewGame);
+			this.newGameWarning = new NewGameWarning(
+				goBackToTheHomeScreen,
+				startNewGame
+			);
 			this.pixi.stage.addChild(this.newGameWarning);
 		};
 
@@ -199,7 +219,11 @@ export class Game {
 			this.pixi.stage.removeChild(this.newGameWarning);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 		};
 
@@ -229,7 +253,12 @@ export class Game {
 			let borderImage = this.loader.textures.StartMenu["settingsBorder"];
 
 			// Add the settings screen
-			this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+			this.settings = new Settings(
+				borderImage,
+				this.pixi,
+				goBackToHomeScreen,
+				goToCredits
+			);
 			this.pixi.stage.addChild(this.settings);
 		};
 
@@ -263,7 +292,12 @@ export class Game {
 			let borderImage = this.loader.textures.StartMenu["settingsBorder"];
 
 			// Add the settings
-			this.settings = new Settings(borderImage, this.pixi, goBackToHomeScreen, goToCredits);
+			this.settings = new Settings(
+				borderImage,
+				this.pixi,
+				goBackToHomeScreen,
+				goToCredits
+			);
 			this.pixi.stage.addChild(this.settings);
 		};
 
@@ -277,7 +311,11 @@ export class Game {
 			this.pixi.stage.removeChild(this.settings);
 
 			// Add the home screen
-			this.homeScreen = new HomeScreen(startGame, goToNewGameWarning, goToSettings);
+			this.homeScreen = new HomeScreen(
+				startGame,
+				goToNewGameWarning,
+				goToSettings
+			);
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music

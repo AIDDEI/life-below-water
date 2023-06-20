@@ -14,7 +14,10 @@ export class ChallengeMail extends ActiveMail {
 	}
 
 	private createContent() {
-		const contentText = new PIXI.Text(this.mail.description, { fill: "blue", fontSize: 15 });
+		const contentText = new PIXI.Text(this.mail.description, {
+			fill: "blue",
+			fontSize: 15,
+		});
 		contentText.style.wordWrap = true;
 		contentText.style.wordWrapWidth = this.width - 25;
 
@@ -63,12 +66,21 @@ export class ChallengeMail extends ActiveMail {
 				);
 				break;
 			default:
-				button = new Button(50, "Dit hoort niet..", undefined, undefined, () => {
-					console.log("This should not happen");
-				});
+				button = new Button(
+					50,
+					"Dit hoort niet..",
+					undefined,
+					undefined,
+					() => {
+						console.log("This should not happen");
+					}
+				);
 		}
 
-		const y = this.contentContainer.height + button.height > this.maxHeight ? this.contentContainer.height + button.height + 20 : this.height - button.height / 2 - 5;
+		const y =
+			this.contentContainer.height + button.height > this.maxHeight
+				? this.contentContainer.height + button.height + 20
+				: this.height - button.height / 2 - 5;
 		button.position.set(this.x + 20, y);
 		this.contentContainer.addChild(button);
 	}
