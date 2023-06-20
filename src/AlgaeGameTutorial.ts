@@ -161,12 +161,12 @@ export class AlgaeGameTutorial extends Container {
 		this.canvasContainer.addChild(drawableCanvasBg, this.drawableCanvas);
 
 		this.predictionText = new Text("De eerste voorspelling duurt een paar secondes!", {
-			fontSize: 15,
+			fontSize: 20,
 			fill: "black",
 		});
 
 		// set in the middle of drawableCanvasBg
-		this.predictionText.position.set(this.x + this.content.width - 375 + 200 - this.predictionText.width / 2, this.content.height - 245);
+		this.predictionText.position.set(this.x + this.content.width - 375 + 200 - this.predictionText.width / 2, this.content.height - 255);
 
 		this.canvasContainer.addChild(this.predictionText);
 

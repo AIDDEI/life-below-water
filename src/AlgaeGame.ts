@@ -53,7 +53,7 @@ export class AlgaeGame extends Minigame {
 
 		// init instructions, don't show
 		super.initInstructions(
-			() => {},
+			() => { },
 			"Teken het figuur dat op de alg staat op het canvas. \n\nTekenen doe je met de muis in te drukken. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\nKlik op de pijltjes links en rechts, of gebruik de toetsen, om van meer te veranderen. \n\n\nTIP! Zorg dat je duidelijke figuren tekent met scherpe hoeken, zodat het systeem het beste jouw figuur kan herkennen.",
 			false
 		);
@@ -163,7 +163,7 @@ export class AlgaeGame extends Minigame {
 	}
 
 	private _startGeneratingAlgaes() {
-		for (let i = 0; i < 5; i++) {
+		for (let i = 0; i < 4; i++) {
 			this._addAlgae();
 		}
 	}

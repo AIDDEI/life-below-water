@@ -34,8 +34,8 @@ export class Algae extends Sprite {
 		this.secondsPassed = 0;
 		this.textures = textures;
 		this.shape = this._getRandomShape();
-		// seconds to change opacity from 0 to 1, between 8 and 15 seconds
-		this.seconds = Math.floor(Math.random() * 8) + 8;
+		// seconds to change opacity from 0 to 1, between 8 and 20 seconds
+		this.seconds = Math.floor(Math.random() * 12) + 8;
 		this.alpha = 0;
 		this.timer = new Container();
 		this.timer.x = -75;
