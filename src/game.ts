@@ -16,15 +16,17 @@ import { StartScreen } from "./StartScreen";
 import { CreditsScreen } from "./CreditsScreen";
 import { NewGameWarning } from "./NewGameWarning";
 import { MailScreen } from "./MailScreen";
+import { Map } from "./Map";
 
-// Other
-import { Player } from "./Player";
+
+// Other 
 import { Music } from "./Music";
 import { Sfx } from "./Sfx";
 
 // Import Audio
 import music from "url:./music/chill.mp3";
 import buttonClick from "url:./music/button_click.mp3";
+import { AlgaeGame } from "./AlgaeGame";
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
@@ -56,9 +58,12 @@ export class Game {
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
-	public player: Player;
+	public map: Map;
+	private mapAssets: PIXI.Texture[];
+	public algaeGame: AlgaeGame | undefined;
 	private theme: Music;
 	private buttonClick: Sfx;
+
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
 
@@ -122,21 +127,22 @@ export class Game {
 		this.dayAssets = this.loader.textures.DayScreen;
 		this.lobAssets = this.loader.textures.Lobgame;
 		this.qualityAssets = this.loader.textures.QualityScreen;
+		this.mapAssets = this.loader.textures.Map;
 
 		this.calendar = new Calendar(this.dayAssets, this);
 
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
+		this.map = new Map(this.mapAssets, this);
 
-		this.pixi.stage.addChild(this.mail, this.qualityScreen);
+		this.pixi.stage.addChild(this.mail, this.qualityScreen, this.map);
 
 		this.browser = new Browser(this.loader.textures.browser);
 
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
 			{ tabName: "E-mail", screen: this.mail },
-			{ tabName: "Kaart", screen: undefined },
-			{ tabName: "Over ons", screen: undefined },
+			{ tabName: "Kaart", screen: this.map },
 		]);
 
 		this.browser.openTab = 1;
@@ -146,18 +152,17 @@ export class Game {
 			"Lob lob lob",
 			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren",
 			0,
-			true,
-			"lob"
-		);
-		this.mail.add(
-			"Mail 1",
-			"This is the first maiwadawdawdwad wdmwaidmwa idmawid dadwad wl.",
-			0,
 			false,
 			"lob"
 		);
-		this.mail.add("Mail 3", "This is the third mail.", 0, false, "lob");
-		this.mail.add("Mail 4", "This is the third mail.", 0);
+		this.mail.add(
+			"Algenoverlast",
+			"Vandaag nemen we een kijkje bij verschillende meren om te kijken of er algen zijn. Algen groeien door warmte. Waar algen niet van houden, is doorstromend water. Het is aan jouw de taak het water te laten stromen voordat de alg te groot wordt.",
+			0,
+			true,
+			"alg"
+		);
+
 
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {
@@ -343,7 +348,7 @@ export class Game {
 	private update(delta: number) {
 		// this.player.update(delta)
 		// this.mail.update(delta)
-
+		if (this.algaeGame?.active) this.algaeGame.update(delta);
 		if (this.lobGame?.active) this.lobGame.update(delta);
 	}
 
@@ -354,7 +359,7 @@ export class Game {
 		this.lobGame.visible = true;
 	}
 
-	public endLobGame(score: number, reason: number): void {
+	public endLobGame(reason: number): void {
 		this.browser.visible = true;
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
@@ -364,7 +369,29 @@ export class Game {
 			1,
 			true,
 			undefined,
-			score,
+			reason
+		);
+
+		this.clock.shiftClock(1);
+	}
+
+	public startAlgaeGame() {
+		this.browser.visible = false;
+		this.algaeGame = new AlgaeGame(this.loader.textures.AlgaeGame, this);
+		this.pixi.stage.addChild(this.algaeGame);
+		this.algaeGame.visible = true;
+	}
+
+	public endAlgaeGame(reason: number): void {
+		this.browser.visible = true;
+		if (this.algaeGame) this.pixi.stage.removeChild(this.algaeGame);
+		this.algaeGame = undefined;
+		this.mail.addResultsMail(
+			"Salaris Algenoverlast",
+			`Door de waterdoorstroming te verbeteren is de overlast van algen verminderd en hebben we ervoor gezorgd dat mensen veilig kunnen zwemmen. Ook is de waterkwaliteit verbeterd en is de kans op vissterfte verminderd. \n\n\nSoms zijn algen moeilijk te bestrijden en te zien. Wil je zeker weten dat je veilig kunt zwemmen? Kijk dan op zwemwater.nl of het water schoon is.`,
+			1,
+			true,
+			undefined,
 			reason
 		);
 

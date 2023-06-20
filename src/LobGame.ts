@@ -8,10 +8,8 @@ import { collision } from "./Utils";
 // import sounds
 import { Sfx } from "./Sfx";
 import collectSound from "url:./music/collect.mp3";
-import lossSound from "url:./music/gameloss.mp3";
-import winSound from "url:./music/gamewin.mp3";
 import badCollectSound from "url:./music/badCatch.mp3";
-import { Graphics } from "pixi.js";
+import { Graphics, Texture } from "pixi.js";
 
 /**
  * Class for Lob game. Expects a game object and assets object. After game is finished, it will call the callback function in the game class.
@@ -23,7 +21,6 @@ export class LobGame extends Minigame {
 	public catcher: PIXI.Sprite;
 	public hitArea: PIXI.Rectangle;
 	private accelleration: number = 0;
-	private score: number = 0;
 	public lobsters: Lobster[] = [];
 	private netbox: PIXI.Graphics;
 	private displacement: PIXI.Sprite;
@@ -31,21 +28,14 @@ export class LobGame extends Minigame {
 	private water: PIXI.Sprite;
 	private toggle: any;
 	private waterContainer: any;
-	private lives: number = 3;
-	private assets: AssetType;
-	private scoreText: PIXI.Text;
-	private SCOREGOAL: number = 15;
-	private livesContainer: PIXI.Container;
+	private assets: Texture[];
 	private bg: PIXI.Sprite;
 	private instructions: PIXI.Sprite;
-	private rules: Button;
 	private collectSound: Sfx;
-	private lossSound: Sfx;
-	private winSound: Sfx;
 	private badCollectSound: Sfx;
 
-	constructor(assets: AssetType, game: Game) {
-		super(game);
+	constructor(assets: Texture[], game: Game) {
+		super(game, assets, 15);
 		this.assets = assets;
 		this.game = game;
 		this.y = 0;
@@ -61,9 +51,9 @@ export class LobGame extends Minigame {
 		this._setupSideButtons();
 		this._setupEvents();
 		this._setupFilter();
-		this._setupScore();
+		super.addScore();
 		this._setupInstructions();
-		this._setupLiveContainer();
+		super.addLives();
 		// init instructions
 		this.initInstructions(() => {
 			this.startGame();
@@ -72,8 +62,6 @@ export class LobGame extends Minigame {
 
 	private _initSounds(): void {
 		this.collectSound = new Sfx(collectSound);
-		this.lossSound = new Sfx(lossSound);
-		this.winSound = new Sfx(winSound);
 		this.badCollectSound = new Sfx(badCollectSound);
 	}
 
@@ -110,39 +98,9 @@ export class LobGame extends Minigame {
 		this.addChild(this.instructions);
 	}
 
-	private _setupScore(): void {
-		this.scoreText = new PIXI.Text(`Score: 0 / ${this.SCOREGOAL}`, {
-			fontFamily: "Arial",
-			fontSize: 24,
-			fill: "white",
-			align: "center",
-		});
-		this.scoreText.anchor.set(0.5);
-		this.scoreText.x = this.game.pixi.screen.width / 2;
-		this.scoreText.y = 20;
-		this.addChild(this.scoreText);
-	}
-
-	private _setupLiveContainer() {
-		this.livesContainer = new PIXI.Container();
-		this.addChild(this.livesContainer);
-
-		for (let i = 0; i < this.lives; i++) {
-			const heart = new PIXI.Sprite(this.assets.heart);
-			heart.scale.set(0.25);
-			heart.x = this.water.x + heart.width * i;
-			heart.y = 0;
-			heart.position.set(heart.width * i, this.scoreText.height);
-			this.livesContainer.addChild(heart);
-		}
-
-		this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20);
-	}
-
 	private _setupSideButtons(): void {
-
 		const ruleButton = super.createRulesButton();
-    
+
 		this.toggle = new PIXI.Graphics();
 		this.addChild(this.toggle);
 		this.toggle.eventMode = "static";
@@ -158,10 +116,9 @@ export class LobGame extends Minigame {
 			fill: "white",
 			align: "center",
 		});
-    
+
 		text.anchor.set(0.5);
 		text.position.set(this.toggle.x - this.toggle.width - 15, 10);
-		this.toggle.hitArea = this.toggle.getBounds();
 
 		const cross = new PIXI.Graphics();
 		cross.lineStyle(2, 0xff0000);
@@ -170,13 +127,11 @@ export class LobGame extends Minigame {
 		cross.moveTo(25, 0);
 		cross.lineTo(0, 25);
 
-		this.toggle.addChild(cross);
 		this.toggle.x = this.game.pixi.screen.width - 30;
 		this.toggle.y = 10;
 
 		this.toggle.addChild(text, cross);
 		this.toggle.position.set(this.game.pixi.screen.width - this.toggle.width / 2, ruleButton.y + ruleButton.height + 10);
-
 	}
 
 	private onKeyDown(e: KeyboardEvent): void {
@@ -194,7 +149,6 @@ export class LobGame extends Minigame {
 
 	public takeLive(): void {
 		this.lives--;
-		this.updateLivesContainer();
 		this.badCollectSound.playSFX();
 		this.catcher.tint = "rgba(255, 0, 0, 0.5)";
 
@@ -232,56 +186,15 @@ export class LobGame extends Minigame {
 			this.removeChild(missedLobContainer);
 		}, 1500);
 	}
-	private _endGame(): void {
-		const reason = this.lives < 1 ? 0 : 1;
-
-		if (reason == 0) {
-			this.lossSound.playSFX();
-		} else {
-			this.winSound.playSFX();
-		}
-
-		this.active = false;
-
-		const gameOverContainer = new Graphics();
-		// blue rectangle with yellow outline
-		gameOverContainer.beginFill(0xffffff);
-		gameOverContainer.lineStyle(4, `0x${reason == 0 ? "ff0000" : "20A34F"}`);
-		gameOverContainer.drawRect(0, 0, 400, 200);
-		gameOverContainer.endFill();
-
-		gameOverContainer.x = this.game.pixi.screen.width / 2 - gameOverContainer.width / 2;
-		// put container a bit higher than the middle
-		gameOverContainer.y = this.game.pixi.screen.height / 2 - gameOverContainer.height;
-		this.addChild(gameOverContainer);
-
-		const gameOverText = new PIXI.Text(reason == 0 ? "Game over" : "Gewonnen!", {
-			fontFamily: "Arial",
-			fontSize: 48,
-			fill: `0x${reason == 0 ? "ff0000" : "20A34F"}`,
-			align: "center",
-		});
-
-		gameOverText.anchor.set(0.5);
-		gameOverText.x = gameOverContainer.width / 2;
-		gameOverText.y = gameOverContainer.height / 2;
-
-		gameOverContainer.addChild(gameOverText);
-		this.addChild(gameOverContainer);
-
-		// wait 1.5 seconds before ending the game
-		setTimeout(() => {
-			this.game.endLobGame(this.score, reason);
-		}, 1500);
-	}
 
 	public update(delta: number) {
 		if (!this.active) return;
 
 		this.displacement.y -= 1 * delta;
 
-		if (this.lives < 1 || this.score >= this.SCOREGOAL) {
-			this._endGame();
+		if (this.lives < 1 || this.score >= this.scoreGoal) {
+			const reason = this.lives < 1 ? 0 : 1;
+			super.endGame(reason, () => this.game.endLobGame(reason));
 		}
 
 		for (let lobster of this.lobsters) {
@@ -301,7 +214,6 @@ export class LobGame extends Minigame {
 					this.takeLive();
 				}
 				lobster.onHit();
-				this.updateScore();
 			}
 		}
 
@@ -382,11 +294,6 @@ export class LobGame extends Minigame {
 		}
 	}
 
-	private updateScore(): void {
-		const score = this.scoreText;
-		score.text = `Score: ${this.score} / ${this.SCOREGOAL}`;
-	}
-
 	private toggleFilter(): void {
 		const text = this.toggle.getChildAt(0) as PIXI.Text;
 
@@ -413,10 +320,5 @@ export class LobGame extends Minigame {
 		const lobster = new Lobster(this.water.position.x + 25, this.water.position.x + this.water.width - 25, this.assets.lobster, isLob, this._onMissedLob.bind(this), this.game.pixi.screen.height, i);
 		this.lobsters.push(lobster);
 		this.waterContainer.addChild(lobster);
-	}
-
-	private updateLivesContainer() {
-		this.livesContainer.removeChildAt(this.livesContainer.children.length - 1);
-		this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20);
 	}
 }

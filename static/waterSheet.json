@@ -1,0 +1,314 @@
+{
+	"frames": {
+		"Water01.png": {
+			"frame": {
+				"x": 537,
+				"y": 1473,
+				"w": 99,
+				"h": 157
+			},
+			"rotated": true,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 367,
+				"y": 339,
+				"w": 99,
+				"h": 157
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 835
+			}
+		},
+		"Water02.png": {
+			"frame": {
+				"x": 986,
+				"y": 1320,
+				"w": 223,
+				"h": 328
+			},
+			"rotated": true,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 310,
+				"y": 253,
+				"w": 223,
+				"h": 328
+			},
+			"sourceSize": {
+				"w": 843,
+				"h": 851
+			}
+		},
+		"Water03.png": {
+			"frame": {
+				"x": 1368,
+				"y": 524,
+				"w": 360,
+				"h": 425
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 237,
+				"y": 203,
+				"w": 360,
+				"h": 425
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		},
+		"Water04.png": {
+			"frame": {
+				"x": 1,
+				"y": 1162,
+				"w": 534,
+				"h": 466
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 150,
+				"y": 185,
+				"w": 534,
+				"h": 466
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		},
+		"Water05.png": {
+			"frame": {
+				"x": 1203,
+				"y": 1,
+				"w": 521,
+				"h": 562
+			},
+			"rotated": true,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 156,
+				"y": 139,
+				"w": 521,
+				"h": 562
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 835
+			}
+		},
+		"Water06.png": {
+			"frame": {
+				"x": 638,
+				"y": 1,
+				"w": 543,
+				"h": 563
+			},
+			"rotated": true,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 150,
+				"y": 129,
+				"w": 543,
+				"h": 563
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 835
+			}
+		},
+		"Water07.png": {
+			"frame": {
+				"x": 1020,
+				"y": 546,
+				"w": 346,
+				"h": 426
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 237,
+				"y": 205,
+				"w": 346,
+				"h": 426
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		},
+		"Water08.png": {
+			"frame": {
+				"x": 1403,
+				"y": 951,
+				"w": 283,
+				"h": 311
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 276,
+				"y": 270,
+				"w": 283,
+				"h": 311
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		},
+		"Water09.png": {
+			"frame": {
+				"x": 1403,
+				"y": 1264,
+				"w": 269,
+				"h": 260
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 278,
+				"y": 286,
+				"w": 269,
+				"h": 260
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		},
+		"Water10.png": {
+			"frame": {
+				"x": 1020,
+				"y": 974,
+				"w": 381,
+				"h": 344
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 227,
+				"y": 238,
+				"w": 381,
+				"h": 344
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		},
+		"Water11.png": {
+			"frame": {
+				"x": 537,
+				"y": 1058,
+				"w": 447,
+				"h": 413
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 193,
+				"y": 212,
+				"w": 447,
+				"h": 413
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 835
+			}
+		},
+		"Water12.png": {
+			"frame": {
+				"x": 1,
+				"y": 505,
+				"w": 462,
+				"h": 655
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 186,
+				"y": 166,
+				"w": 462,
+				"h": 655
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 835
+			}
+		},
+		"Water13.png": {
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 635,
+				"h": 502
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 99,
+				"y": 167,
+				"w": 635,
+				"h": 502
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		},
+		"Water14.png": {
+			"frame": {
+				"x": 465,
+				"y": 546,
+				"w": 553,
+				"h": 510
+			},
+			"rotated": false,
+			"trimmed": true,
+			"spriteSourceSize": {
+				"x": 141,
+				"y": 150,
+				"w": 553,
+				"h": 510
+			},
+			"sourceSize": {
+				"w": 834,
+				"h": 834
+			}
+		}
+	},
+	"animations": {
+		"swoosh": [
+			"Water01.png",
+			"Water02.png",
+			"Water03.png",
+			"Water04.png",
+			"Water05.png",
+			"Water06.png",
+			"Water07.png",
+			"Water08.png",
+			"Water09.png",
+			"Water10.png",
+			"Water11.png",
+			"Water12.png",
+			"Water13.png",
+			"Water14.png"
+		]
+	},
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "waterSheet.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 1766,
+			"h": 1629
+		},
+		"scale": "1",
+		"smartupdate": "$TexturePacker:SmartUpdate:ed0d58a57ed277aedf56d2f8eca05c65:63ed3b44d25e1ecf35f0ca29a86535c2:b300eec0923fcdb9a382c6adac7cfad5$"
+	}
+}
