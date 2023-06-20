@@ -19,8 +19,7 @@ import { MailScreen } from "./MailScreen";
 import { Map } from "./Map";
 
 
-// Other
-import { Player } from "./Player";
+// Other 
 import { Music } from "./Music";
 import { Sfx } from "./Sfx";
 
@@ -62,11 +61,10 @@ export class Game {
 	private background: PIXI.Sprite;
 	public map: Map;
 	private mapAssets: PIXI.Texture[];
-	public player: Player;
 	public algaeGame: AlgaeGame | undefined;
 	private theme: Music;
 	private buttonClick: Sfx;
-  
+
 	constructor() {
 		PIXI.settings.ROUND_PIXELS = true;
 

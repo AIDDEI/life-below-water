@@ -30,6 +30,7 @@ import lobIcon from "./images/lobIcon.png";
 import algenExplenation from "./images/Algen-Uitleg.png";
 import algaes from "./images/algaes.png";
 
+
 // Export class
 export class AssetLoader {
 	graphics: PIXI.Graphics;
@@ -81,13 +82,13 @@ export class AssetLoader {
 		PIXI.Assets.addBundle("QualityScreen", {
 			browserWindowBG: browserWindowBG,
 		});
- 
+
 
 		PIXI.Assets.addBundle('Map', {
 			map: mapBg,
 			farmerIcon: farmerIcon,
 			lobIcon: lobIcon,
- 
+		});
 
 		PIXI.Assets.addBundle("StartMenu", {
 			background: startBackground,
@@ -102,7 +103,7 @@ export class AssetLoader {
 			heart: heart,
 			algenExplenation: algenExplenation,
 			algaes: algaes,
- 
+
 		});
 	}
 
