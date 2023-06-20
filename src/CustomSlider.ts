@@ -53,7 +53,7 @@ export class CustomSlider extends PIXI.Container {
         this.sliderContainer.addChild(this.sliderFill);
       
         this.sliderHandle = new PIXI.Graphics();
-        this.sliderHandle.beginFill(0xFFFFFF);
+        this.sliderHandle.beginFill(0x000000);
         this.sliderHandle.drawRect(-6, -12, 12, 24);
         this.sliderHandle.x = 0
         this.sliderHandle.y = -6;

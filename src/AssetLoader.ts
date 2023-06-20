@@ -24,6 +24,7 @@ import browserWindowBG from "./images/browserWindow.png";
 import startBackground from "./images/startBackground.png";
 import startBackgroundBlur from "./images/startBackgroundBlur.png";
 import settingsBorder from "./images/settings_border.png";
+import settingsIcon from "./images/settings.png";
 import moneyIcon from "./images/cash.png";
 import mapBg from "./images/map.png";
 import farmerIcon from "./images/farmerIcon.png";
@@ -83,6 +84,14 @@ export class AssetLoader {
 			browserWindowBG: browserWindowBG,
 		});
 
+        PIXI.Assets.addBundle('StartMenu', {
+            'background': startBackground,
+            'backgroundBlur': startBackgroundBlur,
+            'settingsBorder': settingsBorder,
+			'settingsIcon': settingsIcon,
+        });
+
+
 
 		PIXI.Assets.addBundle('Map', {
 			map: mapBg,
@@ -90,11 +99,6 @@ export class AssetLoader {
 			lobIcon: lobIcon,
 		});
 
-		PIXI.Assets.addBundle("StartMenu", {
-			background: startBackground,
-			backgroundBlur: startBackgroundBlur,
-			settingsBorder: settingsBorder,
-		});
 
 		PIXI.Assets.addBundle("AlgaeGame", {
 			spritesheet: "waterSheet.json",

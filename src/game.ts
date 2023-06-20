@@ -1,10 +1,12 @@
+// Import PIXI
 import * as PIXI from "pixi.js";
+
+// Import Sprites via Assetloader
 import { AssetLoader } from "./AssetLoader";
-import { Player } from "./Player";
-import { WaterParam } from "./WaterParam";
+
+// Minigames
 import { LobGame } from "./LobGame";
-import { PopUp } from "./tip-popUp";
-import { Clock } from "./clock";
+
 // Screens
 import { Browser } from "./Browser";
 import { QualityScreen } from "./QualityScreen";
@@ -15,32 +17,60 @@ import { StartScreen } from "./StartScreen";
 import { CreditsScreen } from "./CreditsScreen";
 import { NewGameWarning } from "./NewGameWarning";
 import { MailScreen } from "./MailScreen";
+import { SettingsScreen } from "./SettingsScreen";
+
+// Import Music, Audio and SFX
 import { Map } from "./Map";
 
 
 // Other 
 import { Music } from "./Music";
-import { Sfx } from "./Sfx";
-
-// Import Audio
 import music from "url:./music/chill.mp3";
-import buttonClick from "url:./music/button_click.mp3";
+ 
+// Import Other Classes
+import { Player } from "./Player";
+import { PopUp } from "./tip-popUp";
+import { Clock } from "./clock";
+import { WaterParam } from "./WaterParam";
 
+// Export Asset Type
 
 import { Money } from "./Money";
 import { AlgaeGame } from "./AlgaeGame";
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
+// Export the Game Class
 export class Game {
+	// Globals
 	public pixi: PIXI.Application;
 	private loader: AssetLoader;
+
+	// // Minigames
 	public player: Player;
+	public lobGame: LobGame | undefined;
+	private lobAssets: PIXI.Texture<PIXI.Resource>;
+
+	// // Office
 	private mailAssets: PIXI.Texture<PIXI.Resource>;
 	public lobGame: LobGame | undefined;
 	private lobAssets: PIXI.Texture<PIXI.Resource>;
 	private dayAssets: any;
+	private qualityAssets : PIXI.Texture<PIXI.Resource>;
 	public calendar: Calendar;
+	public qualityScreen: QualityScreen;
+	public mail: MailScreen;
+	private clock: Clock;
+	private popUp: PopUp;
+
+	// // Water Parameters
+	public waterParams: WaterParam[];
+	private waterParamA: WaterParam;
+	private waterParamB: WaterParam;
+	private waterParamC: WaterParam;
+
+	// Screens
+	public browser: Browser;
 	public waterParameters: WaterParam[];
 	public waterParamA: WaterParam;
 	public waterParamB: WaterParam;
@@ -57,6 +87,16 @@ export class Game {
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
+
+	public settingsScreen: SettingsScreen;
+
+	// Music and Audio
+	private theme: Music;
+
+	// Icon
+	private settingsIcon: PIXI.Texture;
+	
+	// Constructor
 	public map: Map;
 	private mapAssets: PIXI.Texture<PIXI.Resource>;
 	public algaeGame: AlgaeGame | undefined;
@@ -66,6 +106,7 @@ export class Game {
 	private moneyIcon: PIXI.Texture;
 
 	constructor() {
+		// PIXI Settings
 		PIXI.settings.ROUND_PIXELS = true;
 
 		// init game
@@ -74,23 +115,14 @@ export class Game {
 			resolution: window.devicePixelRatio,
 			backgroundColor: 0xffffff,
 		});
+
 		this.pixi.stage.eventMode = "static";
 		document.body.appendChild(this.pixi.view as HTMLCanvasElement);
+
 		// Load images
 		this.loader = new AssetLoader(this);
 
 		// init parameters
-
-		this.waterParamA = new WaterParam(
-			"Zuurtegraad", // name
-			"ph", // keyName
-			50, //value
-			10, // increment
-			0, // min
-			100, // max
-			40, // optimal min
-			60 // optimal max
-		);
 		this.waterParamB = new WaterParam(
 			"Sulfaten", // name
 			"sulfates", //keyName
@@ -101,7 +133,6 @@ export class Game {
 			940, // optimal min
 			960 // optimal max
 		);
-
 		this.waterParamC = new WaterParam(
 			"Vaste Stoffen", //Name
 			"solids", //keyname
@@ -119,10 +150,9 @@ export class Game {
 		];
 	}
 
+	// Do this when the load is completed
 	loadCompleted() {
-		console.log("Load completed");
-		console.log(this.loader.textures);
-
+		// Load Textures
 		this.mailAssets = this.loader.textures.MailScreen;
 		this.dayAssets = this.loader.textures.DayScreen;
 		this.lobAssets = this.loader.textures.Lobgame;
@@ -144,24 +174,40 @@ export class Game {
 			100
 		);
 
+		// Background music
+		this.theme = new Music(music);
+
+		// Create calendar
 		this.calendar = new Calendar(this.dayAssets, this);
+
+		// Create MailScreen and QualityScreen
+
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
 		this.map = new Map(this.mapAssets, this);
-
+ 
+		// Add the screens to the stage
 		this.pixi.stage.addChild(this.mail, this.qualityScreen, this.map);
+    
+		// Retrieve the settingsIcon
+		this.settingsIcon = new PIXI.Texture(this.loader.textures.StartMenu["settingsIcon"]);
 
-		this.browser = new Browser(this.loader.textures.browser, this);
+		// Create the Browser screen
+		this.browser = new Browser(this.loader.textures.browser, this.settingsIcon, this.theme);
 
+ 
+		// Add the browser tabs
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
 			{ tabName: "E-mail", screen: this.mail },
 			{ tabName: "Kaart", screen: this.map },
 		]);
 
+		// Select open tab
 		this.browser.openTab = 1;
 		this.pixi.stage.addChild(this.browser);
 
+		// Add mails to the tab
 		this.mail.add(
 			"Lob lob lob",
 			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren",
@@ -183,10 +229,6 @@ export class Game {
 
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the start screen
 			this.pixi.stage.removeChild(this.startScreen);
 
@@ -205,16 +247,11 @@ export class Game {
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
-			this.theme = new Music(music);
 			this.theme.playAudio();
 		};
 
 		// Create function to go to the new game warning when the button is clicked
 		const goToNewGameWarning = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Homescreen
 			this.pixi.stage.removeChild(this.homeScreen);
 
@@ -228,10 +265,6 @@ export class Game {
 
 		// Create function to go back to the home screen from the new game warning screen
 		const goBackToTheHomeScreen = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove new game warning screen
 			this.pixi.stage.removeChild(this.newGameWarning);
 
@@ -246,10 +279,6 @@ export class Game {
 
 		// Create funtion to start new game
 		const startNewGame = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Start new game
 			this.pixi.stage.removeChild(this.newGameWarning);
 			this.pixi.stage.removeChild(this.background);
@@ -257,10 +286,6 @@ export class Game {
 
 		// Create the function to go to the Settings when the button is clicked
 		const goToSettings = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Homescreen
 			this.pixi.stage.removeChild(this.homeScreen);
 			// Stop the audio
@@ -281,10 +306,6 @@ export class Game {
 
 		// Create the function to go to the Credits when the button is clicked
 		const goToCredits = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Settings
 			this.pixi.stage.removeChild(this.settings);
 
@@ -298,10 +319,6 @@ export class Game {
 
 		// Create the function to go back to the settings from the credits
 		const goBackToSettings = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Credits
 			this.pixi.stage.removeChild(this.creditsScreen);
 
@@ -320,10 +337,6 @@ export class Game {
 
 		// Create the function to go back to the Homescreen from the settings
 		const goBackToHomeScreen = () => {
-			// Play sound
-			this.buttonClick = new Sfx(buttonClick);
-			this.buttonClick.playSFX();
-
 			// Remove the Settings
 			this.pixi.stage.removeChild(this.settings);
 
@@ -336,7 +349,6 @@ export class Game {
 			this.pixi.stage.addChild(this.homeScreen);
 
 			// Play Music
-			this.theme = new Music(music);
 			this.theme.playAudio();
 		};
 
@@ -346,40 +358,55 @@ export class Game {
 
 			// Remove background to the stage
 			this.pixi.stage.removeChild(this.background);
+
+			this.settingsScreen = new SettingsScreen(this.pixi, this);
+			this.pixi.stage.addChild(this.settingsScreen);
+			this.browser.addTabs([{ tabName: "Instellingen", screen: this.settingsScreen }]);
 		};
 
-		// Add the Startscreen
+		// Create the Start Screen
 		this.startScreen = new StartScreen(goToHomeScreen);
 
+		// Create the pop-up and the clock
 		this.popUp = new PopUp(this.pixi);
 		this.clock = new Clock(this);
+
+		// Add the clock at the stage
 		this.pixi.stage.addChild(this.clock);
 
 		// ! Keep this last
+		// Add the calendar and the start screen to the stage
 		this.pixi.stage.addChild(this.calendar);
 		this.pixi.stage.addChild(this.startScreen);
 
+		// Add a ticker
 		this.pixi.ticker.add((delta) => this.update(delta));
 	}
 
+	// Update
 	private update(delta: number) {
-		// this.player.update(delta)
-		// this.mail.update(delta)
-		if (this.algaeGame?.active) this.algaeGame.update(delta);
 		if (this.lobGame?.active) this.lobGame.update(delta);
 	}
 
+	// Start Lob Game
 	public startLobGame() {
+		// Disable the mail screen
 		this.browser.visible = false;
+
 		this.lobGame = new LobGame(this.lobAssets, this);
+
+		// Add Lob game to the stage
 		this.pixi.stage.addChild(this.lobGame);
 		this.lobGame.visible = true;
 	}
 
+ 
+ 
 	public endLobGame(reason: number): void {
 		this.browser.visible = true;
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
+ 
 		this.mail.addResultsMail(
 			"Salaris Kreeftopdracht",
 			`Door het vangen van alle kleine kor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbereeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
@@ -412,8 +439,10 @@ export class Game {
 			reason
 		);
 
+		// Clock goes forward
 		this.clock.shiftClock(1);
 	}
 }
 
+// Execute the game
 new Game();
