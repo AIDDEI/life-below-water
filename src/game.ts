@@ -343,7 +343,7 @@ export class Game {
 		if (this.algaeGame) this.pixi.stage.removeChild(this.algaeGame);
 		this.algaeGame = undefined;
 		this.mail.addResultsMail(
-			"Salaris Algenoverlas",
+			"Salaris Algenoverlast",
 			`Door de waterdoorstroming te verbeteren is de overlast van algen verminderd en hebben we ervoor gezorgd dat mensen veilig kunnen zwemmen. Ook is de waterkwaliteit verbeterd en is de kans op vissterfte verminderd. \n\n\nSoms zijn algen moeilijk te bestrijden en te zien. Wil je zeker weten dat je veilig kunt zwemmen? Kijk dan op zwemwater.nl of het water schoon is.`,
 			1,
 			true,
