@@ -60,7 +60,7 @@ export class Clock extends PIXI.Container {
 
     // Kleine wijzer (urenwijzer)
     const smallHandRotation = (this.smallHandOffset / 180) * Math.PI;
-    this.clockGraphics.lineStyle(8, 0x0000ff); // Blauwe kleur
+    this.clockGraphics.lineStyle(9, 0x0000ff); // Blauwe kleur
     this.clockGraphics.moveTo(200, 200);
     this.clockGraphics.lineTo(
       200 + 80 * Math.sin(smallHandRotation),
