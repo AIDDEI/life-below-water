@@ -1,4 +1,13 @@
-import { AnimatedSprite, Circle, Container, Graphics, Resource, Sprite, Text, Texture } from "pixi.js";
+import {
+	AnimatedSprite,
+	Circle,
+	Container,
+	Graphics,
+	Resource,
+	Sprite,
+	Text,
+	Texture,
+} from "pixi.js";
 
 // import sound
 import waterSound from "url:./music/water.mp3";
@@ -20,7 +29,13 @@ export class Algae extends Sprite {
 	private secondsPassed: number;
 	private counter: number;
 
-	constructor(textures: any, waterTexture: any, minigame: AlgaeGame, posx = 0, posy = 0) {
+	constructor(
+		textures: any,
+		waterTexture: any,
+		minigame: AlgaeGame,
+		posx = 0,
+		posy = 0
+	) {
 		super();
 		this.waterTexture = waterTexture;
 		this.anchor.set(0.5);
@@ -34,8 +49,8 @@ export class Algae extends Sprite {
 		this.secondsPassed = 0;
 		this.textures = textures;
 		this.shape = this._getRandomShape();
-		// seconds to change opacity from 0 to 1, between 8 and 20 seconds
-		this.seconds = Math.floor(Math.random() * 12) + 8;
+		// seconds to change opacity from 0 to 1, between 10 and 22 seconds
+		this.seconds = Math.floor(Math.random() * 12) + 10;
 		this.alpha = 0;
 		this.timer = new Container();
 		this.timer.x = -75;
@@ -105,7 +120,12 @@ export class Algae extends Sprite {
 			const timerText = new Text(`${this.seconds - this.secondsPassed}`, {
 				fontFamily: "Arial",
 				fontSize: 36,
-				fill: this.seconds - this.secondsPassed == 3 ? 0xffff00 : this.seconds - this.secondsPassed == 2 ? 0xffa500 : 0xff0000,
+				fill:
+					this.seconds - this.secondsPassed == 3
+						? 0xffff00
+						: this.seconds - this.secondsPassed == 2
+						? 0xffa500
+						: 0xff0000,
 				fontWeight: "bold",
 			});
 			timerText.x = circle.x - timerText.width / 2;

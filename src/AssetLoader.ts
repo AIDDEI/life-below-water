@@ -32,7 +32,6 @@ import lobIcon from "./images/lobIcon.png";
 import algenExplenation from "./images/Algen-Uitleg.png";
 import algaes from "./images/algaes.png";
 
-
 // Export class
 export class AssetLoader {
 	graphics: PIXI.Graphics;
@@ -84,21 +83,18 @@ export class AssetLoader {
 			browserWindowBG: browserWindowBG,
 		});
 
-        PIXI.Assets.addBundle('StartMenu', {
-            'background': startBackground,
-            'backgroundBlur': startBackgroundBlur,
-            'settingsBorder': settingsBorder,
-			'settingsIcon': settingsIcon,
-        });
+		PIXI.Assets.addBundle("StartMenu", {
+			background: startBackground,
+			backgroundBlur: startBackgroundBlur,
+			settingsBorder: settingsBorder,
+			settingsIcon: settingsIcon,
+		});
 
-
-
-		PIXI.Assets.addBundle('Map', {
+		PIXI.Assets.addBundle("Map", {
 			map: mapBg,
 			farmerIcon: farmerIcon,
 			lobIcon: lobIcon,
 		});
-
 
 		PIXI.Assets.addBundle("AlgaeGame", {
 			spritesheet: "waterSheet.json",
@@ -107,17 +103,32 @@ export class AssetLoader {
 			heart: heart,
 			algenExplenation: algenExplenation,
 			algaes: algaes,
-
 		});
 	}
 
 	public async loadAssets() {
-
-		const bundlePromise = await PIXI.Assets.loadBundle(["Player", "Office", "MailScreen", "Lobgame", "DayScreen", "QualityScreen", "StartMenu", "AlgaeGame", "Map"], (progress) => {
-
-			this.showProgress(progress);
-		});
-		const texturePromise = await PIXI.Assets.load(["Crab", "Crab2", "browser", "moneyIcon"]);
+		const bundlePromise = await PIXI.Assets.loadBundle(
+			[
+				"Player",
+				"Office",
+				"MailScreen",
+				"Lobgame",
+				"DayScreen",
+				"QualityScreen",
+				"StartMenu",
+				"AlgaeGame",
+				"Map",
+			],
+			(progress) => {
+				this.showProgress(progress);
+			}
+		);
+		const texturePromise = await PIXI.Assets.load([
+			"Crab",
+			"Crab2",
+			"browser",
+			"moneyIcon",
+		]);
 
 		// give textures the right index using reduce
 		const textures = [bundlePromise, texturePromise];
@@ -136,8 +147,12 @@ export class AssetLoader {
 
 		this.graphics.clear();
 		this.graphics.beginFill(0x32de49);
-		this.graphics.drawRect(offset, this.game.pixi.screen.height / 2 - 20, barWidth, 40);
+		this.graphics.drawRect(
+			offset,
+			this.game.pixi.screen.height / 2 - 20,
+			barWidth,
+			40
+		);
 		this.graphics.endFill();
 	}
-
 }

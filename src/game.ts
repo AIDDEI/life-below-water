@@ -22,11 +22,10 @@ import { SettingsScreen } from "./SettingsScreen";
 // Import Music, Audio and SFX
 import { Map } from "./Map";
 
-
-// Other 
+// Other
 import { Music } from "./Music";
 import music from "url:./music/chill.mp3";
- 
+
 // Import Other Classes
 import { Player } from "./Player";
 import { PopUp } from "./tip-popUp";
@@ -46,64 +45,50 @@ export class Game {
 	public pixi: PIXI.Application;
 	private loader: AssetLoader;
 
-	// // Minigames
+	// Minigames
 	public player: Player;
 	public lobGame: LobGame | undefined;
 	private lobAssets: PIXI.Texture<PIXI.Resource>;
+	public algaeGame: AlgaeGame | undefined;
 
-	// // Office
+	// Assets
 	private mailAssets: PIXI.Texture<PIXI.Resource>;
-	public lobGame: LobGame | undefined;
-	private lobAssets: PIXI.Texture<PIXI.Resource>;
+	private mapAssets: PIXI.Texture<PIXI.Resource>;
 	private dayAssets: any;
-	private qualityAssets : PIXI.Texture<PIXI.Resource>;
-	public calendar: Calendar;
-	public qualityScreen: QualityScreen;
-	public mail: MailScreen;
-	private clock: Clock;
-	private popUp: PopUp;
+	private qualityAssets: PIXI.Texture<PIXI.Resource>;
 
-	// // Water Parameters
-	public waterParams: WaterParam[];
+	// Water Parameters
+	public waterParameters: WaterParam[];
 	private waterParamA: WaterParam;
 	private waterParamB: WaterParam;
 	private waterParamC: WaterParam;
 
 	// Screens
 	public browser: Browser;
-	public waterParameters: WaterParam[];
-	public waterParamA: WaterParam;
-	public waterParamB: WaterParam;
-	public waterParamC: WaterParam;
-	public browser: Browser;
-	private qualityAssets: PIXI.Texture<PIXI.Resource>;
-	public qualityScreen: QualityScreen;
-	public mail: MailScreen;
-	private popUp: PopUp;
-	private clock: Clock;
 	public homeScreen: HomeScreen;
 	public settings: Settings;
 	public startScreen: StartScreen;
 	public creditsScreen: CreditsScreen;
 	public newGameWarning: NewGameWarning;
 	private background: PIXI.Sprite;
-
 	public settingsScreen: SettingsScreen;
+	public map: Map;
+	public calendar: Calendar;
+	public qualityScreen: QualityScreen;
+	public mail: MailScreen;
+
+	// misc
+	public money: Money;
+	private moneyIcon: PIXI.Texture;
+	private clock: Clock;
 
 	// Music and Audio
 	private theme: Music;
 
 	// Icon
 	private settingsIcon: PIXI.Texture;
-	
+
 	// Constructor
-	public map: Map;
-	private mapAssets: PIXI.Texture<PIXI.Resource>;
-	public algaeGame: AlgaeGame | undefined;
-	private theme: Music;
-	private buttonClick: Sfx;
-	public money: Money;
-	private moneyIcon: PIXI.Texture;
 
 	constructor() {
 		// PIXI Settings
@@ -123,6 +108,16 @@ export class Game {
 		this.loader = new AssetLoader(this);
 
 		// init parameters
+		this.waterParamA = new WaterParam(
+			"Zuurtegraad", // name
+			"ph", // keyName
+			50, //value
+			10, // increment
+			0, // min
+			100, // max
+			40, // optimal min
+			60 // optimal max
+		);
 		this.waterParamB = new WaterParam(
 			"Sulfaten", // name
 			"sulfates", //keyName
@@ -185,17 +180,22 @@ export class Game {
 		this.mail = new MailScreen(this.mailAssets, this);
 		this.qualityScreen = new QualityScreen(this.qualityAssets, this);
 		this.map = new Map(this.mapAssets, this);
- 
+
 		// Add the screens to the stage
 		this.pixi.stage.addChild(this.mail, this.qualityScreen, this.map);
-    
+
 		// Retrieve the settingsIcon
-		this.settingsIcon = new PIXI.Texture(this.loader.textures.StartMenu["settingsIcon"]);
+		this.settingsIcon = new PIXI.Texture(
+			this.loader.textures.StartMenu["settingsIcon"]
+		);
 
 		// Create the Browser screen
-		this.browser = new Browser(this.loader.textures.browser, this.settingsIcon, this.theme);
+		this.browser = new Browser(
+			this.loader.textures.browser,
+			this.settingsIcon,
+			this.theme
+		);
 
- 
 		// Add the browser tabs
 		this.browser.addTabs([
 			{ tabName: "Kwaliteit", screen: this.qualityScreen },
@@ -223,9 +223,7 @@ export class Game {
 			"alg"
 		);
 
-
 		this.pixi.stage.addChild(this.money);
-
 
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {
@@ -361,7 +359,9 @@ export class Game {
 
 			this.settingsScreen = new SettingsScreen(this.pixi, this);
 			this.pixi.stage.addChild(this.settingsScreen);
-			this.browser.addTabs([{ tabName: "Instellingen", screen: this.settingsScreen }]);
+			this.browser.addTabs([
+				{ tabName: "Instellingen", screen: this.settingsScreen },
+			]);
 		};
 
 		// Create the Start Screen
@@ -386,6 +386,7 @@ export class Game {
 	// Update
 	private update(delta: number) {
 		if (this.lobGame?.active) this.lobGame.update(delta);
+		if (this.algaeGame?.active) this.algaeGame.update(delta);
 	}
 
 	// Start Lob Game
@@ -400,13 +401,11 @@ export class Game {
 		this.lobGame.visible = true;
 	}
 
- 
- 
 	public endLobGame(reason: number): void {
 		this.browser.visible = true;
 		if (this.lobGame) this.pixi.stage.removeChild(this.lobGame);
 		this.lobGame = undefined;
- 
+
 		this.mail.addResultsMail(
 			"Salaris Kreeftopdracht",
 			`Door het vangen van alle kleine kor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbereeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,

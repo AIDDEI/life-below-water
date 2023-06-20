@@ -43,7 +43,9 @@ export class AlgaeGame extends Minigame {
 		// init playfield
 		this.xcoords = [];
 		this.ycoords = [];
-		this.matrix = new Array(this.rows).fill(0).map(() => new Array(this.cols).fill(0));
+		this.matrix = new Array(this.rows)
+			.fill(0)
+			.map(() => new Array(this.cols).fill(0));
 		this._setUpField();
 		this._setUpCoords();
 		this._setupEvents();
@@ -53,7 +55,7 @@ export class AlgaeGame extends Minigame {
 
 		// init instructions, don't show
 		super.initInstructions(
-			() => { },
+			() => {},
 			"Teken het figuur dat op de alg staat op het canvas. \n\nTekenen doe je met de muis in te drukken. \n\nAls je te laat bent, zal de alg rood worden en verlies je een leven. \n\nKlik op de pijltjes links en rechts, of gebruik de toetsen, om van meer te veranderen. \n\n\nTIP! Zorg dat je duidelijke figuren tekent met scherpe hoeken, zodat het systeem het beste jouw figuur kan herkennen.",
 			false
 		);
@@ -113,7 +115,11 @@ export class AlgaeGame extends Minigame {
 
 	private _setupCanvas() {
 		// init canvas, pass on model
-		this.drawableCanvas = new DrawableCanvas(this.game, this.onDrawingMade.bind(this), this.model);
+		this.drawableCanvas = new DrawableCanvas(
+			this.game,
+			this.onDrawingMade.bind(this),
+			this.model
+		);
 		this.addChild(this.drawableCanvas);
 	}
 
@@ -198,10 +204,16 @@ export class AlgaeGame extends Minigame {
 		// pick a spot on the matrix thats not taken
 		const pos = this._getRandomPosition();
 
-		const player = new Algae(this.textures.algaeSpritesheet, this.textures.spritesheet.animations["swoosh"], this, pos.x, pos.y);
-		this.matrix[pos.row][pos.col] = player;
-		this.algaes.push(player);
-		this.playField.addChild(player);
+		const algae = new Algae(
+			this.textures.algaeSpritesheet,
+			this.textures.spritesheet.animations["swoosh"],
+			this,
+			pos.x,
+			pos.y
+		);
+		this.matrix[pos.row][pos.col] = algae;
+		this.algaes.push(algae);
+		this.playField.addChild(algae);
 	}
 
 	private async onDrawingMade() {
@@ -215,12 +227,14 @@ export class AlgaeGame extends Minigame {
 				const result = await this.drawableCanvas.predictDrawing();
 
 				if (obj.shape.toLowerCase() === result.toLowerCase()) {
-					this.algaes = this.algaes.filter((player: Algae) => player !== obj);
-					this.matrix = this.matrix.map((row: number[]) => row.map((col: Algae | number) => (col === obj ? 0 : col)));
+					this.algaes = this.algaes.filter((algae: Algae) => algae !== obj);
+					this.matrix = this.matrix.map((row: number[]) =>
+						row.map((col: Algae | number) => (col === obj ? 0 : col))
+					);
 					super.score++;
 					obj.onCorrectShape();
 
-					// wait 1-3 seconds before generating a new player
+					// wait 1-3 seconds before generating a new algae
 					setTimeout(() => {
 						this._addAlgae();
 					}, Math.random() * 2000 + 1000);
