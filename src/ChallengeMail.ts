@@ -14,7 +14,10 @@ export class ChallengeMail extends ActiveMail {
 	}
 
 	private createContent() {
-		const contentText = new PIXI.Text(this.mail.description, { fill: "blue", fontSize: 15 });
+		const contentText = new PIXI.Text(this.mail.description, {
+			fill: "blue",
+			fontSize: 15,
+		});
 		contentText.style.wordWrap = true;
 		contentText.style.wordWrapWidth = this.width - 25;
 
@@ -44,13 +47,40 @@ export class ChallengeMail extends ActiveMail {
 					}
 				);
 				break;
+			case "alg":
+				if (this.mail.played) return;
+				button = new ParamButton(
+					[
+						{ param: this.game.waterParamA, change: 3 },
+						{ param: this.game.waterParamB, change: -2 },
+						{ param: this.game.waterParamC, change: 1 },
+					],
+					50,
+					"Accepteer missie",
+					undefined,
+					undefined,
+					() => {
+						this.game.startAlgaeGame();
+						this.mail.played = true;
+					}
+				);
+				break;
 			default:
-				button = new Button(50, "Dit hoort niet..", undefined, undefined, () => {
-					console.log("This should not happen");
-				});
+				button = new Button(
+					50,
+					"Dit hoort niet..",
+					undefined,
+					undefined,
+					() => {
+						console.log("This should not happen");
+					}
+				);
 		}
 
-		const y = this.contentContainer.height + button.height > this.maxHeight ? this.contentContainer.height + button.height + 20 : this.height - button.height / 2 - 5;
+		const y =
+			this.contentContainer.height + button.height > this.maxHeight
+				? this.contentContainer.height + button.height + 20
+				: this.height - button.height / 2 - 5;
 		button.position.set(this.x + 20, y);
 		this.contentContainer.addChild(button);
 	}

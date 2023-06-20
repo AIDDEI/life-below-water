@@ -1,0 +1,44 @@
+{"frames": {
+
+"Alg-Circle":
+{
+	"frame": {"x":1,"y":1,"w":224,"h":141},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":3,"w":224,"h":141},
+	"sourceSize": {"w":224,"h":146}
+},
+"Alg-Missed":
+{
+	"frame": {"x":227,"y":1,"w":224,"h":141},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":3,"w":224,"h":141},
+	"sourceSize": {"w":224,"h":146}
+},
+"Alg-Square":
+{
+	"frame": {"x":453,"y":1,"w":186,"h":133},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":5,"w":186,"h":133},
+	"sourceSize": {"w":194,"h":146}
+},
+"Alg-Triangle":
+{
+	"frame": {"x":641,"y":1,"w":170,"h":120},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":10,"y":17,"w":170,"h":120},
+	"sourceSize": {"w":189,"h":146}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "algen.png",
+	"format": "RGBA8888",
+	"size": {"w":812,"h":143},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:4d2c091b8f55cdfc7bfb391fe3991b3c:7e47c2584b1a0329402cd0d945462193:c896c191a376b99aa6e0f6641873bd1f$"
+}
+}
