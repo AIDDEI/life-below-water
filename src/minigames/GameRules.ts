@@ -1,6 +1,6 @@
-import { Game } from "./game";
+import { Game } from "../game";
 import * as PIXI from "pixi.js";
-import { Button } from "./Button";
+import { Button } from "../ui/Button";
 /**
  * Class for the container that holds the game rules
  *
@@ -19,7 +19,12 @@ export class GameRules extends PIXI.Container {
 	private button: Button;
 	private instructions: string;
 
-	constructor(game: Game, cb: () => void, instructions: string, open: boolean = true) {
+	constructor(
+		game: Game,
+		cb: () => void,
+		instructions: string,
+		open: boolean = true
+	) {
 		super();
 		this.x = 0;
 		this.y = 0;
@@ -35,7 +40,12 @@ export class GameRules extends PIXI.Container {
 	private _setupUI() {
 		// black bg
 		this.bg.beginFill(0x000000);
-		this.bg.drawRect(0, 0, this.game.pixi.screen.width, this.game.pixi.screen.height);
+		this.bg.drawRect(
+			0,
+			0,
+			this.game.pixi.screen.width,
+			this.game.pixi.screen.height
+		);
 		this.bg.endFill();
 		this.bg.alpha = 0.6;
 		this.addChild(this.bg);
@@ -43,7 +53,12 @@ export class GameRules extends PIXI.Container {
 		// white container
 		const container = new PIXI.Graphics();
 		container.beginFill(0xffffff);
-		container.drawRect(0, 0, this.game.pixi.screen.width - 100, this.game.pixi.screen.height - 100);
+		container.drawRect(
+			0,
+			0,
+			this.game.pixi.screen.width - 100,
+			this.game.pixi.screen.height - 100
+		);
 		container.endFill();
 		container.position.set(50, 50);
 		this.addChild(container);
@@ -64,7 +79,10 @@ export class GameRules extends PIXI.Container {
 			this.visible = false;
 		});
 
-		this.button.position.set(this.x + this.button.width / 2, this.height - this.button.height - 75);
+		this.button.position.set(
+			this.x + this.button.width / 2,
+			this.height - this.button.height - 75
+		);
 		this.addChild(this.button);
 	}
 
@@ -80,7 +98,10 @@ export class GameRules extends PIXI.Container {
 			cb();
 		};
 
-		this.button.position.set(this.x + this.button.width / 2, this.height - this.button.height - 75);
+		this.button.position.set(
+			this.x + this.button.width / 2,
+			this.height - this.button.height - 75
+		);
 
 		this.visible = true;
 	}

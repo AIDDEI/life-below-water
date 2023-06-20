@@ -1,12 +1,12 @@
 import * as PIXI from "pixi.js";
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
-import { Button } from "./Button";
-import { Game } from "./game";
+import { Button } from "../ui/Button";
+import { Game } from "../game";
 import { GameRules } from "./GameRules";
-import { Sfx } from "./Sfx";
+import { Sfx } from "../Sfx";
 
-import lossSound from "url:./music/gameloss.mp3";
-import winSound from "url:./music/gamewin.mp3";
+import lossSound from "url:../music/gameloss.mp3";
+import winSound from "url:../music/gamewin.mp3";
 
 /**
  * Parent class for all minigames that contains the basic functionality for all minigames
@@ -25,11 +25,16 @@ export class Minigame extends PIXI.Container {
 	private _lives: number = 3;
 	private _score: number;
 	protected scoreGoal: number = 10;
-	private textures: PIXI.Texture<PIXI.Resource>[];
+	protected textures: any;
 	private lossSound: Sfx;
 	private winSound: Sfx;
 
-	constructor(game: Game, textures: Texture[], scoreGoal: number = 10, lives: number = 3) {
+	constructor(
+		game: Game,
+		textures: Texture[],
+		scoreGoal: number = 10,
+		lives: number = 3
+	) {
 		super();
 		this.sortableChildren = true;
 		this.textures = textures;
@@ -50,7 +55,10 @@ export class Minigame extends PIXI.Container {
 	 * @example this.createRulesButton();
 	 * @example this.createRulesButton(100);
 	 */
-	protected createRulesButton(x: number = this.game.pixi.screen.width - 100, y: number = 10): Button {
+	protected createRulesButton(
+		x: number = this.game.pixi.screen.width - 100,
+		y: number = 10
+	): Button {
 		this.rules = new Button(30, "Uitleg", undefined, undefined, () => {
 			this.showRules();
 		});
@@ -88,7 +96,10 @@ export class Minigame extends PIXI.Container {
 			this.livesContainer.addChild(heart);
 		}
 
-		this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20);
+		this.livesContainer.position.set(
+			this.game.pixi.screen.width / 2 - this.livesContainer.width / 2,
+			this.scoreText.height - 20
+		);
 	}
 
 	/**
@@ -112,7 +123,10 @@ export class Minigame extends PIXI.Container {
 		if (this.livesContainer.children.length === 0) return;
 
 		this.livesContainer.removeChildAt(this.livesContainer.children.length - 1);
-		this.livesContainer.position.set(this.game.pixi.screen.width / 2 - this.livesContainer.width / 2, this.scoreText.height - 20);
+		this.livesContainer.position.set(
+			this.game.pixi.screen.width / 2 - this.livesContainer.width / 2,
+			this.scoreText.height - 20
+		);
 	}
 
 	/**
@@ -147,7 +161,11 @@ export class Minigame extends PIXI.Container {
 	 * @param cb () => void callback function to run when the rules are done
 	 * @param instructions string instructions to show
 	 */
-	protected initInstructions(cb: () => void, instructions: string, open: boolean = true): void {
+	protected initInstructions(
+		cb: () => void,
+		instructions: string,
+		open: boolean = true
+	): void {
 		this.gameRules = new GameRules(
 			this.game,
 			() => {
@@ -171,7 +189,8 @@ export class Minigame extends PIXI.Container {
 	 * @example this.endGame(0, () => { console.log("Game over!") });
 	 */
 	protected endGame(reason: number, cb: () => void): void {
-		if (reason != 0 && reason != 1) return console.error("Invalid reason to end the game, must be 0 or 1");
+		if (reason != 0 && reason != 1)
+			return console.error("Invalid reason to end the game, must be 0 or 1");
 
 		if (reason == 0) {
 			this.lossSound.playSFX();
@@ -188,17 +207,22 @@ export class Minigame extends PIXI.Container {
 		gameOverContainer.drawRect(0, 0, 400, 200);
 		gameOverContainer.endFill();
 
-		gameOverContainer.x = this.game.pixi.screen.width / 2 - gameOverContainer.width / 2;
+		gameOverContainer.x =
+			this.game.pixi.screen.width / 2 - gameOverContainer.width / 2;
 		// put container a bit higher than the middle
-		gameOverContainer.y = this.game.pixi.screen.height / 2 - gameOverContainer.height;
+		gameOverContainer.y =
+			this.game.pixi.screen.height / 2 - gameOverContainer.height;
 		this.addChild(gameOverContainer);
 
-		const gameOverText = new PIXI.Text(reason == 0 ? "Game over" : "Gewonnen!", {
-			fontFamily: "Arial",
-			fontSize: 48,
-			fill: `0x${reason == 0 ? "ff0000" : "20A34F"}`,
-			align: "center",
-		});
+		const gameOverText = new PIXI.Text(
+			reason == 0 ? "Game over" : "Gewonnen!",
+			{
+				fontFamily: "Arial",
+				fontSize: 48,
+				fill: `0x${reason == 0 ? "ff0000" : "20A34F"}`,
+				align: "center",
+			}
+		);
 
 		gameOverText.anchor.set(0.5);
 		gameOverText.x = gameOverContainer.width / 2;

@@ -1,7 +1,14 @@
-import { Container, Texture, Sprite, Resource, BlurFilter, Text } from "pixi.js";
-import { Button } from "./Button";
-import { Game } from "./game";
-import { fadeIn, fadeOut } from "./utils";
+import {
+	Container,
+	Texture,
+	Sprite,
+	Resource,
+	BlurFilter,
+	Text,
+} from "pixi.js";
+import { Button } from "../ui/Button";
+import { Game } from "../game";
+import { fadeIn, fadeOut } from "../utils";
 
 export class Calendar extends Container {
 	private _day: number;
@@ -57,7 +64,10 @@ export class Calendar extends Container {
 		bg.height = 700;
 
 		const border = new Sprite(this._assets.border);
-		border.position.set(this._game.pixi.screen.width / 2 - border.width / 2, this._game.pixi.screen.height / 2 - border.height / 2);
+		border.position.set(
+			this._game.pixi.screen.width / 2 - border.width / 2,
+			this._game.pixi.screen.height / 2 - border.height / 2
+		);
 
 		// give border white background
 		const borderBg = new Sprite(Texture.WHITE);
@@ -67,16 +77,25 @@ export class Calendar extends Container {
 		borderBg.position.set(border.x + 20, border.y + 20);
 
 		// place day text in the middle of the border
-		this._dayText.position.set(this._game.pixi.screen.width / 2 - this._dayText.width / 2, border.y + 70);
+		this._dayText.position.set(
+			this._game.pixi.screen.width / 2 - this._dayText.width / 2,
+			border.y + 70
+		);
 		// place goal text in the middle of the border
-		this._goalText.position.set(this._game.pixi.screen.width / 2 - this._goalText.width / 2, this._dayText.y + 70);
+		this._goalText.position.set(
+			this._game.pixi.screen.width / 2 - this._goalText.width / 2,
+			this._dayText.y + 70
+		);
 
 		const button = new Button(35, "Start dag", 0x2c5eab, 0x4287f5, () => {
 			fadeOut(this);
 		});
 
 		// place button in the middle of the border
-		button.position.set(border.x + border.width / 2 - button.width / 2, border.height - button.height);
+		button.position.set(
+			border.x + border.width / 2 - button.width / 2,
+			border.height - button.height
+		);
 
 		this.addChild(bg, borderBg, border, this._dayText, this._goalText, button);
 		this.visible = true;
@@ -87,7 +106,10 @@ export class Calendar extends Container {
 		this._goalText.text = `Doel: Hou de waterkwaliteit op peil`;
 		this._goalText.style.fontSize = 18;
 		this._goalText.style.fontWeight = "bold";
-		this._goalText.position.set(this._game.pixi.screen.width / 2 - this._goalText.width / 2, this._game.pixi.screen.height / 2 - this._goalText.height / 2);
+		this._goalText.position.set(
+			this._game.pixi.screen.width / 2 - this._goalText.width / 2,
+			this._game.pixi.screen.height / 2 - this._goalText.height / 2
+		);
 		this.visible = true;
 	}
 }

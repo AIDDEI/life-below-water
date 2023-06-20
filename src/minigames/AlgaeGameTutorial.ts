@@ -1,13 +1,13 @@
 import { Container, Graphics, Sprite, Text } from "pixi.js";
-import { Button } from "./Button";
+import { Button } from "../ui/Button";
 import { DrawableCanvas } from "./DrawableCanvas";
 import { DrawModel } from "./DrawModel";
-import { Game } from "./game";
+import { Game } from "../game";
 
 // import sounds
-import wrongShapeSound from "url:./music/wrongShape.mp3";
-import collectSound from "url:./music/collect.mp3";
-import { Sfx } from "./Sfx";
+import wrongShapeSound from "url:../music/wrongShape.mp3";
+import collectSound from "url:../music/collect.mp3";
+import { Sfx } from "../Sfx";
 
 export class AlgaeGameTutorial extends Container {
 	private cb: () => void;
@@ -27,7 +27,13 @@ export class AlgaeGameTutorial extends Container {
 	private correctShapeSound: Sfx;
 	private wrongShapeSound: Sfx;
 
-	constructor(game: Game, cb: () => void, assets: any, model: DrawModel, instructions: string) {
+	constructor(
+		game: Game,
+		cb: () => void,
+		assets: any,
+		model: DrawModel,
+		instructions: string
+	) {
 		super();
 		this.x = 0;
 		this.y = 0;
@@ -58,7 +64,12 @@ export class AlgaeGameTutorial extends Container {
 
 		this.bg = new Graphics();
 		this.bg.beginFill(0x000000);
-		this.bg.drawRect(0, 0, this.game.pixi.screen.width, this.game.pixi.screen.height);
+		this.bg.drawRect(
+			0,
+			0,
+			this.game.pixi.screen.width,
+			this.game.pixi.screen.height
+		);
 		this.bg.endFill();
 		this.bg.alpha = 0.6;
 		this.addChild(this.bg);
@@ -66,7 +77,12 @@ export class AlgaeGameTutorial extends Container {
 		// white container
 		this.content = new Graphics();
 		this.content.beginFill(0xffffff);
-		this.content.drawRect(0, 0, this.game.pixi.screen.width - 100, this.game.pixi.screen.height - 100);
+		this.content.drawRect(
+			0,
+			0,
+			this.game.pixi.screen.width - 100,
+			this.game.pixi.screen.height - 100
+		);
 		this.content.endFill();
 		this.content.position.set(50, 50);
 		this.addChild(this.content);
@@ -87,7 +103,10 @@ export class AlgaeGameTutorial extends Container {
 
 		const uitleg = new Sprite(this.assets.algaes);
 		uitleg.scale.set(0.25);
-		uitleg.position.set(this.content.width - uitleg.width, this.content.height - uitleg.height - 50);
+		uitleg.position.set(
+			this.content.width - uitleg.width,
+			this.content.height - uitleg.height - 50
+		);
 		this.content.addChild(uitleg);
 
 		// button
@@ -96,7 +115,10 @@ export class AlgaeGameTutorial extends Container {
 			this._secondStep();
 		});
 
-		this.button.position.set(this.x + 30, this.content.height - this.button.height - 25);
+		this.button.position.set(
+			this.x + 30,
+			this.content.height - this.button.height - 25
+		);
 		this.content.addChild(this.button);
 	}
 
@@ -111,7 +133,10 @@ export class AlgaeGameTutorial extends Container {
 		const prevButton = new Button(50, "Vorige stap", 0xffbd01, 0x336699, () => {
 			this._previousStep();
 		});
-		prevButton.position.set(this.x + 30, this.content.height - prevButton.height - 25);
+		prevButton.position.set(
+			this.x + 30,
+			this.content.height - prevButton.height - 25
+		);
 
 		this.content.addChild(prevButton);
 
@@ -119,7 +144,10 @@ export class AlgaeGameTutorial extends Container {
 		uitleg.scale.set(0.2);
 		uitleg.position.set(this.content.width - uitleg.width - 20, 10);
 
-		const tips = ["TIP 1: Zorg dat je het figuur binnen de alg tekent, en niet eromheen.", "TIP 2: Zorg dat je scherpe hoeken tekent, zodat de vorm goed herkend wordt door het algoritme."];
+		const tips = [
+			"TIP 1: Zorg dat je het figuur binnen de alg tekent, en niet eromheen.",
+			"TIP 2: Zorg dat je scherpe hoeken tekent, zodat de vorm goed herkend wordt door het algoritme.",
+		];
 
 		for (const tip of tips) {
 			const text = new Text(tip, {
@@ -127,6 +155,7 @@ export class AlgaeGameTutorial extends Container {
 				wordWrap: true,
 				wordWrapWidth: 350,
 				fill: "black",
+				fontWeight: "bold",
 			});
 
 			// y is 50 apart
@@ -148,25 +177,39 @@ export class AlgaeGameTutorial extends Container {
 			250
 		);
 
-		this.drawableCanvas.position.set(this.x + this.content.width - 375, this.content.height - 225);
+		this.drawableCanvas.position.set(
+			this.x + this.content.width - 375,
+			this.content.height - 225
+		);
 
 		// set background so it's clear where the player can draw
 		const drawableCanvasBg = new Graphics();
 		drawableCanvasBg.beginFill(0xc9c9c9);
 
 		// dynamic doesnt work so hardcoded to match the canvas size and position
-		drawableCanvasBg.drawRect(this.x + this.content.width - 375, this.content.height - 225, 400, 250);
+		drawableCanvasBg.drawRect(
+			this.x + this.content.width - 375,
+			this.content.height - 225,
+			400,
+			250
+		);
 		drawableCanvasBg.endFill();
 
 		this.canvasContainer.addChild(drawableCanvasBg, this.drawableCanvas);
 
-		this.predictionText = new Text("De eerste voorspelling duurt een paar secondes!", {
-			fontSize: 20,
-			fill: "black",
-		});
+		this.predictionText = new Text(
+			"De eerste voorspelling duurt een paar secondes!",
+			{
+				fontSize: 20,
+				fill: "black",
+			}
+		);
 
 		// set in the middle of drawableCanvasBg
-		this.predictionText.position.set(this.x + this.content.width - 375 + 200 - this.predictionText.width / 2, this.content.height - 255);
+		this.predictionText.position.set(
+			this.x + this.content.width - 375 + 200 - this.predictionText.width / 2,
+			this.content.height - 255
+		);
 
 		this.canvasContainer.addChild(this.predictionText);
 
@@ -178,7 +221,12 @@ export class AlgaeGameTutorial extends Container {
 			fill: "black",
 		});
 
-		objectiveDescription.position.set(30, this.drawableCanvas.y + this.drawableCanvas.height / 2 - objectiveDescription.height / 2);
+		objectiveDescription.position.set(
+			30,
+			this.drawableCanvas.y +
+				this.drawableCanvas.height / 2 -
+				objectiveDescription.height / 2
+		);
 
 		this._objectiveText = new Text(this._objectives[this._currentStep].label, {
 			fontSize: 48,
@@ -186,7 +234,10 @@ export class AlgaeGameTutorial extends Container {
 			fontWeight: "bold",
 		});
 
-		this._objectiveText.position.set(30, objectiveDescription.y + objectiveDescription.height + 10);
+		this._objectiveText.position.set(
+			30,
+			objectiveDescription.y + objectiveDescription.height + 10
+		);
 
 		this.content.addChild(objectiveDescription, this._objectiveText);
 	}
@@ -230,6 +281,9 @@ export class AlgaeGameTutorial extends Container {
 		this.predictionText.text = `Voorspelling: ${label}`;
 
 		// set in the middle of drawableCanvasBg
-		this.predictionText.position.set(this.x + this.content.width - 375 + 200 - this.predictionText.width / 2, this.content.height - 245);
+		this.predictionText.position.set(
+			this.x + this.content.width - 375 + 200 - this.predictionText.width / 2,
+			this.content.height - 245
+		);
 	}
 }

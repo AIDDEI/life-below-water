@@ -1,11 +1,18 @@
-import { Container, Graphics, Rectangle, Sprite, Texture } from "pixi.js";
+import {
+	Container,
+	Graphics,
+	Rectangle,
+	Resource,
+	Sprite,
+	Texture,
+} from "pixi.js";
 import { DrawableCanvas } from "./DrawableCanvas";
-import { Game } from "./game";
+import { Game } from "../game";
 import { Minigame } from "./Minigame";
 import { Algae } from "./Algae";
-import { Sfx } from "./Sfx";
+import { Sfx } from "../Sfx";
 
-import wrongShapeSound from "url:./music/wrongShape.mp3";
+import wrongShapeSound from "url:../music/wrongShape.mp3";
 
 import { DrawModel } from "./DrawModel";
 import { AlgaeGameTutorial } from "./AlgaeGameTutorial";

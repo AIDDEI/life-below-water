@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 import { ActiveMail } from "./ActiveMail";
-import { Button } from "./Button";
-import { ParamButton } from "./ParamButton";
-import { Game } from "./game";
+import { Button } from "../ui/Button";
+import { ParamButton } from "../ui/ParamButton";
+import { Game } from "../game";
 
 export class ChallengeMail extends ActiveMail {
 	constructor(mail: any, mailHeaderIcon: PIXI.Sprite, game: Game) {

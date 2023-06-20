@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 // Import Music, Audio and SFX
-import { Sfx } from "./Sfx";
-import buttonClick from "url:./music/button_click.mp3";
+import { Sfx } from "../Sfx";
+import buttonClick from "url:../music/button_click.mp3";
 /**
  * Class for dynamic buttons
  *
@@ -31,7 +31,14 @@ export class Button extends PIXI.Container {
 	protected _clickHandler: (() => void) | undefined;
 	private buttonClick: Sfx;
 
-	constructor(h: number, text: string, lineColor: number = 0xffbd01, buttonColor: number = 0x336699, clickHandler?: () => void, w?: number) {
+	constructor(
+		h: number,
+		text: string,
+		lineColor: number = 0xffbd01,
+		buttonColor: number = 0x336699,
+		clickHandler?: () => void,
+		w?: number
+	) {
 		super();
 		// Get the fontsize factor
 		let savedFontSize = this.getSavedFontSize() ?? 10;

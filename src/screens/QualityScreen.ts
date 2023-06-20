@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 import { Texture } from "pixi.js";
-import { AssetType, Game } from "./game";
+import { AssetType, Game } from "../game";
 
 export class QualityScreen extends PIXI.Container {
 	private game: Game;

@@ -1,11 +1,11 @@
 import { Container, Graphics, Sprite, Text, Texture } from "pixi.js";
-import { Game } from "./game";
+import { Game } from "../game";
 
-import { Music } from "./Music";
+import { Music } from "../Music";
 
 type TabType = {
-  tabName: string;
-  screen: any;
+	tabName: string;
+	screen: any;
 };
 
 /**
@@ -26,13 +26,20 @@ export class Browser extends Container {
 	private _searchBarText: Text;
 	private settingsIcon: Sprite;
 	private backgroundMusic: Music;
+	private game: Game;
 
-	constructor(texture: Texture, icon: Texture, backgroundMusic: Music) {
+	constructor(
+		texture: Texture,
+		icon: Texture,
+		backgroundMusic: Music,
+		game: Game
+	) {
 		super();
 		this.x = 0;
 		this.y = 0;
+		this.game = game;
 		this.tabContainer = new Container();
-		this.tabContainer.x = 0;
+		this.tabContainer.x = this.game.money.width;
 		this.tabContainer.y = 10;
 		// nothing open by default
 		this._openTab = -1;
@@ -91,11 +98,16 @@ export class Browser extends Container {
 	};
 
 	private _validateAndAddTab = (tab: TabType) => {
-		if (this._tabs.length >= 5) return console.error(`Too many tabs! 5 is the maximum. Skipping '${tab.tabName}'`);
+		if (this._tabs.length >= 5)
+			return console.error(
+				`Too many tabs! 5 is the maximum. Skipping '${tab.tabName}'`
+			);
 
 		if (tab.screen) {
 			if (tab.screen.open === undefined || tab.screen.close === undefined) {
-				return console.error("Invalid screen! Must have public open and public close methods.");
+				return console.error(
+					"Invalid screen! Must have public open and public close methods."
+				);
 			}
 		}
 
@@ -119,13 +131,23 @@ export class Browser extends Container {
 		const tabBackground = new Graphics();
 		// if the tab is open, fill it with white, otherwise fill it with grey (or blue based on the tab)
 		const isTabOpen = index === this._openTab;
-		const fill = isTabOpen ? 0xffffff : (tab.tabName === "Instellingen" ? 0x68BCEB : 0x929292);
+		const fill = isTabOpen
+			? 0xffffff
+			: tab.tabName === "Instellingen"
+			? 0x68bceb
+			: 0x929292;
 
 		const tabWidth = tab.tabName === "Instellingen" ? 45 : 140;
 		const borderRadius = tab.tabName === "Instellingen" ? 5 : 3;
 
 		tabBackground.beginFill(fill);
-		tabBackground.drawRoundedRect(tabContainer.x, 10, tabWidth, 30, borderRadius);
+		tabBackground.drawRoundedRect(
+			tabContainer.x,
+			10,
+			tabWidth,
+			30,
+			borderRadius
+		);
 
 		tabBackground.endFill();
 		tabContainer.addChild(tabBackground);
@@ -156,10 +178,10 @@ export class Browser extends Container {
 				fill: 0x000000,
 				align: "center",
 			});
-			
+
 			x.x = tabContainer.x + tabContainer.width - 20;
 			x.y = 10 + 30 / 2 - x.height / 2;
-			
+
 			tabBackground.addChild(tabText, x);
 		}
 
@@ -226,10 +248,10 @@ export class Browser extends Container {
 		this._renderWindow();
 
 		const currentTab = this._tabs[this._openTab];
-		
+
 		// Pause or play the background music based on the tab name and current state
 		const isMusicPlaying = this.backgroundMusic.isPlaying();
-		
+
 		if (currentTab.tabName === "Instellingen" && isMusicPlaying) {
 			this.backgroundMusic.stopAudio(); // Stop playing background music when Settings tab is opened
 		} else if (currentTab.tabName !== "Instellingen" && !isMusicPlaying) {

@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
-import { AssetType, Game } from "./game";
-import { MailItem } from "./MailItem";
-import { ChallengeMail } from "./ChallengeMail";
-import { ResultMail } from "./ResultMail";
-import { BaseMail, ResultsMail } from "../globals";
+import { AssetType, Game } from "../game";
+import { MailItem } from "../mail/MailItem";
+import { ChallengeMail } from "../mail/ChallengeMail";
+import { ResultMail } from "../mail/ResultMail";
+import { BaseMail, ResultsMail } from "../../globals";
 
 type MailType = BaseMail | ResultsMail<BaseMail>;
 
@@ -45,7 +45,14 @@ export class MailScreen extends PIXI.Container {
 	 * Renders the mail screen after adding a new mail
 	 *
 	 */
-	public add(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", played: boolean = false) {
+	public add(
+		title: string,
+		description: string,
+		type: number,
+		forceOpen: boolean = false,
+		identifier: string = "",
+		played: boolean = false
+	) {
 		const mail = { title, description, type, forceOpen, identifier, played };
 		this.mails.push(mail);
 		this._renderMails();
@@ -64,8 +71,22 @@ export class MailScreen extends PIXI.Container {
 	 * Renders the mail screen after adding a new mail
 	 *
 	 */
-	public addResultsMail(title: string, description: string, type: number, forceOpen: boolean = false, identifier: string = "", reason: number = 0) {
-		const mail: ResultsMail<BaseMail> = { title, description, type, forceOpen, identifier, reason };
+	public addResultsMail(
+		title: string,
+		description: string,
+		type: number,
+		forceOpen: boolean = false,
+		identifier: string = "",
+		reason: number = 0
+	) {
+		const mail: ResultsMail<BaseMail> = {
+			title,
+			description,
+			type,
+			forceOpen,
+			identifier,
+			reason,
+		};
 		this.mails.push(mail);
 		this._renderMails();
 	}
@@ -88,7 +109,11 @@ export class MailScreen extends PIXI.Container {
 	}
 
 	private setActiveMail(index: number) {
-		if (index >= 0 && index < this.mails.length && index !== this.activeMailIndex) {
+		if (
+			index >= 0 &&
+			index < this.mails.length &&
+			index !== this.activeMailIndex
+		) {
 			this.mails[index].read = true;
 			this.mails[index].forceOpen = false;
 			this.activeMailIndex = index;
@@ -136,11 +161,19 @@ export class MailScreen extends PIXI.Container {
 
 			switch (activeMail.type) {
 				case 0:
-					activeMailContainer = new ChallengeMail(activeMail, this.mailHeaderIcon, this.game);
+					activeMailContainer = new ChallengeMail(
+						activeMail,
+						this.mailHeaderIcon,
+						this.game
+					);
 					break;
 
 				case 1:
-					activeMailContainer = new ResultMail(activeMail, this.mailHeaderIcon, this.game);
+					activeMailContainer = new ResultMail(
+						activeMail,
+						this.mailHeaderIcon,
+						this.game
+					);
 			}
 
 			activeMailContainer.position.set(80, 35);

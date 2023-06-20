@@ -5,7 +5,7 @@ import * as PIXI from "pixi.js";
 import { Sprite, Texture } from "pixi.js";
 
 // Import Classses
-import { Button } from "./Button";
+import { Button } from "../ui/Button";
 
 // Export Class
 export class StartScreen extends PIXI.Container {
@@ -19,9 +19,18 @@ export class StartScreen extends PIXI.Container {
 		this.addChild(this._bg);
 
 		// Create 'Start Canvas' button
-		const startCanvasButton = new Button(50, "Start", undefined, undefined, homeScreen);
+		const startCanvasButton = new Button(
+			50,
+			"Start",
+			undefined,
+			undefined,
+			homeScreen
+		);
 		// Position the button
-		startCanvasButton.position.set((800 - startCanvasButton.width) / 2, (600 - startCanvasButton.height) / 2);
+		startCanvasButton.position.set(
+			(800 - startCanvasButton.width) / 2,
+			(600 - startCanvasButton.height) / 2
+		);
 		// Add the button to the canvas
 		this.addChild(startCanvasButton);
 	}

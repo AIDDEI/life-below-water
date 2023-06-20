@@ -5,37 +5,36 @@ import * as PIXI from "pixi.js";
 import { AssetLoader } from "./AssetLoader";
 
 // Minigames
-import { LobGame } from "./LobGame";
+import { LobGame } from "./minigames/LobGame";
 
 // Screens
-import { Browser } from "./Browser";
-import { QualityScreen } from "./QualityScreen";
-import { Calendar } from "./Calendar";
-import { HomeScreen } from "./HomeScreen";
-import { Settings } from "./Settings";
-import { StartScreen } from "./StartScreen";
-import { CreditsScreen } from "./CreditsScreen";
-import { NewGameWarning } from "./NewGameWarning";
-import { MailScreen } from "./MailScreen";
-import { SettingsScreen } from "./SettingsScreen";
+import { Browser } from "./screens/Browser";
+import { QualityScreen } from "./screens/QualityScreen";
+import { Calendar } from "./screens/Calendar";
+import { HomeScreen } from "./screens/HomeScreen";
+import { Settings } from "./screens/Settings";
+import { StartScreen } from "./screens/StartScreen";
+import { CreditsScreen } from "./screens/CreditsScreen";
+import { NewGameWarning } from "./screens/NewGameWarning";
+import { MailScreen } from "./screens/MailScreen";
+import { SettingsScreen } from "./screens/SettingsScreen";
 
 // Import Music, Audio and SFX
-import { Map } from "./Map";
+import { Map } from "./screens/Map";
 
 // Other
 import { Music } from "./Music";
 import music from "url:./music/chill.mp3";
 
 // Import Other Classes
-import { Player } from "./Player";
-import { PopUp } from "./tip-popUp";
-import { Clock } from "./clock";
+import { PopUp } from "./ui/tip-popUp";
+import { Clock } from "./ui/Clock";
 import { WaterParam } from "./WaterParam";
 
 // Export Asset Type
 
 import { Money } from "./Money";
-import { AlgaeGame } from "./AlgaeGame";
+import { AlgaeGame } from "./minigames/AlgaeGame";
 
 export type AssetType = { [key: string]: PIXI.Texture<PIXI.Resource> };
 
@@ -46,7 +45,6 @@ export class Game {
 	private loader: AssetLoader;
 
 	// Minigames
-	public player: Player;
 	public lobGame: LobGame | undefined;
 	private lobAssets: PIXI.Texture<PIXI.Resource>;
 	public algaeGame: AlgaeGame | undefined;
@@ -193,7 +191,8 @@ export class Game {
 		this.browser = new Browser(
 			this.loader.textures.browser,
 			this.settingsIcon,
-			this.theme
+			this.theme,
+			this
 		);
 
 		// Add the browser tabs

@@ -1,14 +1,13 @@
 import * as PIXI from "pixi.js";
-import { Button } from "./Button";
-import { AssetType, Game } from "./game";
+import { Game } from "../game";
 import { Lobster } from "./Lobster";
 import { Minigame } from "./Minigame";
-import { collision } from "./Utils";
+import { collision } from "../Utils";
 
 // import sounds
-import { Sfx } from "./Sfx";
-import collectSound from "url:./music/collect.mp3";
-import badCollectSound from "url:./music/badCatch.mp3";
+import { Sfx } from "../Sfx";
+import collectSound from "url:../music/collect.mp3";
+import badCollectSound from "url:../music/badCatch.mp3";
 import { Graphics, Texture } from "pixi.js";
 
 /**
@@ -40,7 +39,12 @@ export class LobGame extends Minigame {
 		this.game = game;
 		this.y = 0;
 		this.visible = false;
-		this.hitArea = new PIXI.Rectangle(0, 0, window.innerWidth, window.innerHeight);
+		this.hitArea = new PIXI.Rectangle(
+			0,
+			0,
+			window.innerWidth,
+			window.innerHeight
+		);
 		this.eventMode = "auto";
 
 		// Set up UI
@@ -77,7 +81,12 @@ export class LobGame extends Minigame {
 		this.waterContainer = new PIXI.Container();
 		this.waterContainer.eventMode = "static";
 		this.waterContainer.cursor = "pointer";
-		this.waterContainer.hitArea = new PIXI.Rectangle(this.water.position.x, this.water.height - 140, this.water.width, 140);
+		this.waterContainer.hitArea = new PIXI.Rectangle(
+			this.water.position.x,
+			this.water.height - 140,
+			this.water.width,
+			140
+		);
 		this.addChild(this.waterContainer);
 		this.waterContainer.addChild(this.water);
 	}
@@ -131,7 +140,10 @@ export class LobGame extends Minigame {
 		this.toggle.y = 10;
 
 		this.toggle.addChild(text, cross);
-		this.toggle.position.set(this.game.pixi.screen.width - this.toggle.width / 2, ruleButton.y + ruleButton.height + 10);
+		this.toggle.position.set(
+			this.game.pixi.screen.width - this.toggle.width / 2,
+			ruleButton.y + ruleButton.height + 10
+		);
 	}
 
 	private onKeyDown(e: KeyboardEvent): void {
@@ -167,7 +179,10 @@ export class LobGame extends Minigame {
 		missedLobContainer.lineStyle(2, 0xff0000);
 		missedLobContainer.drawRect(0, 0, 100, 35);
 		missedLobContainer.endFill();
-		missedLobContainer.position.set(this.game.pixi.screen.width / 2 - missedLobContainer.width / 2, this.waterContainer.hitArea.y - 50);
+		missedLobContainer.position.set(
+			this.game.pixi.screen.width / 2 - missedLobContainer.width / 2,
+			this.waterContainer.hitArea.y - 50
+		);
 
 		const missedLobText = new PIXI.Text("Gemist!", {
 			fontFamily: "Arial",
@@ -177,7 +192,10 @@ export class LobGame extends Minigame {
 		});
 
 		missedLobText.anchor.set(0.5);
-		missedLobText.position.set(missedLobContainer.width / 2, missedLobContainer.height / 2);
+		missedLobText.position.set(
+			missedLobContainer.width / 2,
+			missedLobContainer.height / 2
+		);
 
 		missedLobContainer.addChild(missedLobText);
 		this.addChild(missedLobContainer);
@@ -220,14 +238,21 @@ export class LobGame extends Minigame {
 		if (this.displacement.x > this.displacement.width) this.displacement.x = 0;
 
 		// left side boundery of the field
-		if (this.catcher.x + this.accelleration > this.waterContainer.getBounds().left) {
+		if (
+			this.catcher.x + this.accelleration >
+			this.waterContainer.getBounds().left
+		) {
 			this.catcher.x = this.catcher.x + this.accelleration * delta;
 			this.netbox.x = this.catcher.x;
 		}
 
 		// if catcher is at the right side of the field (right side of hitbox hits the edge of the field)
-		if (this.catcher.x + this.accelleration > this.waterContainer.getBounds().right - this.netbox.width) {
-			this.catcher.x = this.waterContainer.getBounds().right - this.netbox.width;
+		if (
+			this.catcher.x + this.accelleration >
+			this.waterContainer.getBounds().right - this.netbox.width
+		) {
+			this.catcher.x =
+				this.waterContainer.getBounds().right - this.netbox.width;
 			this.netbox.x = this.waterContainer.getBounds().right - this.netbox.width;
 		}
 	}
@@ -248,34 +273,56 @@ export class LobGame extends Minigame {
 		//draw the netbox, it'll be invis
 		this.netbox = new PIXI.Graphics()
 			.beginFill(0x000000)
-			.drawRect(0, this.waterContainer.hitArea.y - this.catcher.height / 2 + 50 + 38, this.catcher.width / 2 - 30, 30)
+			.drawRect(
+				0,
+				this.waterContainer.hitArea.y - this.catcher.height / 2 + 50 + 38,
+				this.catcher.width / 2 - 30,
+				30
+			)
 			.endFill();
 		this.netbox.alpha = 0;
 
 		// draw hitarea
 		const hitArea = new PIXI.Graphics()
 			.beginFill(0xffffff)
-			.drawRect(this.waterContainer.hitArea.x, this.waterContainer.hitArea.y, this.waterContainer.hitArea.width, this.waterContainer.hitArea.height)
+			.drawRect(
+				this.waterContainer.hitArea.x,
+				this.waterContainer.hitArea.y,
+				this.waterContainer.hitArea.width,
+				this.waterContainer.hitArea.height
+			)
 			.endFill();
 		hitArea.alpha = 0.5;
 
-		this.catcher.y = this.waterContainer.hitArea.y - this.catcher.height / 2 + 50;
-		this.catcher.x = this.waterContainer.hitArea.x + this.waterContainer.hitArea.width / 2 - this.catcher.width / 2;
+		this.catcher.y =
+			this.waterContainer.hitArea.y - this.catcher.height / 2 + 50;
+		this.catcher.x =
+			this.waterContainer.hitArea.x +
+			this.waterContainer.hitArea.width / 2 -
+			this.catcher.width / 2;
 
 		this.addChild(hitArea, this.catcher, this.netbox);
 	}
 
 	private _setupEvents(): void {
 		// Follow the pointer
-		this.waterContainer.on("pointermove", (event: PIXI.FederatedPointerEvent) => {
-			if (event.global.x > this.waterContainer.getBounds().right - this.netbox.width) {
-				this.catcher.x = this.waterContainer.getBounds().right - this.netbox.width;
-				this.netbox.x = this.waterContainer.getBounds().right - this.netbox.width;
-			} else {
-				this.catcher.x = event.global.x;
-				this.netbox.x = event.global.x;
+		this.waterContainer.on(
+			"pointermove",
+			(event: PIXI.FederatedPointerEvent) => {
+				if (
+					event.global.x >
+					this.waterContainer.getBounds().right - this.netbox.width
+				) {
+					this.catcher.x =
+						this.waterContainer.getBounds().right - this.netbox.width;
+					this.netbox.x =
+						this.waterContainer.getBounds().right - this.netbox.width;
+				} else {
+					this.catcher.x = event.global.x;
+					this.netbox.x = event.global.x;
+				}
 			}
-		});
+		);
 
 		this.toggle.onclick = () => {
 			this.toggleFilter();
@@ -297,7 +344,8 @@ export class LobGame extends Minigame {
 	private toggleFilter(): void {
 		const text = this.toggle.getChildAt(0) as PIXI.Text;
 
-		this.waterContainer.filters = this.waterContainer.filters.length > 0 ? [] : [this.displacementFilter];
+		this.waterContainer.filters =
+			this.waterContainer.filters.length > 0 ? [] : [this.displacementFilter];
 
 		if (this.waterContainer.filters.length > 0) {
 			const cross = new PIXI.Graphics();
@@ -317,7 +365,15 @@ export class LobGame extends Minigame {
 	}
 
 	private spawnLobster(isLob: boolean, i: number): void {
-		const lobster = new Lobster(this.water.position.x + 25, this.water.position.x + this.water.width - 25, this.assets.lobster, isLob, this._onMissedLob.bind(this), this.game.pixi.screen.height, i);
+		const lobster = new Lobster(
+			this.water.position.x + 25,
+			this.water.position.x + this.water.width - 25,
+			this.assets.lobster,
+			isLob,
+			this._onMissedLob.bind(this),
+			this.game.pixi.screen.height,
+			i
+		);
 		this.lobsters.push(lobster);
 		this.waterContainer.addChild(lobster);
 	}

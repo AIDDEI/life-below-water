@@ -10,10 +10,10 @@ import {
 } from "pixi.js";
 
 // import sound
-import waterSound from "url:./music/water.mp3";
-import missedShapeSound from "url:./music/badCatch.mp3";
+import waterSound from "url:../music/water.mp3";
+import missedShapeSound from "url:../music/badCatch.mp3";
 import { AlgaeGame } from "./AlgaeGame";
-import { Sfx } from "./Sfx";
+import { Sfx } from "../Sfx";
 
 export class Algae extends Sprite {
 	public shape: string;
