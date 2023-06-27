@@ -65,6 +65,26 @@ export class ChallengeMail extends ActiveMail {
 					}
 				);
 				break;
+			case "boer":
+				if (this.mail.played) return;
+				button = new ParamButton(
+					[
+						{ param: this.game.waterParamA, change: -1 },
+						{ param: this.game.waterParamB, change: -1 },
+						{ param: this.game.waterParamC, change: 2 },
+					],
+					50,
+					"Leg mestvrije zone aan",
+					undefined,
+					undefined,
+					() => {
+						this.mail.played = true;
+						this.game.browser.openTab = 0
+					}
+
+				);
+				break;
+
 			default:
 				button = new Button(
 					50,

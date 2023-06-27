@@ -32,6 +32,16 @@ export class ResultMail extends ActiveMail {
 
 		const button = new Button(50, "Doorgaan", 0xffbd01, 0x336699, () => {
 			this.game.browser.openTab = 0;
+
+			if (this.mail.identifier == "lobResult") {
+				this.game.mail.add(
+					"Algenoverlast",
+					"Na het afnemen van monsters blijkt dat er veel blauwalg in het water zit. Blauwalg komt voor wanneer er veel voedingsstoffen in het water zitten, het langdurig warm is ( 20-30 graden) en wanneer het water niet goed doorstroomt. \n\nBlauwalg kan, wanneer je er in aanraking mee komt, zorgen voor huidirritatie en wanneer je het binnenkrijgt, zorgen voor darm- en maagklachten. Een manier om blauwalg te voorkomen is de doorstroming van het water in gang te houden. Hierdoor wordt de drijflaag verspreid en verdwijnt doorgaans de overlast. \n\nAan jou de taak om de doorstroming in gang te zetten.",
+					0,
+					true,
+					"alg"
+				);
+			}
 		});
 
 		const y =

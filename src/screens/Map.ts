@@ -67,7 +67,16 @@ export class Map extends PIXI.Container {
 
 	// events for farmer icon
 	private onFarmerClick() {
-		console.log("Open farmer scenario");
+		this.game.mail.add(
+			"Overleg boeren",
+			"Uit watermonsters is gebleken dat er te veel stikstof en forfor in het oppervlaktewater zit. Dit komt doordat er te veel meststoffen in het water zitten. \n\nUit onderzoek is gebleken uit welk gebied de meeste vervuiling komt. Ga met de boeren in gesprek en denk na over de beste oplossing. \n\nEr kan onder andere een mestvrije zone langs de rivier worden aangelegd. De boeren moeten hier wel mee akkoord gaan. Als we niks doen, verslechterd het water alleen maar meer maar wordt er meer door de boeren verdiend. ",
+			0,
+			true,
+			"boer"
+		);
+
+		this.game.browser.openTab = 1;
+		this.farmer.destroy();
 	}
 
 	private onFarmerMouseOver() {
@@ -80,7 +89,17 @@ export class Map extends PIXI.Container {
 
 	// events for lobster icon
 	private onlobClick() {
-		console.log("Open lob minigame");
+		// Add mails to the tab
+		this.game.mail.add(
+			"Lob lob lob",
+			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren",
+			0,
+			true,
+			"lob"
+		);
+
+		this.game.browser.openTab = 1;
+		this.lob.destroy();
 	}
 
 	private onlobMouseOver() {

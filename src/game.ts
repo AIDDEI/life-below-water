@@ -117,8 +117,8 @@ export class Game {
 			60 // optimal max
 		);
 		this.waterParamB = new WaterParam(
-			"Sulfaten", // name
-			"sulfates", //keyName
+			"Fosfor", // name
+			"fosfor", //keyName
 			950, // value
 			10, // increment
 			900, // min
@@ -206,21 +206,6 @@ export class Game {
 		this.browser.openTab = 1;
 		this.pixi.stage.addChild(this.browser);
 
-		// Add mails to the tab
-		this.mail.add(
-			"Lob lob lob",
-			"De zomer is in aantocht het beloofd een warme en droge zomer te worden. Ons doel is om onze inwoners schoon en veilig zwemwater te kunnen bieden. Zodat zij het hoofd koel kunnen houden! \n\nJouw doel voor de komende week is; de waterkwaliteit verbeteren",
-			0,
-			false,
-			"lob"
-		);
-		this.mail.add(
-			"Algenoverlast",
-			"Vandaag nemen we een kijkje bij verschillende meren om te kijken of er algen zijn. Algen groeien door warmte. Waar algen niet van houden, is doorstromend water. Het is aan jouw de taak het water te laten stromen voordat de alg te groot wordt.",
-			0,
-			true,
-			"alg"
-		);
 
 		this.pixi.stage.addChild(this.money);
 
@@ -410,7 +395,7 @@ export class Game {
 			`Door het vangen van alle kleine kor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeor het vangen van alle kleine kreeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbereeften heb je ervoor gezorgd dat de schade aan de oevers verminderd en de waterkwaliteit verbeterd`,
 			1,
 			true,
-			undefined,
+			'lobResult',
 			reason
 		);
 
