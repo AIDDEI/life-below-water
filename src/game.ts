@@ -204,10 +204,10 @@ export class Game {
 
 		// Select open tab
 		this.browser.openTab = 1;
-		this.pixi.stage.addChild(this.browser);
+		this.pixi.stage.addChild(this.browser, this.money);
 
+		this.mail.add("Introductie", "Hoi collega! Welkom bij het Waterschap, onze taak is het verbeteren van de waterkwaliteit. Zodat de inwoners van onze mooie regio veilig kunnen zwemmen. We voeren regelmatig metingen uit, de resultaten hiervan kun je zien onder de 'kwaliteit' tab. Daarnaast staan je dagelijkse taken op de kaart. En ontvang je mails met scenario’s en beslissingen die je moet nemen. Na iedere keuze voer je de taak uit en ontvang je een bonus, op basis van je resultaat.", 0, true, 'intro');
 
-		this.pixi.stage.addChild(this.money);
 
 		// Create function to go to the Homescreen when the button is clicked
 		const goToHomeScreen = () => {

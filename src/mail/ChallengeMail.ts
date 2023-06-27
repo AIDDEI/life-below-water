@@ -27,6 +27,7 @@ export class ChallengeMail extends ActiveMail {
 		this.contentContainer.addChild(contentText);
 
 		let button: Button;
+		let button2: Button;
 
 		switch (this.mail.identifier) {
 			case "lob":
@@ -84,6 +85,12 @@ export class ChallengeMail extends ActiveMail {
 
 				);
 				break;
+			case "intro":
+				if (this.mail.played) return;
+				button = new Button(50, "Ga naar kwaliteit", undefined, undefined, () => { this.game.browser.openTab = 0; });
+				button2 = new Button(50, "Ga naar kaart", undefined, undefined, () => { this.game.browser.openTab = 2; });
+
+				break;
 
 			default:
 				button = new Button(
@@ -102,6 +109,7 @@ export class ChallengeMail extends ActiveMail {
 				? this.contentContainer.height + button.height + 20
 				: this.height - button.height / 2 - 5;
 		button.position.set(this.x + 20, y);
-		this.contentContainer.addChild(button);
+		button2.position.set(this.x + 20 + button.width + 20, y);
+		this.contentContainer.addChild(button, button2);
 	}
 }

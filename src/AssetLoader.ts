@@ -31,6 +31,7 @@ import farmerIcon from "./images/farmerIcon.png";
 import lobIcon from "./images/lobIcon.png";
 import algenExplenation from "./images/Algen-Uitleg.png";
 import algaes from "./images/algaes.png";
+import algIcon from "./images/algicoon.png";
 
 // Export class
 export class AssetLoader {
@@ -94,6 +95,7 @@ export class AssetLoader {
 			map: mapBg,
 			farmerIcon: farmerIcon,
 			lobIcon: lobIcon,
+			algIcon: algIcon
 		});
 
 		PIXI.Assets.addBundle("AlgaeGame", {

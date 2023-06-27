@@ -19,7 +19,7 @@ export class ActiveMail extends PIXI.Container {
 	private mailHeaderIcon: PIXI.Sprite;
 	public game: Game;
 	protected contentContainer: PIXI.Container<PIXI.DisplayObject>;
-	private maxHeight: number;
+	protected maxHeight: number;
 	public progress: any;
 	private scrollJump: any;
 	private originalPosition: any;
@@ -136,7 +136,7 @@ export class ActiveMail extends PIXI.Container {
 					!(
 						this._scrollThumb.getBounds().y < newPosition &&
 						this._scrollThumb.getBounds().y + this._scrollThumb.height >
-							newPosition
+						newPosition
 					)
 				)
 					return;
